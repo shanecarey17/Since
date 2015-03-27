@@ -36,14 +36,16 @@
     self.navigationController.navigationBarHidden = YES;
     
     // Get our components since the last occurrence
-    NSDate *sinceDate = [self retrieveSinceDate];
+    sinceDate = [self retrieveSinceDate];
     
     // Register for notifications that we entered/exited the app
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetGraphicView) name:@"UIApplicationWillEnterForegroundNotification" object:nil];
     
     // Test view class
     graphicView = [[CounterGraphicView alloc] initWithSuperView:self.view];
-    [graphicView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showDatePicker)]];
+    UITapGestureRecognizer *tapToShow = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showDatePicker)];
+    tapToShow.numberOfTapsRequired = 2;
+    [graphicView addGestureRecognizer:tapToShow];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -62,28 +64,39 @@
 }
 
 - (void)showDatePicker {
-    [graphicView removeGestureRecognizer:[[graphicView gestureRecognizers] firstObject]];
-    [graphicView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideDatePicker)]];
+    if (datePicker == nil) {
+        datePicker = [[CustomDatePicker alloc] init];
+        UITapGestureRecognizer *tapToHide = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideDatePicker)];
+        tapToHide.numberOfTapsRequired = 2;
+        [datePicker addGestureRecognizer:tapToHide];
+    }
     
-    datePicker = [[CustomDatePicker alloc] initWithFrame:CGRectMake(0, 0, 300, 162)];
     datePicker.colorScheme = [[self randomColorScheme] objectForKey:@"pickerColors"];
     datePicker.alpha = 0.0f;
     [self.view addSubview:datePicker];
     datePicker.center = self.view.center;
-    [UIView animateWithDuration:1.0f animations:^{
-        datePicker.alpha = 1.0f;
+    [UIView animateWithDuration:0.3f animations:^{
+        graphicView.alpha = 0.0f;
+    } completion:^(BOOL finished){
+        [UIView animateWithDuration:0.3f animations:^{
+            datePicker.alpha = 1.0f;
+        }];
     }];
 }
 
 - (void)hideDatePicker {
-    [UIView animateWithDuration:1.0f animations:^{
+    [UIView animateWithDuration:0.3f animations:^{
         datePicker.alpha = 0.0f;
     } completion:^(BOOL finished){
-        sinceDate = [datePicker date];
+        [UIView animateWithDuration:0.3f animations:^{
+            graphicView.alpha = 1.0f;
+        }];
+        NSDate *chosenDate = [datePicker date];
+        if (chosenDate) {
+            sinceDate = chosenDate;
+        }
         [graphicView resetView:[self componentsArrayWithDate:sinceDate] colors:[self randomColorScheme]];
     }];
-    [graphicView removeGestureRecognizer:[[self.view gestureRecognizers] firstObject]];
-    [graphicView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showDatePicker)]];
 }
 
 - (NSArray *)componentsArrayWithDate:(NSDate *)date {

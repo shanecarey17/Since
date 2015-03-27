@@ -11,6 +11,7 @@
 		7B1802051AC34A5900BFC526 /* CountingLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B1802041AC34A5900BFC526 /* CountingLabel.m */; };
 		7B1802081AC3757B00BFC526 /* CustomDatePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B1802071AC3757B00BFC526 /* CustomDatePicker.m */; };
 		7B18020B1AC39C6900BFC526 /* DatePickerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B18020A1AC39C6900BFC526 /* DatePickerTableViewCell.m */; };
+		7B18020E1AC4F30500BFC526 /* ColorSchemes.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B18020D1AC4F30500BFC526 /* ColorSchemes.m */; };
 		7BD4496D1AC1AB8E008A450E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BD4496C1AC1AB8E008A450E /* main.m */; };
 		7BD449701AC1AB8E008A450E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BD4496F1AC1AB8E008A450E /* AppDelegate.m */; };
 		7BD449731AC1AB8E008A450E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BD449721AC1AB8E008A450E /* ViewController.m */; };
@@ -38,6 +39,8 @@
 		7B1802071AC3757B00BFC526 /* CustomDatePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomDatePicker.m; sourceTree = "<group>"; };
 		7B1802091AC39C6900BFC526 /* DatePickerTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatePickerTableViewCell.h; sourceTree = "<group>"; };
 		7B18020A1AC39C6900BFC526 /* DatePickerTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatePickerTableViewCell.m; sourceTree = "<group>"; };
+		7B18020C1AC4F30500BFC526 /* ColorSchemes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorSchemes.h; sourceTree = "<group>"; };
+		7B18020D1AC4F30500BFC526 /* ColorSchemes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorSchemes.m; sourceTree = "<group>"; };
 		7BD449671AC1AB8E008A450E /* Since.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Since.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BD4496B1AC1AB8E008A450E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7BD4496C1AC1AB8E008A450E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -93,6 +96,8 @@
 			children = (
 				7BD4496E1AC1AB8E008A450E /* AppDelegate.h */,
 				7BD4496F1AC1AB8E008A450E /* AppDelegate.m */,
+				7B18020C1AC4F30500BFC526 /* ColorSchemes.h */,
+				7B18020D1AC4F30500BFC526 /* ColorSchemes.m */,
 				7BD449711AC1AB8E008A450E /* ViewController.h */,
 				7BD449721AC1AB8E008A450E /* ViewController.m */,
 				7B1802061AC3757B00BFC526 /* CustomDatePicker.h */,
@@ -236,6 +241,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7B18020E1AC4F30500BFC526 /* ColorSchemes.m in Sources */,
 				7B18020B1AC39C6900BFC526 /* DatePickerTableViewCell.m in Sources */,
 				7B1802021AC3446000BFC526 /* CounterGraphicView.m in Sources */,
 				7BD449731AC1AB8E008A450E /* ViewController.m in Sources */,

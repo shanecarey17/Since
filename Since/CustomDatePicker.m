@@ -14,6 +14,8 @@
     UITableView *monthTableView;
     UITableView *dayTableView;
     UITableView *yearTableView;
+    
+    CGFloat heightForCell;
 }
 
 @end
@@ -29,13 +31,19 @@ static NSArray *months = nil;
     }
 }
 
-- (id)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
+- (id)init {
+    self = [super initWithFrame:CGRectMake(0, 0, 300, [UIScreen mainScreen].bounds.size.height)];
     if (self) {
+        // Customize self, add transparent gradient mask
+        self.backgroundColor = [UIColor clearColor];
+        
+        // Set the height of the cell
+        heightForCell = 100;
+        
         // Initialize table views to 1/3 the area
-        monthTableView = [[UITableView alloc] initWithFrame:CGRectMake(frame.origin.x, frame.origin.y, frame.size.width / 3, frame.size.height)];
-        dayTableView = [[UITableView alloc] initWithFrame:CGRectMake(frame.origin.x + (frame.size.width / 3), frame.origin.y , frame.size.width / 3, frame.size.height)];
-        yearTableView = [[UITableView alloc] initWithFrame:CGRectMake(frame.origin.x + (2 * frame.size.width / 3), frame.origin.y , frame.size.width / 3, frame.size.height)];
+        monthTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width / 3, self.frame.size.height)];
+        dayTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.frame.origin.x + (self.frame.size.width / 3), self.frame.origin.y , self.frame.size.width / 3, self.frame.size.height)];
+        yearTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.frame.origin.x + (2 * self.frame.size.width / 3), self.self.frame.origin.y , self.frame.size.width / 3, self.frame.size.height)];
         
         // Set delegates and datasources
         monthTableView.delegate = dayTableView.delegate = yearTableView.delegate = self;
@@ -45,7 +53,11 @@ static NSArray *months = nil;
         monthTableView.separatorColor = dayTableView.separatorColor = yearTableView.separatorColor = [UIColor clearColor];
         monthTableView.backgroundColor = dayTableView.backgroundColor = yearTableView.backgroundColor = [UIColor clearColor];
         monthTableView.showsVerticalScrollIndicator = dayTableView.showsVerticalScrollIndicator = yearTableView.showsVerticalScrollIndicator = NO;
-        monthTableView.scrollEnabled = dayTableView.scrollEnabled = yearTableView.scrollEnabled = NO;
+        
+        // Scroll to center cell
+        [monthTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:5000 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+        [dayTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:5000 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+        [yearTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:5000 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
         
         // Add subviews
         [self addSubview:monthTableView];
@@ -57,14 +69,18 @@ static NSArray *months = nil;
 
 - (void)setColorScheme:(NSDictionary *)colorScheme {
     _colorScheme = colorScheme;
-    self.backgroundColor = [colorScheme objectForKey:@"backgroundColor"];
+    
+    [monthTableView reloadData];
+    [dayTableView reloadData];
+    [yearTableView reloadData];
 }
 
 - (NSDate *)date {
     // Get the cells
-    DatePickerTableViewCell *monthCell = (DatePickerTableViewCell *)[monthTableView cellForRowAtIndexPath:[monthTableView indexPathForSelectedRow]];
-    DatePickerTableViewCell *dayCell = (DatePickerTableViewCell *)[dayTableView cellForRowAtIndexPath:[dayTableView indexPathForSelectedRow]];
-    DatePickerTableViewCell *yearCell = (DatePickerTableViewCell *)[yearTableView cellForRowAtIndexPath:[yearTableView indexPathForSelectedRow]];
+    NSInteger centerIndex = self.bounds.size.height / heightForCell / 2;
+    DatePickerTableViewCell *monthCell = (DatePickerTableViewCell *)[monthTableView cellForRowAtIndexPath:[[monthTableView indexPathsForVisibleRows] objectAtIndex:centerIndex]];
+    DatePickerTableViewCell *dayCell = (DatePickerTableViewCell *)[dayTableView cellForRowAtIndexPath:[[dayTableView indexPathsForVisibleRows] objectAtIndex:centerIndex]];
+    DatePickerTableViewCell *yearCell = (DatePickerTableViewCell *)[yearTableView cellForRowAtIndexPath:[[yearTableView indexPathsForVisibleRows] objectAtIndex:centerIndex]];
     
     // Get the strings
     NSString *monthString = monthCell.label.text;
@@ -92,15 +108,11 @@ static NSArray *months = nil;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (tableView == monthTableView) {
-        return 12;
-    } else if (tableView == dayTableView) {
-        return 30;
-    } else return 100;
+    return 10000;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return self.bounds.size.height / 3;
+    return heightForCell;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -109,16 +121,18 @@ static NSArray *months = nil;
     DatePickerTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
     if (cell == nil) {
         cell = [[DatePickerTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
-        cell.colorScheme = self.colorScheme;
     }
+    
+    // Set the color scheme
+    cell.colorScheme = self.colorScheme;
     
     // Customize cell text depending the tableview
     if (tableView == monthTableView) {
-        cell.label.text = [months objectAtIndex:indexPath.row];
+        cell.label.text = [months objectAtIndex:indexPath.row % 12];
     } else if (tableView == dayTableView) {
-        cell.label.text = [NSString stringWithFormat:@"%ld", indexPath.row + 1];
+        cell.label.text = [NSString stringWithFormat:@"%ld", indexPath.row % 31 + 1];
     } else {
-        cell.label.text = [NSString stringWithFormat:@"%ld", 2015 - indexPath.row];
+        cell.label.text = [NSString stringWithFormat:@"%ld", 2015 - (indexPath.row % 50)];
     }
     
     // Return the cell
@@ -127,8 +141,39 @@ static NSArray *months = nil;
 
 #pragma mark - tableview delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
+    return false;
+}
+
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
+    
+    if (velocity.y == 0) {
+        // Scroll to that index we selected in scrollViewDidScroll:
+        [(UITableView *)scrollView scrollToRowAtIndexPath:[(UITableView *)scrollView indexPathForSelectedRow] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+    } else {
+        // If there is velocity change the target offset
+        CGFloat targetOffsetY = (*targetContentOffset).y;
+        CGFloat offsetFromTop = (heightForCell - fmodf((float)self.bounds.size.height, (float)heightForCell)) / 2.0f;
+        CGFloat adjustedTargetOffsetY = ((int)targetOffsetY / (int)heightForCell) * heightForCell + offsetFromTop;
+        *targetContentOffset = CGPointMake((*targetContentOffset).x, adjustedTargetOffsetY);
+    }
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    // Determine the direction we scroll
+    CGFloat scrollVelocity = [[scrollView panGestureRecognizer] velocityInView:self].y;
+    NSLog(@"%f", scrollVelocity);
+    
+    // Select the center cell depending on whether we scroll up or down
+    NSArray *visibleIndexPaths = [(UITableView *)scrollView indexPathsForVisibleRows];
+    NSInteger centerIndex = [visibleIndexPaths count] / 2;
+    
+    // If we scrolled down, decrease selected index
+    if (scrollVelocity > 0) {
+        centerIndex--;
+    }
+    
+    [(UITableView *)scrollView selectRowAtIndexPath:visibleIndexPaths[centerIndex] animated:NO scrollPosition:UITableViewScrollPositionNone];
 }
 
 @end

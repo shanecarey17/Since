@@ -22,13 +22,14 @@
         self.contentView.backgroundColor = [UIColor clearColor];
         self.label.translatesAutoresizingMaskIntoConstraints = NO;
         self.label.textAlignment = NSTextAlignmentCenter;
-        self.label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:18];
+        self.label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:26];
+        self.label.layer.masksToBounds = YES;
         
         // Layout constraints
         NSLayoutConstraint *xConstraint = [NSLayoutConstraint constraintWithItem:self.label attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterX multiplier:1 constant:1];
         NSLayoutConstraint *yConstraint = [NSLayoutConstraint constraintWithItem:self.label attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1];
-        NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:self.label attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:1 constant:10];
-        NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:self.label attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeHeight multiplier:1 constant:-10];
+        NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:self.label attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.label attribute:NSLayoutAttributeHeight multiplier:1 constant:0];
+        NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:self.label attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeHeight multiplier:1 constant:-20];
         [self.contentView addConstraints:@[xConstraint, yConstraint, widthConstraint, heightConstraint]];
                                          
     }
@@ -37,6 +38,10 @@
 
 - (void)awakeFromNib {
     // Initialization code
+}
+
+- (void)layoutSubviews {
+    self.label.layer.cornerRadius = self.label.bounds.size.width / 2;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

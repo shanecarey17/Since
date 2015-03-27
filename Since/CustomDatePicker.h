@@ -14,4 +14,6 @@
 
 @property (strong, nonatomic, readonly) NSDate *date;
 
+- (id)init;
+
 @end

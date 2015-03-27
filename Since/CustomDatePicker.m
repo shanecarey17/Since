@@ -148,8 +148,25 @@ static NSArray *months = nil;
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     
     if (velocity.y == 0) {
-        // Scroll to that index we selected in scrollViewDidScroll:
-        [(UITableView *)scrollView scrollToRowAtIndexPath:[(UITableView *)scrollView indexPathForSelectedRow] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+        // Determine the offset of the scrollview
+        CGFloat contentOffset = scrollView.contentOffset.y;
+        CGFloat mod = fmodf(contentOffset, heightForCell);
+        CGFloat targetMod = (heightForCell - fmodf((float)self.bounds.size.height, (float)heightForCell)) / 2.0f;
+        
+        if (mod == targetMod) {
+            // Great no work!
+            return;
+        } else if (mod < targetMod) {
+            // Move up on current cell
+            targetContentOffset->y += targetMod - mod;
+        } else if (mod > targetMod + (heightForCell / 2)) {
+            // Move up a whole new cell
+            targetContentOffset->y += targetMod - mod + heightForCell;
+        } else {
+            // Move down
+            targetContentOffset->y -= mod - targetMod;
+        }
+        
     } else {
         // If there is velocity change the target offset
         CGFloat targetOffsetY = (*targetContentOffset).y;
@@ -157,23 +174,6 @@ static NSArray *months = nil;
         CGFloat adjustedTargetOffsetY = ((int)targetOffsetY / (int)heightForCell) * heightForCell + offsetFromTop;
         *targetContentOffset = CGPointMake((*targetContentOffset).x, adjustedTargetOffsetY);
     }
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    // Determine the direction we scroll
-    CGFloat scrollVelocity = [[scrollView panGestureRecognizer] velocityInView:self].y;
-    NSLog(@"%f", scrollVelocity);
-    
-    // Select the center cell depending on whether we scroll up or down
-    NSArray *visibleIndexPaths = [(UITableView *)scrollView indexPathsForVisibleRows];
-    NSInteger centerIndex = [visibleIndexPaths count] / 2;
-    
-    // If we scrolled down, decrease selected index
-    if (scrollVelocity > 0) {
-        centerIndex--;
-    }
-    
-    [(UITableView *)scrollView selectRowAtIndexPath:visibleIndexPaths[centerIndex] animated:NO scrollPosition:UITableViewScrollPositionNone];
 }
 
 @end

@@ -61,8 +61,13 @@
 
 - (void)setColorScheme:(NSDictionary *)colorScheme {
     _colorScheme = colorScheme;
-    self.label.textColor = [colorScheme objectForKey:@"cellTextColor"];
-    self.label.backgroundColor = [colorScheme objectForKey:@"cellBackgroundColor"];
+    if (self.selected) {
+        self.label.textColor = [self.colorScheme objectForKey:@"selectedCellTextColor"];
+        self.label.backgroundColor = [self.colorScheme objectForKey:@"selectedCellBackgroundColor"];
+    } else {
+        self.label.textColor = [colorScheme objectForKey:@"cellTextColor"];
+        self.label.backgroundColor = [colorScheme objectForKey:@"cellBackgroundColor"];
+    }
 }
 
 @end

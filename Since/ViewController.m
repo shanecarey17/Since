@@ -13,12 +13,12 @@
 #import "ViewController.h"
 #import "CounterGraphicView.h"
 #import "CustomDatePicker.h"
+#import "ColorSchemes.h"
 
 @interface ViewController ()
 {
     // Data
     NSDate *sinceDate;
-    NSDictionary *colorScheme;
     
     // UI elements
     CounterGraphicView *graphicView;
@@ -49,7 +49,7 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    [graphicView resetView:[self componentsArrayWithDate:sinceDate] colors:[self randomColorScheme]];
+    [graphicView resetView:[self componentsArrayWithDate:sinceDate] colors:[ColorSchemes colorSchemeWithName:@"scheme1"]];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -71,7 +71,7 @@
         [datePicker addGestureRecognizer:tapToHide];
     }
     
-    datePicker.colorScheme = [[self randomColorScheme] objectForKey:@"pickerColors"];
+    datePicker.colorScheme = [[ColorSchemes colorSchemeWithName:@"scheme1"] objectForKey:@"pickerColors"];
     datePicker.alpha = 0.0f;
     [self.view addSubview:datePicker];
     datePicker.center = self.view.center;
@@ -95,7 +95,7 @@
         if (chosenDate) {
             sinceDate = chosenDate;
         }
-        [graphicView resetView:[self componentsArrayWithDate:sinceDate] colors:[self randomColorScheme]];
+        [graphicView resetView:[self componentsArrayWithDate:sinceDate] colors:[ColorSchemes colorSchemeWithName:@"scheme1"]];
     }];
 }
 
@@ -125,29 +125,7 @@
 #pragma mark - Drawing methods
 
 - (void)resetGraphicView {
-    [graphicView resetView:[self componentsArrayWithDate:sinceDate] colors:[self randomColorScheme]];
-}
-
-- (NSDictionary *)randomColorScheme {
-    return @{@"centerColor" : [UIColor colorWithHue:RAND_FLOAT saturation:RAND_FLOAT brightness:0.5 alpha:1.0],
-             @"backgroundColor" : [UIColor colorWithHue:RAND_FLOAT saturation:0.2 brightness:0.9 alpha:1.0],
-             @"arcColors" : @[
-                     [UIColor colorWithHue:RAND_FLOAT saturation:RAND_FLOAT brightness:0.5 alpha:1.0],
-                     [UIColor colorWithHue:RAND_FLOAT saturation:RAND_FLOAT brightness:0.5 alpha:1.0],
-                     [UIColor colorWithHue:RAND_FLOAT saturation:RAND_FLOAT brightness:0.5 alpha:1.0],
-                     [UIColor colorWithHue:RAND_FLOAT saturation:RAND_FLOAT brightness:0.5 alpha:1.0],
-                     [UIColor colorWithHue:RAND_FLOAT saturation:RAND_FLOAT brightness:0.5 alpha:1.0],
-                     [UIColor colorWithHue:RAND_FLOAT saturation:RAND_FLOAT brightness:0.5 alpha:1.0],
-                     [UIColor colorWithHue:RAND_FLOAT saturation:RAND_FLOAT brightness:0.5 alpha:1.0]
-              ],
-             @"pickerColors" : @{
-                     @"backgroundColor" : [UIColor colorWithHue:RAND_FLOAT saturation:0.3 brightness:0.3 alpha:1.0],
-                     @"cellBackgroundColor" : [UIColor colorWithHue:RAND_FLOAT saturation:0.5 brightness:0.7 alpha:1.0],
-                     @"cellTextColor" : [UIColor colorWithHue:RAND_FLOAT saturation:0.2 brightness:0.9 alpha:1.0],
-                     @"selectedCellBackgroundColor" : [UIColor colorWithHue:RAND_FLOAT saturation:0.2 brightness:0.9 alpha:1.0],
-                     @"selectedCellTextColor" : [UIColor colorWithHue:RAND_FLOAT saturation:0.5 brightness:0.7 alpha:1.0]
-              }
-             };
+    [graphicView resetView:[self componentsArrayWithDate:sinceDate] colors:[ColorSchemes colorSchemeWithName:@"scheme1"]];
 }
 
 @end

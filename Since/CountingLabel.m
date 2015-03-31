@@ -46,9 +46,7 @@
     progress += 1 / 30.0f;
     
     // Set text
-    [UIView animateWithDuration:0.1 animations:^{
-        self.text = [NSString stringWithFormat:@"%d", (int)value];
-    }];
+    self.text = [NSString stringWithFormat:@"%d", (int)value];
     
     // Stop when value == endvalue
     if (value == endValue) {
@@ -57,9 +55,9 @@
 }
 
 - (NSInteger)calculateValue {
-    // Cubic ease in out curve
+    // Quintic ease out curve
     Float32 percent = (progress / duration) - 1;
-    return endValue * (pow(percent, 3) + 1) + startValue;
+    return endValue * (pow(percent, 5) + 1) + startValue;
 }
 
 @end

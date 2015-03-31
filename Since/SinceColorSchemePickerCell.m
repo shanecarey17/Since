@@ -9,9 +9,9 @@
 #define   PI 3.14159265359
 #define   DEGREES_TO_RADIANS(degrees)  ((PI * degrees)/ 180)
 
-#import "ColorSchemeTableViewCell.h"
+#import "SinceColorSchemePickerCell.h"
 
-@interface ColorSchemeTableViewCell ()
+@interface SinceColorSchemePickerCell ()
 {
     UIView *colorView;
     
@@ -22,7 +22,7 @@
 
 @end
 
-@implementation ColorSchemeTableViewCell
+@implementation SinceColorSchemePickerCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];

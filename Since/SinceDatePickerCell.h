@@ -1,5 +1,5 @@
 //
-//  CustomDatePicker.h
+//  DatePickerTableViewCell.h
 //  Since
 //
 //  Created by Shane Carey on 3/25/15.
@@ -8,10 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CustomDatePicker : UIView
+@interface SinceDatePickerCell : UITableViewCell
 
+@property (strong, nonatomic) UILabel *label;
 @property (strong, nonatomic) NSDictionary *colorScheme;
-
-@property (strong, nonatomic) NSDate *date;
 
 @end

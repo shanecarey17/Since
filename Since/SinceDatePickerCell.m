@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Shane Carey. All rights reserved.
 //
 
-#import "DatePickerTableViewCell.h"
+#import "SinceDatePickerCell.h"
 
-@implementation DatePickerTableViewCell
+@implementation SinceDatePickerCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];

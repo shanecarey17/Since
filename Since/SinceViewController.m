@@ -10,13 +10,14 @@
 #define   DEGREES_TO_RADIANS(degrees)  ((PI * degrees)/ 180)
 #define   RAND_FLOAT ((double)arc4random() / 0x100000000)
 
-#import "MainViewController.h"
+#import "SinceViewController.h"
 #import "SinceDateCounterGraphicView.h"
-#import "CustomDatePicker.h"
+#import "SinceDatePicker.h"
 #import "ColorSchemes.h"
-#import "ColorSchemeTableViewCell.h"
+#import "SinceColorSchemePickerCell.h"
+#import "UIView+AnchorPosition.h"
 
-@interface MainViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
+@interface SinceViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
 {
     // Data
     NSDate *sinceDate;
@@ -24,7 +25,7 @@
     
     // UI elements
     SinceDateCounterGraphicView *graphicView;
-    CustomDatePicker *datePicker;
+    SinceDatePicker *datePicker;
     UITableView *colorSchemePicker;
     
     // Gestures
@@ -39,7 +40,7 @@
 
 @end
 
-@implementation MainViewController
+@implementation SinceViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -91,7 +92,7 @@
 
 - (void)initDatePicker {
     // Date picker
-    datePicker = [[CustomDatePicker alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width / 3 * 2, self.view.bounds.size.height - self.view.bounds.size.width)];
+    datePicker = [[SinceDatePicker alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width / 3 * 2, self.view.bounds.size.height - self.view.bounds.size.width)];
     datePicker.center = CGPointMake(self.view.center.x, (self.view.bounds.size.width + self.view.bounds.size.height) / 2);
     datePicker.alpha = 0.0f;
     [self.view addSubview:datePicker];
@@ -189,7 +190,7 @@
     // If we are beginning our pan, change the anchor point of the view
     if (panGestureRecognizer.state == UIGestureRecognizerStateBegan) {
         // Change anchor point
-        [self setAnchorPoint:CGPointMake(0.75, 0.5) forView:graphicView];
+        [graphicView setAnchorPointAdjustPosition:CGPointMake(0.75, 0.5)];
         
         // Get the starting angle of the view (this is constant for entire pan gesture)
         startingAngle = atan2(graphicView.layer.transform.m31, graphicView.layer.transform.m11);
@@ -292,7 +293,7 @@
                 graphicView.layer.transform = CATransform3DIdentity;
                 colorSchemePicker.frame = CGRectMake(0, 0, 0, self.view.bounds.size.height);
             } completion:^(BOOL completion) {
-                [self setAnchorPoint:CGPointMake(0.5, 0.5) forView:graphicView];
+                [graphicView setAnchorPointAdjustPosition:CGPointMake(0.5, 0.5)];
                 colorPickerIsVisible = NO;
             }];
             
@@ -323,9 +324,9 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ColorSchemeTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"colorSchemeCell"];
+    SinceColorSchemePickerCell *cell = [tableView dequeueReusableCellWithIdentifier:@"colorSchemeCell"];
     if (cell == nil) {
-        cell = [[ColorSchemeTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"colorSchemeCell"];
+        cell = [[SinceColorSchemePickerCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"colorSchemeCell"];
         cell.colorScheme = [ColorSchemes colorSchemeWithName:[[ColorSchemes colorSchemes] objectAtIndex:indexPath.row]];
         cell.label.text = [[ColorSchemes colorSchemes] objectAtIndex:indexPath.row];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -338,7 +339,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    colorScheme = [(ColorSchemeTableViewCell *)[tableView cellForRowAtIndexPath:indexPath] colorScheme];
+    colorScheme = [(SinceColorSchemePickerCell *)[tableView cellForRowAtIndexPath:indexPath] colorScheme];
     [self resetGraphicView];
 }
 
@@ -358,28 +359,6 @@
             return NO;
         }
     }
-}
-
-#pragma mark - Utility
-
-- (void)setAnchorPoint:(CGPoint)anchorPoint forView:(UIView *)view {
-    // Change anchor point by setting around bounds of view
-    CGPoint newPoint = CGPointMake(view.bounds.size.width * anchorPoint.x, view.bounds.size.height * anchorPoint.y);
-    CGPoint oldPoint = CGPointMake(view.bounds.size.width * view.layer.anchorPoint.x, view.bounds.size.height * view.layer.anchorPoint.y);
-    
-    newPoint = CGPointApplyAffineTransform(newPoint, view.transform);
-    oldPoint = CGPointApplyAffineTransform(oldPoint, view.transform);
-    
-    CGPoint position = view.layer.position;
-    
-    position.x -= oldPoint.x;
-    position.x += newPoint.x;
-    
-    position.y -= oldPoint.y;
-    position.y += newPoint.y;
-    
-    view.layer.position = position;
-    view.layer.anchorPoint = anchorPoint;
 }
 
 @end

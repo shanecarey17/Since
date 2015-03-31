@@ -10,10 +10,10 @@
 #define kCenterCell kNumCell / 2
 #define kCellHeight 100
 
-#import "CustomDatePicker.h"
-#import "DatePickerTableViewCell.h"
+#import "SinceDatePicker.h"
+#import "SinceDatePickerCell.h"
 
-@interface CustomDatePicker () <UITableViewDataSource, UITableViewDelegate>
+@interface SinceDatePicker () <UITableViewDataSource, UITableViewDelegate>
 {
     UITableView *monthTableView;
     UITableView *dayTableView;
@@ -22,7 +22,7 @@
 
 @end
 
-@implementation CustomDatePicker
+@implementation SinceDatePicker
 
 static NSArray *months = nil;
 
@@ -92,9 +92,9 @@ static NSArray *months = nil;
 - (NSDate *)date {
     // Get the cells
     NSInteger centerIndex = self.bounds.size.height / kCellHeight / 2;
-    DatePickerTableViewCell *monthCell = (DatePickerTableViewCell *)[monthTableView cellForRowAtIndexPath:[[monthTableView indexPathsForVisibleRows] objectAtIndex:centerIndex]];
-    DatePickerTableViewCell *dayCell = (DatePickerTableViewCell *)[dayTableView cellForRowAtIndexPath:[[dayTableView indexPathsForVisibleRows] objectAtIndex:centerIndex]];
-    DatePickerTableViewCell *yearCell = (DatePickerTableViewCell *)[yearTableView cellForRowAtIndexPath:[[yearTableView indexPathsForVisibleRows] objectAtIndex:centerIndex]];
+    SinceDatePickerCell *monthCell = (SinceDatePickerCell *)[monthTableView cellForRowAtIndexPath:[[monthTableView indexPathsForVisibleRows] objectAtIndex:centerIndex]];
+    SinceDatePickerCell *dayCell = (SinceDatePickerCell *)[dayTableView cellForRowAtIndexPath:[[dayTableView indexPathsForVisibleRows] objectAtIndex:centerIndex]];
+    SinceDatePickerCell *yearCell = (SinceDatePickerCell *)[yearTableView cellForRowAtIndexPath:[[yearTableView indexPathsForVisibleRows] objectAtIndex:centerIndex]];
     
     // Get the strings
     NSString *monthString = monthCell.label.text;
@@ -132,9 +132,9 @@ static NSArray *months = nil;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     // Grab a cell
     NSString *cellID = @"customCell";
-    DatePickerTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
+    SinceDatePickerCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
     if (cell == nil) {
-        cell = [[DatePickerTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
+        cell = [[SinceDatePickerCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
     }
     
     // Set the color scheme

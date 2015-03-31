@@ -46,7 +46,9 @@
     progress += 1 / 30.0f;
     
     // Set text
-    self.text = [NSString stringWithFormat:@"%d", (int)value];
+    [UIView animateWithDuration:0.1 animations:^{
+        self.text = [NSString stringWithFormat:@"%d", (int)value];
+    }];
     
     // Stop when value == endvalue
     if (value == endValue) {

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ColorSchemeTableViewCell : UITableViewCell
+@interface SinceColorSchemePickerCell : UITableViewCell
 
 @property (strong, nonatomic) UILabel *label;
 

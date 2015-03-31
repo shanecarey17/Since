@@ -12,8 +12,6 @@
 
 @property (strong, nonatomic) NSDictionary *colorScheme;
 
-@property (strong, nonatomic, readonly) NSDate *date;
-
-- (id)init;
+@property (strong, nonatomic) NSDate *date;
 
 @end

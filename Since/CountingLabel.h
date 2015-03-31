@@ -10,6 +10,8 @@
 
 @interface CountingLabel : UILabel
 
-- (void)countFromValue:(NSInteger)startValue toValue:(NSInteger)endValue duration:(CGFloat)duration;
+- (void)countToValue:(NSInteger)end duration:(CGFloat)time;
+
+- (void)countFromValue:(NSInteger)start toValue:(NSInteger)end duration:(CGFloat)time;
 
 @end

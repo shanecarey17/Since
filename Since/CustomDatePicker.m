@@ -6,6 +6,10 @@
 //  Copyright (c) 2015 Shane Carey. All rights reserved.
 //
 
+#define kNumCell 10000
+#define kCenterCell kNumCell / 2
+#define kCellHeight 100
+
 #import "CustomDatePicker.h"
 #import "DatePickerTableViewCell.h"
 
@@ -14,8 +18,6 @@
     UITableView *monthTableView;
     UITableView *dayTableView;
     UITableView *yearTableView;
-    
-    CGFloat heightForCell;
 }
 
 @end
@@ -31,14 +33,18 @@ static NSArray *months = nil;
     }
 }
 
-- (id)init {
-    self = [super initWithFrame:CGRectMake(0, 0, 300, [UIScreen mainScreen].bounds.size.height)];
+- (id)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
     if (self) {
         // Customize self, add transparent gradient mask
         self.backgroundColor = [UIColor clearColor];
-        
-        // Set the height of the cell
-        heightForCell = 100;
+        CAGradientLayer *mask = [CAGradientLayer layer];
+        mask.locations = @[@0.3, @0.333, @0.666, @0.7];
+        mask.colors = @[(id)[UIColor clearColor].CGColor, (id)[UIColor whiteColor].CGColor, (id)[UIColor whiteColor].CGColor, (id)[UIColor clearColor].CGColor];
+        mask.frame = self.bounds;
+        mask.startPoint = CGPointMake(0, 0);
+        mask.endPoint = CGPointMake(0, 1);
+        self.layer.mask = mask;
         
         // Initialize table views to 1/3 the area
         monthTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width / 3, self.frame.size.height)];
@@ -75,9 +81,17 @@ static NSArray *months = nil;
     [yearTableView reloadData];
 }
 
+- (void)setDate:(NSDate *)date {
+    NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitMonth | NSCalendarUnitDay |NSCalendarUnitYear fromDate:date];
+    NSInteger monthIndex = kCenterCell - (kCenterCell % 12) + [dateComponents month] - 1;
+    NSInteger dayIndex = kCenterCell - (kCenterCell % 31) + [dateComponents day] - 1;
+    [monthTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:monthIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+    [dayTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:dayIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+}
+
 - (NSDate *)date {
     // Get the cells
-    NSInteger centerIndex = self.bounds.size.height / heightForCell / 2;
+    NSInteger centerIndex = self.bounds.size.height / kCellHeight / 2;
     DatePickerTableViewCell *monthCell = (DatePickerTableViewCell *)[monthTableView cellForRowAtIndexPath:[[monthTableView indexPathsForVisibleRows] objectAtIndex:centerIndex]];
     DatePickerTableViewCell *dayCell = (DatePickerTableViewCell *)[dayTableView cellForRowAtIndexPath:[[dayTableView indexPathsForVisibleRows] objectAtIndex:centerIndex]];
     DatePickerTableViewCell *yearCell = (DatePickerTableViewCell *)[yearTableView cellForRowAtIndexPath:[[yearTableView indexPathsForVisibleRows] objectAtIndex:centerIndex]];
@@ -108,11 +122,11 @@ static NSArray *months = nil;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 10000;
+    return kNumCell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return heightForCell;
+    return kCellHeight;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -149,30 +163,29 @@ static NSArray *months = nil;
     
     if (velocity.y == 0) {
         // Determine the offset of the scrollview
-        CGFloat contentOffset = scrollView.contentOffset.y;
-        CGFloat mod = fmodf(contentOffset, heightForCell);
-        CGFloat targetMod = (heightForCell - fmodf((float)self.bounds.size.height, (float)heightForCell)) / 2.0f;
+        CGFloat mod = fmodf(scrollView.contentOffset.y, kCellHeight);
+        CGFloat targetMod = (kCellHeight - fmodf((float)self.bounds.size.height, (float)kCellHeight)) / 2.0f;
         
+        // Using the calculated offset, lets decide if we are within half the cell height above or below the target
         if (mod == targetMod) {
             // Great no work!
             return;
         } else if (mod < targetMod) {
-            // Move up on current cell
+            // Move up
             targetContentOffset->y += targetMod - mod;
-        } else if (mod > targetMod + (heightForCell / 2)) {
-            // Move up a whole new cell
-            targetContentOffset->y += targetMod - mod + heightForCell;
+        } else if (mod > targetMod + (kCellHeight / 2)) {
+            // Move up past the next cell
+            targetContentOffset->y += targetMod - mod + kCellHeight;
         } else {
             // Move down
             targetContentOffset->y -= mod - targetMod;
         }
         
     } else {
-        // If there is velocity change the target offset
-        CGFloat targetOffsetY = (*targetContentOffset).y;
-        CGFloat offsetFromTop = (heightForCell - fmodf((float)self.bounds.size.height, (float)heightForCell)) / 2.0f;
-        CGFloat adjustedTargetOffsetY = ((int)targetOffsetY / (int)heightForCell) * heightForCell + offsetFromTop;
-        *targetContentOffset = CGPointMake((*targetContentOffset).x, adjustedTargetOffsetY);
+        // If there is velocity change the target offset by subtracting the mod and adding the target mod
+        CGFloat mod = fmodf(targetContentOffset->y, kCellHeight);
+        CGFloat targetMod = (kCellHeight - fmodf((float)self.bounds.size.height, (float)kCellHeight)) / 2.0f;
+        targetContentOffset->y += targetMod - mod;
     }
 }
 

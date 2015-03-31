@@ -47,15 +47,11 @@
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     // Configure the view for the selected state
     if (selected) {
-        [UIView animateWithDuration:0.25 animations:^{
-            self.label.textColor = [self.colorScheme objectForKey:@"selectedCellTextColor"];
-            self.label.backgroundColor = [self.colorScheme objectForKey:@"selectedCellBackgroundColor"];
-        }];
+        self.label.textColor = [self.colorScheme objectForKey:@"selectedCellTextColor"];
+        self.label.backgroundColor = [self.colorScheme objectForKey:@"selectedCellBackgroundColor"];
     } else {
-        [UIView animateWithDuration:0.25 animations:^{
-            self.label.textColor = [self.colorScheme objectForKey:@"cellTextColor"];
-            self.label.backgroundColor = [self.colorScheme objectForKey:@"cellBackgroundColor"];
-        }];
+        self.label.textColor = [self.colorScheme objectForKey:@"cellTextColor"];
+        self.label.backgroundColor = [self.colorScheme objectForKey:@"cellBackgroundColor"];
     }
 }
 

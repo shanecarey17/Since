@@ -14,4 +14,6 @@
 
 + (NSDictionary *)colorSchemeWithName:(NSString *)colorSchemeName;
 
++ (NSDictionary *)randomColorScheme;
+
 @end

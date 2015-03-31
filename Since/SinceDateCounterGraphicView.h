@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CounterGraphicView : UIView
+@interface SinceDateCounterGraphicView : UIView
 
 - (id)initWithSuperView:(UIView *)superview;
 

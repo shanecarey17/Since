@@ -19,10 +19,6 @@
 
 @interface SinceViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
 {
-    // Data
-    NSDate *sinceDate;
-    NSDictionary *colorScheme;
-    
     // UI elements
     SinceDateCounterGraphicView *graphicView;
     SinceDatePicker *datePicker;
@@ -47,14 +43,9 @@
     
     // Hide the navigation controller
     self.navigationController.navigationBarHidden = YES;
-    
-    // Get our components since the last occurrence
-    [self retrieveUserDefaults];
-    
-    // Register for notifications that we entered/exited the app
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetGraphicView) name:@"UIApplicationWillEnterForegroundNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveUserDefaults) name:@"UIApplicationDidEnterBackgroundNotification" object:nil];
-    
+}
+
+- (void)viewWillAppear:(BOOL)animated {
     // Initialize subiews
     [self initGraphicView];
     [self initColorPicker];
@@ -105,28 +96,12 @@
     [self resetGraphicView];
 }
 
-#pragma mark - Date and data methods
-
-- (void)saveUserDefaults {
-    [[NSUserDefaults standardUserDefaults] setObject:sinceDate forKey:@"sinceDate"];
-    NSData *colorSchemeData = [NSKeyedArchiver archivedDataWithRootObject:colorScheme];
-    [[NSUserDefaults standardUserDefaults] setObject:colorSchemeData forKey:@"colorScheme"];
-}
-
-- (void)retrieveUserDefaults {
-    sinceDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"sinceDate"];
-    colorScheme = [NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:@"colorScheme"]];
-    if (colorScheme == nil) {
-        colorScheme = [ColorSchemes randomColorScheme];
-    }
-}
-
 #pragma mark - Date picker
 
 - (void)showDatePicker:(UIGestureRecognizer *)sender {
     if (!datePickerIsVisible) {
-        datePicker.colorScheme = [colorScheme objectForKey:@"pickerColors"];
-        datePicker.date = sinceDate;
+        datePicker.colorScheme = [_colorScheme objectForKey:@"pickerColors"];
+        datePicker.date = _sinceDate;
         [UIView animateWithDuration:0.3f animations:^{
             graphicView.center = CGPointMake(graphicView.center.x, graphicView.center.y - 50);
         } completion:^(BOOL finished){
@@ -145,7 +120,7 @@
             }];
             NSDate *chosenDate = [datePicker date];
             if (chosenDate) {
-                sinceDate = chosenDate;
+                _sinceDate = chosenDate;
             }
         }];
     }
@@ -155,7 +130,7 @@
 #pragma mark - Graphic View
 
 - (void)resetGraphicView {
-    [graphicView resetView:[self componentsArrayWithDate:sinceDate] colors:colorScheme];
+    [graphicView resetView:[self componentsArrayWithDate:_sinceDate] colors:_colorScheme];
 }
 
 - (NSArray *)componentsArrayWithDate:(NSDate *)date {
@@ -339,7 +314,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    colorScheme = [(SinceColorSchemePickerCell *)[tableView cellForRowAtIndexPath:indexPath] colorScheme];
+    _colorScheme = [(SinceColorSchemePickerCell *)[tableView cellForRowAtIndexPath:indexPath] colorScheme];
     [self resetGraphicView];
 }
 

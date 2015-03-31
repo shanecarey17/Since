@@ -10,5 +10,9 @@
 
 @interface SinceViewController : UIViewController
 
+@property (strong, nonatomic) NSDate *sinceDate;
+
+@property (strong, nonatomic) NSDictionary *colorScheme;
+
 @end
 

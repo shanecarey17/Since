@@ -8,8 +8,12 @@
 
 #import "AppDelegate.h"
 #import "SinceViewController.h"
+#include "ColorSchemes.h"
 
 @interface AppDelegate ()
+{
+    SinceViewController *mainViewController;
+}
 
 @end
 
@@ -19,14 +23,21 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    SinceViewController *initialViewController = [[SinceViewController alloc] init];
+    mainViewController = [[SinceViewController alloc] init];
     
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:initialViewController];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:mainViewController];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [self.window setRootViewController:navigationController];
     [self.window setBackgroundColor:[UIColor whiteColor]];
     [self.window makeKeyAndVisible];
+    
+    mainViewController.sinceDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"sinceDate"];
+    NSDictionary *colorScheme = [NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:@"colorScheme"]];
+    if (colorScheme == nil) {
+        colorScheme = [ColorSchemes randomColorScheme];
+    }
+    mainViewController.colorScheme = colorScheme;
     
     return YES;
 }
@@ -39,6 +50,10 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    [[NSUserDefaults standardUserDefaults] setObject:mainViewController.sinceDate forKey:@"sinceDate"];
+    NSData *colorSchemeData = [NSKeyedArchiver archivedDataWithRootObject:mainViewController.colorScheme];
+    [[NSUserDefaults standardUserDefaults] setObject:colorSchemeData forKey:@"colorScheme"];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {

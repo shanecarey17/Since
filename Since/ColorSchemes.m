@@ -281,7 +281,7 @@ static NSDictionary *colorSchemes = nil;
                      [UIColor colorWithHex:0x0460AB]
                      ],
              @"pickerColors" : @{
-                     @"cellBackgroundColor" : [UIColor colorWithHex:0x758EAD],
+                     @"cellBackgroundColor" : [UIColor colorWithHex:0xAFEAAA],
                      @"cellTextColor" : [UIColor whiteColor],
                      }
              };

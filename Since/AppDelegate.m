@@ -32,12 +32,12 @@
     
     NSDate *sinceDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"sinceDate"];
     if (sinceDate == nil) {
-        sinceDate = [NSDate dateWithTimeIntervalSinceNow:-8640000];
+        sinceDate = [NSDate dateWithTimeIntervalSinceNow:-250560];
     }
     mainViewController.sinceDate = sinceDate;
     NSDictionary *colorScheme = [NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:@"colorScheme"]];
     if (colorScheme == nil) {
-        colorScheme = [ColorSchemes randomColorScheme];
+        colorScheme = [ColorSchemes colorSchemeWithName:@"Mono"];
     }
     mainViewController.colorScheme = colorScheme;
     

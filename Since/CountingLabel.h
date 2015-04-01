@@ -8,10 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSInteger, CountingLabelTimingFunction) {
+    CountingLabelTimingFunctionEaseIn,
+    CountingLabelTimingFunctionEaseOut,
+    CountingLabelTimingFunctionEaseInOut
+};
+
 @interface CountingLabel : UILabel
 
-- (void)countToValue:(NSInteger)end duration:(CGFloat)time;
+- (void)countToValue:(NSInteger)end duration:(CGFloat)time timing:(CountingLabelTimingFunction)function;
 
-- (void)countFromValue:(NSInteger)start toValue:(NSInteger)end duration:(CGFloat)time;
+- (void)countFromValue:(NSInteger)start toValue:(NSInteger)end duration:(CGFloat)time timing:(CountingLabelTimingFunction)function;
 
 @end

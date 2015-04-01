@@ -77,6 +77,8 @@
     // After the transaction we want to redraw our arcs (need to do this before adding animations to layer)
     [CATransaction setCompletionBlock:^{
         [self drawLayers:sinceComponents colors:colors];
+        // Count up
+        [dayCountLabel countFromValue:0 toValue:[(NSNumber *)sinceComponents[0] integerValue] duration:3.0f timing:CountingLabelTimingFunctionEaseOut];
     }];
     
     // During the transaction, add an animation to reset each arc to zero
@@ -116,8 +118,8 @@
     self.superview.backgroundColor = (id)newBackgroundColor;
     [self.superview.layer addAnimation:backgroundColorAnimation forKey:backgroundColorAnimation.keyPath];
     
-    // Count label
-    [dayCountLabel countFromValue:0 toValue:[(NSNumber *)sinceComponents[0] integerValue] duration:3.0f];
+    // Count label down
+    [dayCountLabel countToValue:0 duration:0.6f timing:CountingLabelTimingFunctionEaseIn];
 }
 
 - (void)cancelArcAnimations {

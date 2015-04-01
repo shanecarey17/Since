@@ -41,15 +41,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Hide the navigation controller
-    self.navigationController.navigationBarHidden = YES;
+    // Register for a notification to reset graphic view on open
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetGraphicView) name:@"UIApplicationWillEnterForegroundNotification" object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    // Initialize subiews
-    [self initGraphicView];
+    // Initialize subiews (date picker under graphic view)
     [self initColorPicker];
     [self initDatePicker];
+    [self initGraphicView];
 }
 
 - (void)initGraphicView {
@@ -72,7 +72,7 @@
     colorSchemePicker = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 0, self.view.bounds.size.height)];
     colorSchemePicker.delegate = self;
     colorSchemePicker.dataSource = self;
-    colorSchemePicker.backgroundColor = [UIColor darkGrayColor];
+    colorSchemePicker.backgroundColor = [UIColor colorWithWhite:0.05 alpha:1.0];
     colorSchemePicker.separatorColor = [UIColor clearColor];
     colorSchemePicker.showsVerticalScrollIndicator = NO;
     [self.view addSubview:colorSchemePicker];
@@ -301,11 +301,19 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     SinceColorSchemePickerCell *cell = [tableView dequeueReusableCellWithIdentifier:@"colorSchemeCell"];
     if (cell == nil) {
+        // Initialize cell
         cell = [[SinceColorSchemePickerCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"colorSchemeCell"];
-        cell.colorScheme = [ColorSchemes colorSchemeWithName:[[ColorSchemes colorSchemes] objectAtIndex:indexPath.row]];
-        cell.label.text = [[ColorSchemes colorSchemes] objectAtIndex:indexPath.row];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
     }
+    
+    // Provide data
+    NSMutableArray *sortedKeys = [[ColorSchemes colorSchemes] mutableCopy];
+    [sortedKeys sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    cell.colorScheme = [ColorSchemes colorSchemeWithName:[sortedKeys objectAtIndex:indexPath.row]];
+    cell.label.text = [sortedKeys objectAtIndex:indexPath.row];
+
+    
     return cell;
 }
 

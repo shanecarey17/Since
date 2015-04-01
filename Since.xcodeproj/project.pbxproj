@@ -14,6 +14,7 @@
 		7B18020E1AC4F30500BFC526 /* ColorSchemes.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B18020D1AC4F30500BFC526 /* ColorSchemes.m */; };
 		7B528CEF1ACA6598000931F0 /* UIView+AnchorPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B528CEE1ACA6598000931F0 /* UIView+AnchorPosition.m */; };
 		7B6F00631AC713C1003B6E90 /* SinceColorSchemePickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B6F00621AC713C1003B6E90 /* SinceColorSchemePickerCell.m */; };
+		7BCA2B351ACB855900AE6659 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BCA2B341ACB855900AE6659 /* UIColor+Hex.m */; };
 		7BD4496D1AC1AB8E008A450E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BD4496C1AC1AB8E008A450E /* main.m */; };
 		7BD449701AC1AB8E008A450E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BD4496F1AC1AB8E008A450E /* AppDelegate.m */; };
 		7BD449731AC1AB8E008A450E /* SinceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BD449721AC1AB8E008A450E /* SinceViewController.m */; };
@@ -32,6 +33,19 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		7BCA2B321ACB39DF00AE6659 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		7B1802001AC3446000BFC526 /* SinceDateCounterGraphicView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceDateCounterGraphicView.h; sourceTree = "<group>"; };
 		7B1802011AC3446000BFC526 /* SinceDateCounterGraphicView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceDateCounterGraphicView.m; sourceTree = "<group>"; };
@@ -47,6 +61,8 @@
 		7B528CEE1ACA6598000931F0 /* UIView+AnchorPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AnchorPosition.m"; sourceTree = "<group>"; };
 		7B6F00611AC713C1003B6E90 /* SinceColorSchemePickerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceColorSchemePickerCell.h; sourceTree = "<group>"; };
 		7B6F00621AC713C1003B6E90 /* SinceColorSchemePickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceColorSchemePickerCell.m; sourceTree = "<group>"; };
+		7BCA2B331ACB855900AE6659 /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
+		7BCA2B341ACB855900AE6659 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		7BD449671AC1AB8E008A450E /* Since.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Since.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BD4496B1AC1AB8E008A450E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7BD4496C1AC1AB8E008A450E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -118,6 +134,8 @@
 				7B1802041AC34A5900BFC526 /* CountingLabel.m */,
 				7B528CED1ACA6598000931F0 /* UIView+AnchorPosition.h */,
 				7B528CEE1ACA6598000931F0 /* UIView+AnchorPosition.m */,
+				7BCA2B331ACB855900AE6659 /* UIColor+Hex.h */,
+				7BCA2B341ACB855900AE6659 /* UIColor+Hex.m */,
 				7BD449771AC1AB8E008A450E /* Images.xcassets */,
 				7BD449791AC1AB8E008A450E /* LaunchScreen.xib */,
 				7BD4496A1AC1AB8E008A450E /* Supporting Files */,
@@ -161,6 +179,7 @@
 				7BD449631AC1AB8E008A450E /* Sources */,
 				7BD449641AC1AB8E008A450E /* Frameworks */,
 				7BD449651AC1AB8E008A450E /* Resources */,
+				7BCA2B321ACB39DF00AE6659 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
@@ -259,6 +278,7 @@
 				7B1802081AC3757B00BFC526 /* SinceDatePicker.m in Sources */,
 				7B528CEF1ACA6598000931F0 /* UIView+AnchorPosition.m in Sources */,
 				7BD449701AC1AB8E008A450E /* AppDelegate.m in Sources */,
+				7BCA2B351ACB855900AE6659 /* UIColor+Hex.m in Sources */,
 				7B1802051AC34A5900BFC526 /* CountingLabel.m in Sources */,
 				7BD4496D1AC1AB8E008A450E /* main.m in Sources */,
 			);

@@ -85,8 +85,10 @@ static NSArray *months = nil;
     NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitMonth | NSCalendarUnitDay |NSCalendarUnitYear fromDate:date];
     NSInteger monthIndex = kCenterCell - (kCenterCell % 12) + [dateComponents month] - 1;
     NSInteger dayIndex = kCenterCell - (kCenterCell % 31) + [dateComponents day] - 1;
+    NSInteger yearIndex = kCenterCell + 2015 - [dateComponents year];
     [monthTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:monthIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
     [dayTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:dayIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+    [yearTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:yearIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
 }
 
 - (NSDate *)date {

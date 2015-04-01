@@ -22,11 +22,11 @@
 
 @implementation CountingLabel
 
-- (void)countToValue:(NSInteger)end duration:(CGFloat)time {
-    [self countFromValue:value toValue:end duration:time];
+- (void)countToValue:(NSInteger)end duration:(CGFloat)time timing:(CountingLabelTimingFunction)function {
+    [self countFromValue:value toValue:end duration:time timing:function];
 }
 
-- (void)countFromValue:(NSInteger)start toValue:(NSInteger)end duration:(CGFloat)time {
+- (void)countFromValue:(NSInteger)start toValue:(NSInteger)end duration:(CGFloat)time timing:(CountingLabelTimingFunction)function {
     // Disable previous timer
     [timer invalidate];
     
@@ -37,12 +37,15 @@
     duration = time;
     
     // Begin
-    timer = [NSTimer scheduledTimerWithTimeInterval:1 / 30.f target:self selector:@selector(updateValue) userInfo:nil repeats:YES];
+    NSDictionary *timingFunction = @{@"timingFunction" : @(function)};
+    timer = [NSTimer timerWithTimeInterval:1 / 30.f target:self selector:@selector(updateValue:) userInfo:timingFunction repeats:YES];
+    [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
 }
 
-- (void)updateValue {
+- (void)updateValue:(NSTimer *)sender {
     // Update variables
-    value = [self calculateValue];
+    CountingLabelTimingFunction function = (CountingLabelTimingFunction)[(NSNumber *)[[sender userInfo] objectForKey:@"timingFunction"] integerValue];
+    value = [self calculateValue:function];
     progress += 1 / 30.0f;
     
     // Set text
@@ -54,10 +57,27 @@
     }
 }
 
-- (NSInteger)calculateValue {
-    // Quintic ease out curve
-    Float32 percent = (progress / duration) - 1;
-    return endValue * (pow(percent, 5) + 1) + startValue;
+- (NSInteger)calculateValue:(CountingLabelTimingFunction)function {
+    Float32 percent = progress / duration;
+    NSInteger delta = endValue - startValue;
+    Float32 result;
+    switch (function) {
+        case CountingLabelTimingFunctionEaseIn:
+            // Quintic ease in curve
+            result = delta * pow(percent, 3) + startValue;
+            break;
+        case CountingLabelTimingFunctionEaseOut:
+            // Quintic ease out curve
+            result = delta * (pow(percent - 1, 3) + 1) + startValue;
+            break;
+        case CountingLabelTimingFunctionEaseInOut:
+            // Quintic ease in/out curve
+            if (percent / 2 < 1) {
+                result = (delta / 2) * pow(percent / 2, 3) + startValue;
+            } else result = (delta / 2) * (pow(percent / 2, 3) + 2) + startValue;
+            break;
+    }
+    return result;
 }
 
 @end

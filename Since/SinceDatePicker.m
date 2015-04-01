@@ -83,9 +83,12 @@ static NSArray *months = nil;
 
 - (void)setDate:(NSDate *)date {
     NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitMonth | NSCalendarUnitDay |NSCalendarUnitYear fromDate:date];
+    NSDateComponents *nowComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear fromDate:[NSDate date]];
+    
     NSInteger monthIndex = kCenterCell - (kCenterCell % 12) + [dateComponents month] - 1;
     NSInteger dayIndex = kCenterCell - (kCenterCell % 31) + [dateComponents day] - 1;
-    NSInteger yearIndex = kCenterCell + 2015 - [dateComponents year];
+    NSInteger yearIndex = kCenterCell + [nowComponents year] - [dateComponents year];
+    
     [monthTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:monthIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
     [dayTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:dayIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
     [yearTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:yearIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
@@ -148,7 +151,8 @@ static NSArray *months = nil;
     } else if (tableView == dayTableView) {
         cell.label.text = [NSString stringWithFormat:@"%ld", (long)indexPath.row % 31 + 1];
     } else {
-        cell.label.text = [NSString stringWithFormat:@"%ld", (long)2015 - (indexPath.row % 50)];
+        NSDateComponents *nowComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear fromDate:[NSDate date]];
+        cell.label.text = [NSString stringWithFormat:@"%ld", (long)[nowComponents year] - (indexPath.row % 50)];
     }
     
     // Return the cell

@@ -30,7 +30,11 @@
     [self.window setBackgroundColor:[UIColor whiteColor]];
     [self.window makeKeyAndVisible];
     
-    mainViewController.sinceDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"sinceDate"];
+    NSDate *sinceDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"sinceDate"];
+    if (sinceDate == nil) {
+        sinceDate = [NSDate dateWithTimeIntervalSinceNow:-8640000];
+    }
+    mainViewController.sinceDate = sinceDate;
     NSDictionary *colorScheme = [NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:@"colorScheme"]];
     if (colorScheme == nil) {
         colorScheme = [ColorSchemes randomColorScheme];

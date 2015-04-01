@@ -82,8 +82,8 @@
 }
 
 - (void)initDatePicker {
-    // Date picker
-    datePicker = [[SinceDatePicker alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width / 3 * 2, self.view.bounds.size.height - self.view.bounds.size.width)];
+    // Date picker // TODO something wrong here
+    datePicker = [[SinceDatePicker alloc] initWithFrame:CGRectMake(0, 0, 250, 300)];
     datePicker.center = CGPointMake(self.view.center.x, (self.view.bounds.size.width + self.view.bounds.size.height) / 2);
     datePicker.alpha = 0.0f;
     [self.view addSubview:datePicker];

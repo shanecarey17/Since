@@ -22,7 +22,7 @@
         self.contentView.backgroundColor = [UIColor clearColor];
         self.label.translatesAutoresizingMaskIntoConstraints = NO;
         self.label.textAlignment = NSTextAlignmentCenter;
-        self.label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:26];
+        self.label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:22];
         self.label.layer.masksToBounds = YES;
         
         // Layout constraints

@@ -8,7 +8,7 @@
 
 #define kNumCell 10000
 #define kCenterCell kNumCell / 2
-#define kCellHeight 100
+#define kCellHeight 100.0
 
 #import "SinceDatePicker.h"
 #import "SinceDatePickerCell.h"
@@ -146,9 +146,9 @@ static NSArray *months = nil;
     if (tableView == monthTableView) {
         cell.label.text = [months objectAtIndex:indexPath.row % 12];
     } else if (tableView == dayTableView) {
-        cell.label.text = [NSString stringWithFormat:@"%ld", indexPath.row % 31 + 1];
+        cell.label.text = [NSString stringWithFormat:@"%ld", (long)indexPath.row % 31 + 1];
     } else {
-        cell.label.text = [NSString stringWithFormat:@"%ld", 2015 - (indexPath.row % 50)];
+        cell.label.text = [NSString stringWithFormat:@"%ld", (long)2015 - (indexPath.row % 50)];
     }
     
     // Return the cell
@@ -166,7 +166,8 @@ static NSArray *months = nil;
     if (velocity.y == 0) {
         // Determine the offset of the scrollview
         CGFloat mod = fmodf(scrollView.contentOffset.y, kCellHeight);
-        CGFloat targetMod = (kCellHeight - fmodf((float)self.bounds.size.height, (float)kCellHeight)) / 2.0f;
+        CGFloat targetMod = (kCellHeight - fmodf(self.bounds.size.height, kCellHeight)) / 2;
+        targetMod = 0.0;
         
         // Using the calculated offset, lets decide if we are within half the cell height above or below the target
         if (mod == targetMod) {
@@ -186,7 +187,8 @@ static NSArray *months = nil;
     } else {
         // If there is velocity change the target offset by subtracting the mod and adding the target mod
         CGFloat mod = fmodf(targetContentOffset->y, kCellHeight);
-        CGFloat targetMod = (kCellHeight - fmodf((float)self.bounds.size.height, (float)kCellHeight)) / 2.0f;
+        CGFloat targetMod = (kCellHeight - fmodf(self.bounds.size.height, kCellHeight)) / 2;
+        targetMod = 0.0;
         targetContentOffset->y += targetMod - mod;
     }
 }

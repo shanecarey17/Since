@@ -18,6 +18,7 @@
 #import "UIView+AnchorPosition.h"
 
 @interface SinceViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
+
 {
     // UI elements
     SinceDateCounterGraphicView *graphicView;
@@ -55,16 +56,22 @@
 - (void)initGraphicView {
     // Set up graphics view
     graphicView = [[SinceDateCounterGraphicView alloc] initWithSuperView:self.view];
-    tapToReset = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(resetGraphicView)];
-    [graphicView addGestureRecognizer:tapToReset];
-    tapToShowDatePicker = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showDatePicker:)];
+    
+    // Double tap
+    tapToShowDatePicker = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(datePickerControl)];
     tapToShowDatePicker.numberOfTapsRequired = 2;
     tapToShowDatePicker.delegate = self;
     [graphicView addGestureRecognizer:tapToShowDatePicker];
+    
+    // Single tap
+    tapToReset = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(resetGraphicView)];
+    [graphicView addGestureRecognizer:tapToReset];
     [tapToReset requireGestureRecognizerToFail:tapToShowDatePicker];
-    UIPanGestureRecognizer *dragToShowColorSchemePicker = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(dragColorSchemePicker:)];
-    dragToShowColorSchemePicker.delegate = self;
-    [graphicView addGestureRecognizer:dragToShowColorSchemePicker];
+    
+    // Pan
+    panToExposeColorPicker = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(dragColorSchemePicker:)];
+    panToExposeColorPicker.delegate = self;
+    [graphicView addGestureRecognizer:panToExposeColorPicker];
 }
 
 - (void)initColorPicker {
@@ -82,8 +89,8 @@
 }
 
 - (void)initDatePicker {
-    // Date picker // TODO something wrong here
-    datePicker = [[SinceDatePicker alloc] initWithFrame:CGRectMake(0, 0, 250, 300)];
+    // Date picker
+    datePicker = [[SinceDatePicker alloc] init];
     datePicker.center = CGPointMake(self.view.center.x, (self.view.bounds.size.width + self.view.bounds.size.height) / 2);
     datePicker.alpha = 0.0f;
     [self.view addSubview:datePicker];
@@ -93,67 +100,110 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    // Reset the view on open
     [self resetGraphicView];
 }
 
 #pragma mark - Date picker
 
-- (void)showDatePicker:(UIGestureRecognizer *)sender {
+- (void)datePickerControl {
+    // If the date picker is not visible
     if (!datePickerIsVisible) {
+        // Set the color scheme and dat
         datePicker.colorScheme = [_colorScheme objectForKey:@"pickerColors"];
         datePicker.date = _sinceDate;
-        [UIView animateWithDuration:0.3f animations:^{
-            graphicView.center = CGPointMake(graphicView.center.x, graphicView.center.y - 50);
-        } completion:^(BOOL finished){
-            [UIView animateWithDuration:0.3f animations:^{
-                datePicker.alpha = 1.0f;
-            }];
-        }];
+        
+        // Show the picker
+        [self showDatePicker];
+        
     } else {
-        [UIView animateWithDuration:0.3f animations:^{
-            datePicker.alpha = 0.0f;
-        } completion:^(BOOL finished){
-            [UIView animateWithDuration:0.3f animations:^{
-                graphicView.center = self.view.center;
-            } completion:^(BOOL finished){
-                [self resetGraphicView];
-            }];
-            NSDate *chosenDate = [datePicker date];
-            if (chosenDate) {
-                _sinceDate = chosenDate;
-            }
-        }];
+        // Date picker is visible
+        NSDate *chosenDate = [datePicker date];
+        if (chosenDate == nil) {
+            // Shake for invalid date
+            [self datePickerInvalidShake];
+            
+            // Return before we set the flag (we didn't show
+            return;
+            
+        } else {
+            // We have a valid date
+            _sinceDate = chosenDate;
+            
+            // Set and hide date picker
+            [self hideDatePicker];
+        }
     }
-    datePickerIsVisible = !datePickerIsVisible;
+}
+
+- (void)datePickerInvalidShake {
+    // Animate a headshake for invalid date
+    CGPoint center = datePicker.center;
+    [UIView animateKeyframesWithDuration:0.75f delay:0.0f options:UIViewKeyframeAnimationOptionCalculationModeCubic animations:^{
+        // Add keyframes to shake
+        [UIView addKeyframeWithRelativeStartTime:0.0f relativeDuration:0.125f animations:^{
+            datePicker.center = CGPointMake(center.x + 10, center.y);
+        }];
+        [UIView addKeyframeWithRelativeStartTime:0.125f relativeDuration:0.125f animations:^{
+            datePicker.center = CGPointMake(center.x - 10, center.y);
+        }];
+        [UIView addKeyframeWithRelativeStartTime:0.25f relativeDuration:0.125f animations:^{
+            datePicker.center = CGPointMake(center.x + 10, center.y);
+        }];
+        [UIView addKeyframeWithRelativeStartTime:0.375f relativeDuration:0.125f animations:^{
+            datePicker.center = CGPointMake(center.x - 10, center.y);
+        }];
+        [UIView addKeyframeWithRelativeStartTime:0.5f relativeDuration:0.125f animations:^{
+            datePicker.center = CGPointMake(center.x + 10, center.y);
+        }];
+        [UIView addKeyframeWithRelativeStartTime:0.625f relativeDuration:0.125f animations:^{
+            datePicker.center = center;
+        }];
+        
+    } completion:^(BOOL finished){
+        // Scroll back to original date
+        [datePicker setDate:_sinceDate];
+    }];
+}
+
+- (void)showDatePicker {
+    // Animate graphic translate up
+    [UIView animateWithDuration:0.3f animations:^{
+        graphicView.center = CGPointMake(graphicView.center.x, graphicView.center.y - 50);
+    } completion:^(BOOL finished){
+        // Picker fades in after
+        [UIView animateWithDuration:0.3f animations:^{
+            datePicker.alpha = 1.0f;
+        }];
+    }];
+    
+    // Set flag
+    datePickerIsVisible = YES;
+}
+
+- (void)hideDatePicker {
+    // Animate
+    [UIView animateWithDuration:0.3f animations:^{
+        // Fade date picker out
+        datePicker.alpha = 0.0f;
+    } completion:^(BOOL finished){
+        // Translate graphic down
+        [UIView animateWithDuration:0.3f animations:^{
+            graphicView.center = self.view.center;
+        } completion:^(BOOL finished){
+            // Reset view with date
+            [self resetGraphicView];
+        }];
+    }];
+    
+    // Set flag
+    datePickerIsVisible = NO;
 }
 
 #pragma mark - Graphic View
 
 - (void)resetGraphicView {
-    [graphicView resetView:[self componentsArrayWithDate:_sinceDate] colors:_colorScheme];
-}
-
-- (NSArray *)componentsArrayWithDate:(NSDate *)date {
-    NSInteger intervalSinceDate = (NSInteger)[[NSDate date] timeIntervalSinceDate:date];
-    NSMutableArray *componentsArr = [[NSMutableArray alloc] init];
-    // Day count is the first entry in the array
-    [componentsArr addObject:@(intervalSinceDate / 86400)];
-    // Day percentage
-    [componentsArr addObject:@(intervalSinceDate % 86400 / 86400.f)];
-    // Week percentage
-    [componentsArr addObject:intervalSinceDate > 86400 ? @(intervalSinceDate % 604800 / 604800.f) : [NSNull null]];
-    // Month percentage
-    [componentsArr addObject:intervalSinceDate > 604800 ? @(intervalSinceDate % 2592000 / 2592000.f) : [NSNull null]];
-    // Year percentage
-    [componentsArr addObject:intervalSinceDate > 2592000 ? @(intervalSinceDate % 31536000 / 31536000.f) : [NSNull null]];
-    // 2 year percentage
-    [componentsArr addObject:intervalSinceDate > 31536000 ? @(intervalSinceDate % 63072000 / 63072000.f) : [NSNull null]];
-    // 5 year percentage
-    [componentsArr addObject:intervalSinceDate > 63072000 ? @(intervalSinceDate % 157680000 / 157680000.f) : [NSNull null]];
-    // 10 year percentage
-    [componentsArr addObject:intervalSinceDate > 157680000 ? @(intervalSinceDate % 315360000 / 315360000.f) : [NSNull null]];
-    // Return a hard copy of the array
-    return [NSArray arrayWithArray:componentsArr];
+    [graphicView resetView:_sinceDate colors:_colorScheme];
 }
 
 #pragma mark - Color picker
@@ -288,7 +338,7 @@
     }
 }
 
-#pragma mark - colorpicker tableview delegate/datasource
+#pragma mark - Color Picker tableview delegate/datasource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
@@ -329,13 +379,15 @@
 #pragma mark - UIGestureRecognizer delegate
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    if ([gestureRecognizer isMemberOfClass:[UIPanGestureRecognizer class]]) {
+    if (gestureRecognizer == panToExposeColorPicker) {
+        // We only pan if the date picker is not visible
         if (!datePickerIsVisible) {
             return YES;
         } else {
             return NO;
         }
     } else {
+        // We only show date picker if color picker is not visible
         if (!colorPickerIsVisible) {
             return YES;
         } else {

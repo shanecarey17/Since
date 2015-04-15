@@ -14,6 +14,7 @@
 #import "SinceDatePickerCell.h"
 
 @interface SinceDatePicker () <UITableViewDataSource, UITableViewDelegate>
+
 {
     UITableView *monthTableView;
     UITableView *dayTableView;
@@ -33,45 +34,58 @@ static NSArray *months = nil;
     }
 }
 
-- (id)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
+- (id)init {
+    // Constant frame for optimal looks and performance (otherwise something goes wrong with tableviewcell alignment)
+    self = [super initWithFrame:CGRectMake(0, 0, 250, 300)];
     if (self) {
-        // Customize self, add transparent gradient mask
-        self.backgroundColor = [UIColor clearColor];
-        CAGradientLayer *mask = [CAGradientLayer layer];
-        mask.locations = @[@0.3, @0.333, @0.666, @0.7];
-        mask.colors = @[(id)[UIColor clearColor].CGColor, (id)[UIColor whiteColor].CGColor, (id)[UIColor whiteColor].CGColor, (id)[UIColor clearColor].CGColor];
-        mask.frame = self.bounds;
-        mask.startPoint = CGPointMake(0, 0);
-        mask.endPoint = CGPointMake(0, 1);
-        self.layer.mask = mask;
+        // Create the mask
+        [self initAlphaMask];
         
-        // Initialize table views to 1/3 the area
-        monthTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width / 3, self.frame.size.height)];
-        dayTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.frame.origin.x + (self.frame.size.width / 3), self.frame.origin.y , self.frame.size.width / 3, self.frame.size.height)];
-        yearTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.frame.origin.x + (2 * self.frame.size.width / 3), self.self.frame.origin.y , self.frame.size.width / 3, self.frame.size.height)];
-        
-        // Set delegates and datasources
-        monthTableView.delegate = dayTableView.delegate = yearTableView.delegate = self;
-        monthTableView.dataSource = dayTableView.dataSource = yearTableView.dataSource = self;
-        
-        // Customize
-        monthTableView.separatorColor = dayTableView.separatorColor = yearTableView.separatorColor = [UIColor clearColor];
-        monthTableView.backgroundColor = dayTableView.backgroundColor = yearTableView.backgroundColor = [UIColor clearColor];
-        monthTableView.showsVerticalScrollIndicator = dayTableView.showsVerticalScrollIndicator = yearTableView.showsVerticalScrollIndicator = NO;
-        
-        // Scroll to center cell
-        [monthTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:5000 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
-        [dayTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:5000 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
-        [yearTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:5000 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
-        
-        // Add subviews
-        [self addSubview:monthTableView];
-        [self addSubview:dayTableView];
-        [self addSubview:yearTableView];
+        // Set up the columns of the date picker
+        [self initColumns];
     }
     return self;
 }
+
+- (void)initAlphaMask {
+    // Customize self, add transparent gradient mask
+    self.backgroundColor = [UIColor clearColor];
+    CAGradientLayer *mask = [CAGradientLayer layer];
+    mask.locations = @[@0.3, @0.333, @0.666, @0.7];
+    mask.colors = @[(id)[UIColor clearColor].CGColor, (id)[UIColor whiteColor].CGColor, (id)[UIColor whiteColor].CGColor, (id)[UIColor clearColor].CGColor];
+    mask.frame = self.bounds;
+    mask.startPoint = CGPointMake(0, 0);
+    mask.endPoint = CGPointMake(0, 1);
+    self.layer.mask = mask;
+}
+
+- (void)initColumns {
+    // Initialize table views to 1/3 the area
+    monthTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width / 3, self.frame.size.height)];
+    dayTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.frame.origin.x + (self.frame.size.width / 3), self.frame.origin.y , self.frame.size.width / 3, self.frame.size.height)];
+    yearTableView = [[UITableView alloc] initWithFrame:CGRectMake(self.frame.origin.x + (2 * self.frame.size.width / 3), self.self.frame.origin.y , self.frame.size.width / 3, self.frame.size.height)];
+    
+    // Set delegates and datasources
+    monthTableView.delegate = dayTableView.delegate = yearTableView.delegate = self;
+    monthTableView.dataSource = dayTableView.dataSource = yearTableView.dataSource = self;
+    
+    // Customize
+    monthTableView.separatorColor = dayTableView.separatorColor = yearTableView.separatorColor = [UIColor clearColor];
+    monthTableView.backgroundColor = dayTableView.backgroundColor = yearTableView.backgroundColor = [UIColor clearColor];
+    monthTableView.showsVerticalScrollIndicator = dayTableView.showsVerticalScrollIndicator = yearTableView.showsVerticalScrollIndicator = NO;
+    
+    // Scroll to center cell
+    [monthTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:5000 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+    [dayTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:5000 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+    [yearTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:5000 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+    
+    // Add subviews
+    [self addSubview:monthTableView];
+    [self addSubview:dayTableView];
+    [self addSubview:yearTableView];
+}
+
+#pragma mark - action methods
 
 - (void)setColorScheme:(NSDictionary *)colorScheme {
     _colorScheme = colorScheme;

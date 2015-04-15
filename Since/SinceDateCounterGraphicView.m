@@ -57,15 +57,53 @@
     }
 }
 
-- (void)resetView:(NSArray *)sinceComponents colors:(NSDictionary *)colors {
-    // The number of shapes to show is the number of non null entries in our components
+- (void)resetView:(NSDate *)sinceDate colors:(NSDictionary *)colors {
+    // Get the components from the date
+    NSArray *sinceComponents = [self componentsArrayWithDate:sinceDate];
+    
+    // Reset the arcs
+    [self resetArcs:sinceComponents colors:colors];
+    
+    // Set other colors
+    [self changeCenterAndBackgroundColor:colors];
+    
+    // Count label down
+    [dayCountLabel countToValue:0 duration:0.6f timing:CountingLabelTimingFunctionEaseIn];
+}
+
+- (NSArray *)componentsArrayWithDate:(NSDate *)date {
+    NSInteger intervalSinceDate = (NSInteger)[[NSDate date] timeIntervalSinceDate:date];
+    NSMutableArray *componentsArr = [[NSMutableArray alloc] init];
+    // Day count is the first entry in the array
+    [componentsArr addObject:@(intervalSinceDate / 86400)];
+    // Day percentage
+    [componentsArr addObject:@(intervalSinceDate % 86400 / 86400.f)];
+    // Week percentage
+    [componentsArr addObject:intervalSinceDate > 86400 ? @(intervalSinceDate % 604800 / 604800.f) : [NSNull null]];
+    // Month percentage
+    [componentsArr addObject:intervalSinceDate > 604800 ? @(intervalSinceDate % 2592000 / 2592000.f) : [NSNull null]];
+    // Year percentage
+    [componentsArr addObject:intervalSinceDate > 2592000 ? @(intervalSinceDate % 31536000 / 31536000.f) : [NSNull null]];
+    // 2 year percentage
+    [componentsArr addObject:intervalSinceDate > 31536000 ? @(intervalSinceDate % 63072000 / 63072000.f) : [NSNull null]];
+    // 5 year percentage
+    [componentsArr addObject:intervalSinceDate > 63072000 ? @(intervalSinceDate % 157680000 / 157680000.f) : [NSNull null]];
+    // 10 year percentage
+    [componentsArr addObject:intervalSinceDate > 157680000 ? @(intervalSinceDate % 315360000 / 315360000.f) : [NSNull null]];
+    
+    // Set internal variables with array
     numProgressShapes = 0;
-    for (NSObject *object in sinceComponents) {
+    for (NSObject *object in componentsArr) {
         if (![object isEqual:[NSNull null]]) {
             numProgressShapes++;
         } else break;
     }
     
+    // Return a hard copy of the array
+    return [NSArray arrayWithArray:componentsArr];
+}
+
+- (void)resetArcs:(NSArray *)components colors:(NSDictionary *)colors {
     // Cancel the current animation
     [self cancelArcAnimations];
     
@@ -76,9 +114,9 @@
     
     // After the transaction we want to redraw our arcs (need to do this before adding animations to layer)
     [CATransaction setCompletionBlock:^{
-        [self drawLayers:sinceComponents colors:colors];
+        [self drawLayers:components colors:colors];
         // Count up
-        [dayCountLabel countFromValue:0 toValue:[(NSNumber *)sinceComponents[0] integerValue] duration:3.0f timing:CountingLabelTimingFunctionEaseOut];
+        [dayCountLabel countFromValue:0 toValue:[(NSNumber *)components[0] integerValue] duration:3.0f timing:CountingLabelTimingFunctionEaseOut];
     }];
     
     // During the transaction, add an animation to reset each arc to zero
@@ -95,7 +133,9 @@
     
     // Commit the transaction
     [CATransaction commit];
-    
+}
+
+- (void)changeCenterAndBackgroundColor:(NSDictionary *)colors {
     // And the center circle
     UIColor *newFillColor = [colors objectForKey:@"centerColor"];
     CABasicAnimation *fillColorAnimation = [CABasicAnimation animationWithKeyPath:@"fillColor"];
@@ -117,9 +157,6 @@
     backgroundColorAnimation.removedOnCompletion = NO;
     self.superview.backgroundColor = (id)newBackgroundColor;
     [self.superview.layer addAnimation:backgroundColorAnimation forKey:backgroundColorAnimation.keyPath];
-    
-    // Count label down
-    [dayCountLabel countToValue:0 duration:0.6f timing:CountingLabelTimingFunctionEaseIn];
 }
 
 - (void)cancelArcAnimations {
@@ -133,8 +170,10 @@
 }
 
 - (void)drawLayers:(NSArray *)sinceComponents colors:(NSDictionary *)colors {
-    // Draw the shapes
-    [self drawCenterCircle:colors[@"centerColor"]];
+    // Draw the center circle if it doesn't exist
+    if (centerCircleLayer == nil) {
+        [self drawCenterCircle:colors[@"centerColor"]];
+    }
     
     // Remove arc layers
     progressShapesLayer.sublayers = nil;
@@ -152,11 +191,6 @@
 }
 
 - (void)drawCenterCircle:(UIColor *)color {
-    // If the circle exists don't draw it again
-    if (centerCircleLayer != nil) {
-        return;
-    }
-    
     // Create the circle
     centerCircleLayer = [[CAShapeLayer alloc] init];
     centerCircleLayer.bounds = self.bounds;

@@ -12,6 +12,6 @@
 
 - (id)initWithSuperView:(UIView *)superview;
 
-- (void)resetView:(NSArray *)sinceComponents colors:(NSDictionary *)colors;
+- (void)resetView:(NSDate *)sinceDate colors:(NSDictionary *)colors;
 
 @end

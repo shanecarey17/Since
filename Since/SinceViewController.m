@@ -14,16 +14,17 @@
 #import "SinceDateCounterGraphicView.h"
 #import "SinceDatePicker.h"
 #import "ColorSchemes.h"
+#import "SinceColorSchemePickerTableView.h"
 #import "SinceColorSchemePickerCell.h"
 #import "UIView+AnchorPosition.h"
 
-@interface SinceViewController () <UITableViewDataSource, UITableViewDelegate, UIGestureRecognizerDelegate>
+@interface SinceViewController () <UITableViewDelegate, UIGestureRecognizerDelegate>
 
 {
     // UI elements
     SinceDateCounterGraphicView *graphicView;
     SinceDatePicker *datePicker;
-    UITableView *colorSchemePicker;
+    SinceColorSchemePickerTableView *colorSchemePicker;
     
     // Gestures
     UITapGestureRecognizer *tapToReset;
@@ -44,9 +45,7 @@
     
     // Register for a notification to reset graphic view on open
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetGraphicView) name:@"UIApplicationWillEnterForegroundNotification" object:nil];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
+    
     // Initialize subiews (date picker under graphic view)
     [self initColorPicker];
     [self initDatePicker];
@@ -76,12 +75,8 @@
 
 - (void)initColorPicker {
     // Tableview for color picking
-    colorSchemePicker = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, 0, self.view.bounds.size.height)];
+    colorSchemePicker = [[SinceColorSchemePickerTableView alloc] initWithFrame:CGRectMake(0, 0, 0, self.view.bounds.size.height)];
     colorSchemePicker.delegate = self;
-    colorSchemePicker.dataSource = self;
-    colorSchemePicker.backgroundColor = [UIColor colorWithWhite:0.05 alpha:1.0];
-    colorSchemePicker.separatorColor = [UIColor clearColor];
-    colorSchemePicker.showsVerticalScrollIndicator = NO;
     [self.view addSubview:colorSchemePicker];
     
     // Set flag
@@ -109,7 +104,7 @@
 - (void)datePickerControl {
     // If the date picker is not visible
     if (!datePickerIsVisible) {
-        // Set the color scheme and dat
+        // Set the color scheme and date
         datePicker.colorScheme = [_colorScheme objectForKey:@"pickerColors"];
         datePicker.date = _sinceDate;
         
@@ -122,9 +117,6 @@
         if (chosenDate == nil) {
             // Shake for invalid date
             [self datePickerInvalidShake];
-            
-            // Return before we set the flag (we didn't show
-            return;
             
         } else {
             // We have a valid date
@@ -179,6 +171,7 @@
     
     // Set flag
     datePickerIsVisible = YES;
+    tapToReset.enabled = NO;
 }
 
 - (void)hideDatePicker {
@@ -198,6 +191,7 @@
     
     // Set flag
     datePickerIsVisible = NO;
+    tapToReset.enabled = YES;
 }
 
 #pragma mark - Graphic View
@@ -338,42 +332,13 @@
     }
 }
 
-#pragma mark - Color Picker tableview delegate/datasource
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [[ColorSchemes colorSchemes] count];
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    SinceColorSchemePickerCell *cell = [tableView dequeueReusableCellWithIdentifier:@"colorSchemeCell"];
-    if (cell == nil) {
-        // Initialize cell
-        cell = [[SinceColorSchemePickerCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"colorSchemeCell"];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        
-    }
-    
-    // Provide data
-    NSMutableArray *sortedKeys = [[ColorSchemes colorSchemes] mutableCopy];
-    [sortedKeys sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-    cell.colorScheme = [ColorSchemes colorSchemeWithName:[sortedKeys objectAtIndex:indexPath.row]];
-    cell.label.text = [sortedKeys objectAtIndex:indexPath.row];
-
-    
-    return cell;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return self.view.bounds.size.width / 5 * 2;
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     _colorScheme = [(SinceColorSchemePickerCell *)[tableView cellForRowAtIndexPath:indexPath] colorScheme];
     [self resetGraphicView];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 2 * self.view.bounds.size.width / 5;
 }
 
 #pragma mark - UIGestureRecognizer delegate

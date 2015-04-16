@@ -6,9 +6,6 @@
 //  Copyright (c) 2015 Shane Carey. All rights reserved.
 //
 
-#define   PI 3.14159265359
-#define   DEGREES_TO_RADIANS(degrees)  ((PI * degrees)/ 180)
-
 #import "SinceColorSchemePickerCell.h"
 
 @interface SinceColorSchemePickerCell ()

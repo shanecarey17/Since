@@ -180,7 +180,8 @@
 }
 
 - (void)showDatePicker {
-    // Animate graphic translate up
+    // Animate graphic translate up and hide entry view
+    [self hideEntryPicker];
     [UIView animateWithDuration:0.3f animations:^{
         graphicView.center = CGPointMake(graphicView.center.x, graphicView.center.y - 50);
     } completion:^(BOOL finished){
@@ -326,34 +327,36 @@
     if (panGestureRecognizer.state == UIGestureRecognizerStateEnded) {
         // Reset static max angle (the max angle is the farthest angle for any continuing complete drag)
         maxAngle = 0;
-        
-        // Set duration of return value
-        CGFloat returnAnimationDuration = 0.3f;
-        
         if (previousAngle > suspendedAngle) {
-            // Animate back into place
-            [UIView animateWithDuration:returnAnimationDuration delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-                graphicView.layer.transform = CATransform3DIdentity;
-                colorSchemePicker.frame = CGRectMake(0, 0, 0, self.view.bounds.size.height);
-            } completion:^(BOOL completion) {
-                [graphicView setAnchorPointAdjustPosition:CGPointMake(0.5, 0.5)];
-                colorPickerIsVisible = NO;
-            }];
-            
+            [self hideColorPicker];
         } else {
-            // Animate to suspended position
-            CATransform3D rotateTransform = CATransform3DIdentity;
-            rotateTransform.m34 = 1.0f / -500;
-            rotateTransform = CATransform3DRotate(rotateTransform, suspendedAngle, 0.0f, 1.0f, 0.0f);
-            [UIView animateWithDuration:returnAnimationDuration delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-                graphicView.layer.transform = rotateTransform;
-                colorSchemePicker.frame = CGRectMake(0, 0, 2 * self.view.bounds.size.width / 5.0f, self.view.bounds.size.height);
-            } completion:^(BOOL finished){
-                colorPickerIsVisible = YES;
-            }];
-            
+            [self showColorPicker];
         }
     }
+}
+
+- (void)showColorPicker {
+    // Animate to suspended position
+    CATransform3D rotateTransform = CATransform3DIdentity;
+    rotateTransform.m34 = 1.0f / -500;
+    rotateTransform = CATransform3DRotate(rotateTransform, DEGREES_TO_RADIANS(-55), 0.0f, 1.0f, 0.0f);
+    [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        graphicView.layer.transform = rotateTransform;
+        colorSchemePicker.frame = CGRectMake(0, 0, 2 * self.view.bounds.size.width / 5.0f, self.view.bounds.size.height);
+    } completion:^(BOOL finished){
+        colorPickerIsVisible = YES;
+    }];
+}
+
+- (void)hideColorPicker {
+    // Animate back into place
+    [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        graphicView.layer.transform = CATransform3DIdentity;
+        colorSchemePicker.frame = CGRectMake(0, 0, 0, self.view.bounds.size.height);
+    } completion:^(BOOL completion) {
+        [graphicView setAnchorPointAdjustPosition:CGPointMake(0.5, 0.5)];
+        colorPickerIsVisible = NO;
+    }];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -476,8 +479,8 @@
             return NO;
         }
     } else if (gestureRecognizer == tapToShowDatePicker) {
-        // We only show date picker if color picker is not visible
-        if (!colorPickerIsVisible && !entryPickerIsVisible) {
+        // We only show date picker if color picker is not visible (entry picker animates away)
+        if (!colorPickerIsVisible) {
             return YES;
         } else {
             return NO;

@@ -10,7 +10,7 @@
 
 @interface SinceDatePicker : UIView
 
-@property (strong, nonatomic) NSDictionary *colorScheme;
+@property (strong, nonatomic) NSString *colorScheme;
 
 @property (strong, nonatomic) NSDate *date;
 

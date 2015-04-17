@@ -21,6 +21,10 @@
 		7BD449781AC1AB8E008A450E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7BD449771AC1AB8E008A450E /* Images.xcassets */; };
 		7BD4497B1AC1AB8E008A450E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7BD449791AC1AB8E008A450E /* LaunchScreen.xib */; };
 		7BD449871AC1AB8E008A450E /* SinceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BD449861AC1AB8E008A450E /* SinceTests.m */; };
+		7BF46F9F1AE03FDF00DC8AF0 /* SinceDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF46F9E1AE03FDF00DC8AF0 /* SinceDataManager.m */; };
+		7BF46FA21AE0468F00DC8AF0 /* SinceEntryPickerCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF46FA11AE0468F00DC8AF0 /* SinceEntryPickerCollectionView.m */; };
+		7BF46FA51AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF46FA41AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.m */; };
+		7BF46FA81AE169E000DC8AF0 /* SinceEntryDeleteButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF46FA71AE169E000DC8AF0 /* SinceEntryDeleteButton.m */; };
 		7BFC224F1ADF3C5900B6938C /* SinceColorSchemePickerTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BFC224E1ADF3C5900B6938C /* SinceColorSchemePickerTableView.m */; };
 /* End PBXBuildFile section */
 
@@ -76,6 +80,14 @@
 		7BD449801AC1AB8E008A450E /* SinceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SinceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BD449851AC1AB8E008A450E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7BD449861AC1AB8E008A450E /* SinceTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SinceTests.m; sourceTree = "<group>"; };
+		7BF46F9D1AE03FDF00DC8AF0 /* SinceDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceDataManager.h; sourceTree = "<group>"; };
+		7BF46F9E1AE03FDF00DC8AF0 /* SinceDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceDataManager.m; sourceTree = "<group>"; };
+		7BF46FA01AE0468F00DC8AF0 /* SinceEntryPickerCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceEntryPickerCollectionView.h; sourceTree = "<group>"; };
+		7BF46FA11AE0468F00DC8AF0 /* SinceEntryPickerCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceEntryPickerCollectionView.m; sourceTree = "<group>"; };
+		7BF46FA31AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceEntryPickerCollectionViewCell.h; sourceTree = "<group>"; };
+		7BF46FA41AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceEntryPickerCollectionViewCell.m; sourceTree = "<group>"; };
+		7BF46FA61AE169E000DC8AF0 /* SinceEntryDeleteButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceEntryDeleteButton.h; sourceTree = "<group>"; };
+		7BF46FA71AE169E000DC8AF0 /* SinceEntryDeleteButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceEntryDeleteButton.m; sourceTree = "<group>"; };
 		7BFC224D1ADF3C5900B6938C /* SinceColorSchemePickerTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceColorSchemePickerTableView.h; sourceTree = "<group>"; };
 		7BFC224E1ADF3C5900B6938C /* SinceColorSchemePickerTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceColorSchemePickerTableView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -121,10 +133,16 @@
 			children = (
 				7BD4496E1AC1AB8E008A450E /* AppDelegate.h */,
 				7BD4496F1AC1AB8E008A450E /* AppDelegate.m */,
+				7BF46F9D1AE03FDF00DC8AF0 /* SinceDataManager.h */,
+				7BF46F9E1AE03FDF00DC8AF0 /* SinceDataManager.m */,
 				7B18020C1AC4F30500BFC526 /* ColorSchemes.h */,
 				7B18020D1AC4F30500BFC526 /* ColorSchemes.m */,
 				7BD449711AC1AB8E008A450E /* SinceViewController.h */,
 				7BD449721AC1AB8E008A450E /* SinceViewController.m */,
+				7B1802001AC3446000BFC526 /* SinceDateCounterGraphicView.h */,
+				7B1802011AC3446000BFC526 /* SinceDateCounterGraphicView.m */,
+				7B1802031AC34A5900BFC526 /* CountingLabel.h */,
+				7B1802041AC34A5900BFC526 /* CountingLabel.m */,
 				7BFC224D1ADF3C5900B6938C /* SinceColorSchemePickerTableView.h */,
 				7BFC224E1ADF3C5900B6938C /* SinceColorSchemePickerTableView.m */,
 				7B6F00611AC713C1003B6E90 /* SinceColorSchemePickerCell.h */,
@@ -133,10 +151,12 @@
 				7B1802071AC3757B00BFC526 /* SinceDatePicker.m */,
 				7B1802091AC39C6900BFC526 /* SinceDatePickerCell.h */,
 				7B18020A1AC39C6900BFC526 /* SinceDatePickerCell.m */,
-				7B1802001AC3446000BFC526 /* SinceDateCounterGraphicView.h */,
-				7B1802011AC3446000BFC526 /* SinceDateCounterGraphicView.m */,
-				7B1802031AC34A5900BFC526 /* CountingLabel.h */,
-				7B1802041AC34A5900BFC526 /* CountingLabel.m */,
+				7BF46FA01AE0468F00DC8AF0 /* SinceEntryPickerCollectionView.h */,
+				7BF46FA11AE0468F00DC8AF0 /* SinceEntryPickerCollectionView.m */,
+				7BF46FA31AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.h */,
+				7BF46FA41AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.m */,
+				7BF46FA61AE169E000DC8AF0 /* SinceEntryDeleteButton.h */,
+				7BF46FA71AE169E000DC8AF0 /* SinceEntryDeleteButton.m */,
 				7B528CED1ACA6598000931F0 /* UIView+AnchorPosition.h */,
 				7B528CEE1ACA6598000931F0 /* UIView+AnchorPosition.m */,
 				7BCA2B331ACB855900AE6659 /* UIColor+Hex.h */,
@@ -279,9 +299,13 @@
 				7B18020B1AC39C6900BFC526 /* SinceDatePickerCell.m in Sources */,
 				7B1802021AC3446000BFC526 /* SinceDateCounterGraphicView.m in Sources */,
 				7BD449731AC1AB8E008A450E /* SinceViewController.m in Sources */,
+				7BF46FA51AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.m in Sources */,
 				7B6F00631AC713C1003B6E90 /* SinceColorSchemePickerCell.m in Sources */,
+				7BF46FA81AE169E000DC8AF0 /* SinceEntryDeleteButton.m in Sources */,
 				7B1802081AC3757B00BFC526 /* SinceDatePicker.m in Sources */,
+				7BF46F9F1AE03FDF00DC8AF0 /* SinceDataManager.m in Sources */,
 				7B528CEF1ACA6598000931F0 /* UIView+AnchorPosition.m in Sources */,
+				7BF46FA21AE0468F00DC8AF0 /* SinceEntryPickerCollectionView.m in Sources */,
 				7BD449701AC1AB8E008A450E /* AppDelegate.m in Sources */,
 				7BFC224F1ADF3C5900B6938C /* SinceColorSchemePickerTableView.m in Sources */,
 				7BCA2B351ACB855900AE6659 /* UIColor+Hex.m in Sources */,
@@ -408,7 +432,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "7ecf3caf-9bfa-4f12-840b-a60bdd5f7418";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -422,7 +446,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "7ecf3caf-9bfa-4f12-840b-a60bdd5f7418";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

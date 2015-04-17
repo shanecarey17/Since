@@ -7,6 +7,7 @@
 //
 
 #import "SinceDatePickerCell.h"
+#import "ColorSchemes.h"
 
 @implementation SinceDatePickerCell
 
@@ -44,26 +45,10 @@
     self.label.layer.cornerRadius = self.label.bounds.size.width / 2;
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    // Configure the view for the selected state
-    if (selected) {
-        self.label.textColor = [self.colorScheme objectForKey:@"selectedCellTextColor"];
-        self.label.backgroundColor = [self.colorScheme objectForKey:@"selectedCellBackgroundColor"];
-    } else {
-        self.label.textColor = [self.colorScheme objectForKey:@"cellTextColor"];
-        self.label.backgroundColor = [self.colorScheme objectForKey:@"cellBackgroundColor"];
-    }
-}
-
-- (void)setColorScheme:(NSDictionary *)colorScheme {
+- (void)setColorScheme:(NSString *)colorScheme {
     _colorScheme = colorScheme;
-    if (self.selected) {
-        self.label.textColor = [self.colorScheme objectForKey:@"selectedCellTextColor"];
-        self.label.backgroundColor = [self.colorScheme objectForKey:@"selectedCellBackgroundColor"];
-    } else {
-        self.label.textColor = [colorScheme objectForKey:@"cellTextColor"];
-        self.label.backgroundColor = [colorScheme objectForKey:@"cellBackgroundColor"];
-    }
+    self.label.textColor = [[[ColorSchemes colorSchemeWithName:colorScheme] objectForKey:@"pickerColors"] objectForKey:@"cellTextColor"];
+    self.label.backgroundColor = [[[ColorSchemes colorSchemeWithName:colorScheme] objectForKey:@"pickerColors"] objectForKey:@"cellBackgroundColor"];
 }
 
 @end

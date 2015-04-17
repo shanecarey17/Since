@@ -11,6 +11,6 @@
 @interface SinceDatePickerCell : UITableViewCell
 
 @property (strong, nonatomic) UILabel *label;
-@property (strong, nonatomic) NSDictionary *colorScheme;
+@property (strong, nonatomic) NSString *colorScheme;
 
 @end

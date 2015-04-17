@@ -48,7 +48,7 @@
     // Provide data
     NSMutableArray *sortedKeys = [[ColorSchemes colorSchemes] mutableCopy];
     [sortedKeys sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-    cell.colorScheme = [ColorSchemes colorSchemeWithName:[sortedKeys objectAtIndex:indexPath.row]];
+    cell.colorScheme = [sortedKeys objectAtIndex:indexPath.row];
     cell.label.text = [sortedKeys objectAtIndex:indexPath.row];
     
     return cell;

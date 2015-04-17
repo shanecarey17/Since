@@ -87,7 +87,7 @@ static NSArray *months = nil;
 
 #pragma mark - action methods
 
-- (void)setColorScheme:(NSDictionary *)colorScheme {
+- (void)setColorScheme:(NSString *)colorScheme {
     _colorScheme = colorScheme;
     
     [monthTableView reloadData];
@@ -157,7 +157,7 @@ static NSArray *months = nil;
     }
     
     // Set the color scheme
-    cell.colorScheme = self.colorScheme;
+    cell.colorScheme = _colorScheme;
     
     // Customize cell text depending the tableview
     if (tableView == monthTableView) {

@@ -14,26 +14,31 @@
 #import "SinceDateCounterGraphicView.h"
 #import "SinceDatePicker.h"
 #import "ColorSchemes.h"
+#import "SinceDataManager.h"
 #import "SinceColorSchemePickerTableView.h"
 #import "SinceColorSchemePickerCell.h"
+#import "SinceEntryPickerCollectionView.h"
 #import "UIView+AnchorPosition.h"
 
-@interface SinceViewController () <UITableViewDelegate, UIGestureRecognizerDelegate>
+@interface SinceViewController () <UITableViewDelegate, UIGestureRecognizerDelegate, UICollectionViewDelegate>
 
 {
     // UI elements
     SinceDateCounterGraphicView *graphicView;
     SinceDatePicker *datePicker;
     SinceColorSchemePickerTableView *colorSchemePicker;
+    SinceEntryPickerCollectionView *entryPicker;
     
     // Gestures
     UITapGestureRecognizer *tapToReset;
     UITapGestureRecognizer *tapToShowDatePicker;
     UIPanGestureRecognizer *panToExposeColorPicker;
+    UIPanGestureRecognizer *panToExposeEntryPicker;
     
     // State flags
     BOOL datePickerIsVisible;
     BOOL colorPickerIsVisible;
+    BOOL entryPickerIsVisible;
 }
 
 @end
@@ -50,6 +55,7 @@
     [self initColorPicker];
     [self initDatePicker];
     [self initGraphicView];
+    [self initEntryPicker];
 }
 
 - (void)initGraphicView {
@@ -94,6 +100,21 @@
     datePickerIsVisible = NO;
 }
 
+- (void)initEntryPicker {
+    entryPicker = [[SinceEntryPickerCollectionView alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height / 7)];
+    entryPicker.delegate = self;
+    UILongPressGestureRecognizer *holdToEdit = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(editEntryPicker)];
+    holdToEdit.minimumPressDuration = 1.0;
+    [entryPicker addGestureRecognizer:holdToEdit];
+    
+    panToExposeEntryPicker = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(revealEntryPicker:)];
+    panToExposeEntryPicker.cancelsTouchesInView = NO;
+    panToExposeEntryPicker.delegate = self;
+    [self.view addGestureRecognizer:panToExposeEntryPicker];
+    
+    [self.view addSubview:entryPicker];
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     // Reset the view on open
     [self resetGraphicView];
@@ -105,8 +126,8 @@
     // If the date picker is not visible
     if (!datePickerIsVisible) {
         // Set the color scheme and date
-        datePicker.colorScheme = [_colorScheme objectForKey:@"pickerColors"];
-        datePicker.date = _sinceDate;
+        datePicker.colorScheme = [_entry objectForKey:@"colorScheme"];
+        datePicker.date = [_entry objectForKey:@"sinceDate"];
         
         // Show the picker
         [self showDatePicker];
@@ -120,7 +141,7 @@
             
         } else {
             // We have a valid date
-            _sinceDate = chosenDate;
+            [_entry setObject:chosenDate forKey:@"sinceDate"];
             
             // Set and hide date picker
             [self hideDatePicker];
@@ -154,7 +175,7 @@
         
     } completion:^(BOOL finished){
         // Scroll back to original date
-        [datePicker setDate:_sinceDate];
+        [datePicker setDate:[_entry objectForKey:@"sinceDate"]];
     }];
 }
 
@@ -186,6 +207,9 @@
         } completion:^(BOOL finished){
             // Reset view with date
             [self resetGraphicView];
+            
+            // Update the displayed date
+            [entryPicker reloadData];
         }];
     }];
     
@@ -197,7 +221,7 @@
 #pragma mark - Graphic View
 
 - (void)resetGraphicView {
-    [graphicView resetView:_sinceDate colors:_colorScheme];
+    [graphicView resetView:[_entry objectForKey:@"sinceDate"] colors:[_entry objectForKey:@"colorScheme"]];
 }
 
 #pragma mark - Color picker
@@ -333,7 +357,8 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    _colorScheme = [(SinceColorSchemePickerCell *)[tableView cellForRowAtIndexPath:indexPath] colorScheme];
+    NSString *colorScheme = [(SinceColorSchemePickerCell *)[tableView cellForRowAtIndexPath:indexPath] colorScheme];
+    [_entry setObject:colorScheme forKey:@"colorScheme"];
     [self resetGraphicView];
 }
 
@@ -341,24 +366,133 @@
     return 2 * self.view.bounds.size.width / 5;
 }
 
+#pragma mark - Entry picker
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (entryPicker.editing) {
+        // Stop editing the picker
+        entryPicker.editing = NO;
+    } else {
+        // Let's do something with the cell we chose
+        NSMutableDictionary *chosenEntry;
+        if (indexPath.row == [[SinceDataManager sharedManager] numEntries]) {
+            // Create a new entry
+            chosenEntry = [[SinceDataManager sharedManager] newData];
+            [[SinceDataManager sharedManager] addData:chosenEntry];
+            
+            // Animated insertion
+            NSIndexPath *insertIndex = [NSIndexPath indexPathForItem:indexPath.row inSection:0];
+            [collectionView insertItemsAtIndexPaths:@[insertIndex]];
+            [collectionView reloadItemsAtIndexPaths:@[insertIndex]];
+            [collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionLeft animated:YES];
+        } else {
+            // Show the chosen entry
+            chosenEntry = [[SinceDataManager sharedManager] dataAtIndex:indexPath.row];
+            [self hideEntryPicker];
+        }
+        
+        // Update view
+        _entry = chosenEntry;
+        [self resetGraphicView];
+    }
+}
+
+- (void)editEntryPicker {
+    entryPicker.editing = YES;
+}
+
+- (void)revealEntryPicker:(UIPanGestureRecognizer *)sender {
+    switch (sender.state) {
+        case UIGestureRecognizerStateBegan: {
+            // Animate quickly to where our finger is
+            CGFloat yTracking = [sender locationInView:self.view].y;
+            if (yTracking > self.view.bounds.size.height - entryPicker.bounds.size.height) {
+                [UIView animateWithDuration:0.3 animations:^{
+                    entryPicker.frame = CGRectMake(0, yTracking, entryPicker.frame.size.width, entryPicker.frame.size.height);
+                }];
+                // From this point our entry picker is visible
+                entryPickerIsVisible = YES;
+            } else {
+                // Cancel the gesture
+                sender.enabled = NO;
+                sender.enabled = YES;
+            }
+            break;
+        }
+        case UIGestureRecognizerStateChanged: {
+            // Move to where the finger is
+            CGFloat yTracking = [sender locationInView:self.view].y;
+            if (yTracking >= self.view.bounds.size.height * 6 / 7) {
+                // Move the frame up
+                entryPicker.frame = CGRectMake(0, yTracking, entryPicker.frame.size.width, entryPicker.frame.size.height);
+            } else {
+                // TODO Stretch the frame out
+            }
+            break;
+        }
+            
+        case UIGestureRecognizerStateEnded: {
+            // Animate the view to either suspended or hidden
+            if ([sender locationInView:self.view].y < self.view.bounds.size.height * 13 / 14) {
+                [self showEntryPicker];
+            } else {
+                [self hideEntryPicker];
+            }
+            
+            break;
+        }
+            
+        case UIGestureRecognizerStatePossible:
+            break;
+        case UIGestureRecognizerStateCancelled:
+            break;
+        case UIGestureRecognizerStateFailed:
+            break;
+    }
+}
+
+- (void)showEntryPicker {
+    [UIView animateWithDuration:0.3f animations:^{
+        entryPicker.frame = CGRectMake(0, 6 * self.view.bounds.size.height / 7, entryPicker.frame.size.width, entryPicker.frame.size.height);
+    }];
+}
+
+- (void)hideEntryPicker {
+    [UIView animateWithDuration:0.3f animations:^{
+        entryPicker.frame = CGRectMake(0, self.view.bounds.size.height, entryPicker.frame.size.width, entryPicker.frame.size.height);
+    } completion:^(BOOL finished){
+        entryPickerIsVisible = NO;
+    }];
+}
+
 #pragma mark - UIGestureRecognizer delegate
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     if (gestureRecognizer == panToExposeColorPicker) {
         // We only pan if the date picker is not visible
-        if (!datePickerIsVisible) {
+        if (!datePickerIsVisible && !entryPickerIsVisible) {
             return YES;
         } else {
             return NO;
         }
-    } else {
+    } else if (gestureRecognizer == tapToShowDatePicker) {
         // We only show date picker if color picker is not visible
-        if (!colorPickerIsVisible) {
+        if (!colorPickerIsVisible && !entryPickerIsVisible) {
+            return YES;
+        } else {
+            return NO;
+        }
+    } else if (gestureRecognizer == panToExposeEntryPicker) {
+        // Same shit
+        if (!colorPickerIsVisible && !datePickerIsVisible) {
             return YES;
         } else {
             return NO;
         }
     }
+    
+    // Otherwise fuck it
+    return YES;
 }
 
 @end

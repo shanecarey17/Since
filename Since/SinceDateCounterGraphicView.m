@@ -12,9 +12,9 @@
 
 #import "SinceDateCounterGraphicView.h"
 #import "CountingLabel.h"
+#import "ColorSchemes.h"
 
-@interface SinceDateCounterGraphicView ()
-{
+@interface SinceDateCounterGraphicView () {
     NSInteger numProgressShapes;
     CALayer *progressShapesLayer;
     CAShapeLayer *centerCircleLayer;
@@ -57,9 +57,10 @@
     }
 }
 
-- (void)resetView:(NSDate *)sinceDate colors:(NSDictionary *)colors {
+- (void)resetView:(NSDate *)sinceDate colors:(NSString *)colorScheme {
     // Get the components from the date
     NSArray *sinceComponents = [self componentsArrayWithDate:sinceDate];
+    NSDictionary *colors = [ColorSchemes colorSchemeWithName:colorScheme];
     
     // Reset the arcs
     [self resetArcs:sinceComponents colors:colors];
@@ -104,8 +105,9 @@
 }
 
 - (void)resetArcs:(NSArray *)components colors:(NSDictionary *)colors {
-    // Cancel the current animation
+    // Cancel the current animation and disable interaction
     [self cancelArcAnimations];
+    self.userInteractionEnabled = NO;
     
     // Create the transaction
     [CATransaction begin];
@@ -117,6 +119,8 @@
         [self drawLayers:components colors:colors];
         // Count up
         [dayCountLabel countFromValue:0 toValue:[(NSNumber *)components[0] integerValue] duration:3.0f timing:CountingLabelTimingFunctionEaseOut];
+        // Now we can tap again
+        self.userInteractionEnabled = YES;
     }];
     
     // During the transaction, add an animation to reset each arc to zero

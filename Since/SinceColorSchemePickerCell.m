@@ -7,6 +7,7 @@
 //
 
 #import "SinceColorSchemePickerCell.h"
+#import "ColorSchemes.h"
 
 @interface SinceColorSchemePickerCell ()
 {
@@ -92,11 +93,12 @@
     }
 }
 
-- (void)setColorScheme:(NSDictionary *)colorScheme {
+- (void)setColorScheme:(NSString *)colorScheme {
     _colorScheme = colorScheme;
-    lineOne.strokeColor = [(UIColor *)[colorScheme objectForKey:@"centerColor"] CGColor];
-    lineTwo.strokeColor = [(UIColor *)[colorScheme objectForKey:@"backgroundColor"] CGColor];
-    lineThree.strokeColor = [(UIColor *) [(NSArray *)[colorScheme objectForKey:@"arcColors"] firstObject] CGColor];
+    NSDictionary *colors = [ColorSchemes colorSchemeWithName:colorScheme];
+    lineOne.strokeColor = [(UIColor *)[colors objectForKey:@"centerColor"] CGColor];
+    lineTwo.strokeColor = [(UIColor *)[colors objectForKey:@"backgroundColor"] CGColor];
+    lineThree.strokeColor = [(UIColor *) [(NSArray *)[colors objectForKey:@"arcColors"] firstObject] CGColor];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

@@ -11,6 +11,8 @@
 
 @interface SinceDataManager ()
 
+@property (strong, nonatomic) NSMutableDictionary *activeEntry;
+
 @property (strong, nonatomic) NSMutableArray *dataArray;
 
 @end
@@ -24,17 +26,25 @@
     static dispatch_once_t token;
     dispatch_once(&token, ^{
         manager = [[self alloc] init];
-        manager.dataArray = [[NSMutableArray alloc] init];
     });
     return manager;
+}
+
+- (void)setActiveEntry:(NSMutableDictionary *)activeEntry {
+    _activeEntry = activeEntry;
+    
+    // Notify delegate that active entry has changed
+    [_delegate activeEntryWasChangedToEntry:_activeEntry];
 }
 
 - (void)retrieveData {
     // Retrieve data from plist
     NSString *filePath = [self filePath];
+    
     if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
         // We have already updated to new data storage
         _dataArray = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
+        
     } else {
         // Write current data into array (possibly from previous version using user defaults)
         NSDate *sinceDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"sinceDate"];
@@ -43,10 +53,12 @@
         }
         NSString *colorScheme = @"Mono";
         NSString *title = @"Since I...";
+        
         // Add this data to the stored data
         NSMutableDictionary *currData = [NSMutableDictionary dictionaryWithObjects:@[sinceDate, colorScheme, title] forKeys:@[@"sinceDate", @"colorScheme", @"title"]];
-        [_dataArray addObject:currData];
+        _dataArray = [[NSMutableArray alloc] initWithObjects:currData, nil];
     }
+    self.activeEntry = [_dataArray firstObject];
 }
 
 - (void)saveData {
@@ -55,34 +67,61 @@
     [_dataArray writeToFile:filePath atomically:YES];
 }
 
+- (NSString *)filePath {
+    // Return file path to save/retrieve data
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    return [documentsDirectory stringByAppendingPathComponent:@"sinceData.plist"];
+}
+
 - (NSInteger)numEntries {
+    // Return total number of entries
     return [_dataArray count];
 }
 
-- (NSMutableDictionary *)dataAtIndex:(NSInteger)index {
+- (NSMutableDictionary *)entryAtIndex:(NSInteger)index {
+    // Return entry at given index
     return [_dataArray objectAtIndex:index];
 }
 
-- (NSMutableDictionary *)newData {
+- (void)setActiveEntryAtIndex:(NSInteger)index {
+    // Return the entry at that index
+    self.activeEntry = [_dataArray objectAtIndexedSubscript:index];
+}
+
+- (void)newData {
+    // Create the entry data
     NSString *colorScheme = [[ColorSchemes colorSchemes] objectAtIndex:arc4random() % [[ColorSchemes colorSchemes] count]];
     NSDate *sinceDate = [NSDate dateWithTimeIntervalSinceNow:-250560];
-    NSString *title = @"Since";
+    NSString *title = @"Since...";
+    
+    // Create the entry and add it to our array
     NSMutableDictionary *newEntry = [[NSMutableDictionary alloc] initWithObjects:@[colorScheme, sinceDate, title] forKeys:@[@"colorScheme", @"sinceDate", @"title"]];
-    return newEntry;
+    [_dataArray addObject:newEntry];
+    
+    // Set new entry active
+    self.activeEntry = newEntry;
 }
 
 - (void)addData:(NSDictionary *)data {
+    // Add the entry to the end of the array
     [_dataArray addObject:data];
 }
 
 - (void)removeDataAtIndex:(NSInteger)index {
+    // If we are deleting the active entry
+    if (index == [_dataArray indexOfObject:_activeEntry]) {
+        if ([_dataArray count] == 1) {
+            self.activeEntry = nil;
+        } else if (index > 0) {
+            self.activeEntry = [_dataArray objectAtIndex:index - 1];
+        } else if (index == 0) {
+            self.activeEntry = [_dataArray objectAtIndex:index + 1];
+        }
+    }
+    
+    // Remove data at given index
     [_dataArray removeObjectAtIndex:index];
-}
-
-- (NSString *)filePath {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    return [documentsDirectory stringByAppendingPathComponent:@"sinceData.plist"];
 }
 
 @end

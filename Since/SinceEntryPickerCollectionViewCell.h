@@ -8,13 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@class SinceEntryPickerCollectionViewCell;
-
 @protocol SinceEntryDeleteDelegate <NSObject>
 
-- (void)deleteButtonPressedForCell:(SinceEntryPickerCollectionViewCell *)cell;
+- (void)deleteButtonPressedForCell:(UICollectionViewCell *)cell;
 
 @end
+
 
 @interface SinceEntryPickerCollectionViewCell : UICollectionViewCell
 

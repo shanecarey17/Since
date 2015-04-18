@@ -41,7 +41,7 @@
     [self.contentView addSubview:_dayCountLabel];
     
     _titleLabel = [[UILabel alloc] init];
-    _titleLabel.textColor = [UIColor lightTextColor];
+    _titleLabel.textColor = [UIColor whiteColor];
     _titleLabel.textAlignment = NSTextAlignmentCenter;
     _titleLabel.numberOfLines = 0;
     _titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:12];

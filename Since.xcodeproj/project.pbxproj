@@ -25,6 +25,7 @@
 		7BF46FA21AE0468F00DC8AF0 /* SinceEntryPickerCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF46FA11AE0468F00DC8AF0 /* SinceEntryPickerCollectionView.m */; };
 		7BF46FA51AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF46FA41AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.m */; };
 		7BF46FA81AE169E000DC8AF0 /* SinceEntryDeleteButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF46FA71AE169E000DC8AF0 /* SinceEntryDeleteButton.m */; };
+		7BF46FAE1AE2EAEA00DC8AF0 /* SinceTitleTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF46FAD1AE2EAEA00DC8AF0 /* SinceTitleTextField.m */; };
 		7BFC224F1ADF3C5900B6938C /* SinceColorSchemePickerTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BFC224E1ADF3C5900B6938C /* SinceColorSchemePickerTableView.m */; };
 /* End PBXBuildFile section */
 
@@ -88,6 +89,8 @@
 		7BF46FA41AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceEntryPickerCollectionViewCell.m; sourceTree = "<group>"; };
 		7BF46FA61AE169E000DC8AF0 /* SinceEntryDeleteButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceEntryDeleteButton.h; sourceTree = "<group>"; };
 		7BF46FA71AE169E000DC8AF0 /* SinceEntryDeleteButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceEntryDeleteButton.m; sourceTree = "<group>"; };
+		7BF46FAC1AE2EAEA00DC8AF0 /* SinceTitleTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceTitleTextField.h; sourceTree = "<group>"; };
+		7BF46FAD1AE2EAEA00DC8AF0 /* SinceTitleTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceTitleTextField.m; sourceTree = "<group>"; };
 		7BFC224D1ADF3C5900B6938C /* SinceColorSchemePickerTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceColorSchemePickerTableView.h; sourceTree = "<group>"; };
 		7BFC224E1ADF3C5900B6938C /* SinceColorSchemePickerTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceColorSchemePickerTableView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -143,6 +146,8 @@
 				7B1802011AC3446000BFC526 /* SinceDateCounterGraphicView.m */,
 				7B1802031AC34A5900BFC526 /* CountingLabel.h */,
 				7B1802041AC34A5900BFC526 /* CountingLabel.m */,
+				7BF46FAC1AE2EAEA00DC8AF0 /* SinceTitleTextField.h */,
+				7BF46FAD1AE2EAEA00DC8AF0 /* SinceTitleTextField.m */,
 				7BFC224D1ADF3C5900B6938C /* SinceColorSchemePickerTableView.h */,
 				7BFC224E1ADF3C5900B6938C /* SinceColorSchemePickerTableView.m */,
 				7B6F00611AC713C1003B6E90 /* SinceColorSchemePickerCell.h */,
@@ -300,6 +305,7 @@
 				7B1802021AC3446000BFC526 /* SinceDateCounterGraphicView.m in Sources */,
 				7BD449731AC1AB8E008A450E /* SinceViewController.m in Sources */,
 				7BF46FA51AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.m in Sources */,
+				7BF46FAE1AE2EAEA00DC8AF0 /* SinceTitleTextField.m in Sources */,
 				7B6F00631AC713C1003B6E90 /* SinceColorSchemePickerCell.m in Sources */,
 				7BF46FA81AE169E000DC8AF0 /* SinceEntryDeleteButton.m in Sources */,
 				7B1802081AC3757B00BFC526 /* SinceDatePicker.m in Sources */,

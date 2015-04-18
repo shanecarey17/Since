@@ -12,9 +12,6 @@
 #import "SinceDataManager.h"
 
 @interface AppDelegate ()
-{
-    SinceViewController *mainViewController;
-}
 
 @end
 
@@ -24,16 +21,14 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    [[SinceDataManager sharedManager] retrieveData];
-    
-    mainViewController = [[SinceViewController alloc] init];
-    
+    SinceViewController *mainViewController = [[SinceViewController alloc] init];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [self.window setRootViewController:mainViewController];
     [self.window setBackgroundColor:[UIColor whiteColor]];
     [self.window makeKeyAndVisible];
     
-    mainViewController.entry = [[SinceDataManager sharedManager] dataAtIndex:0];
+    [[SinceDataManager sharedManager] setDelegate:mainViewController];
+    [[SinceDataManager sharedManager] retrieveData];
     
     return YES;
 }

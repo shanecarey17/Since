@@ -10,10 +10,9 @@
 #import "SinceEntryPickerCollectionViewCell.h"
 #import "SinceDataManager.h"
 
-@interface SinceEntryPickerCollectionView () <UICollectionViewDataSource, SinceEntryDeleteDelegate> {
-    
+@interface SinceEntryPickerCollectionView () <UICollectionViewDataSource, SinceEntryDeleteDelegate>
+{
     BOOL isEditing;
-    
 }
 
 @end
@@ -24,7 +23,7 @@
     // Create the layout
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    layout.itemSize = CGSizeMake(frame.size.width / 4, frame.size.width / 4);
+    layout.itemSize = CGSizeMake(frame.size.height, frame.size.height);
     
     // Initialize
     self = [super initWithFrame:frame collectionViewLayout:layout];
@@ -59,16 +58,14 @@
     } else {
         // Get cell for stored entry
         SinceEntryPickerCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"entryCell" forIndexPath:indexPath];
-        NSDictionary *entry = [[SinceDataManager sharedManager] dataAtIndex:indexPath.row];
+        NSDictionary *entry = [[SinceDataManager sharedManager] entryAtIndex:indexPath.row];
         cell.dayCountLabel.text = [NSString stringWithFormat:@"%ld", (NSInteger)[[NSDate date] timeIntervalSinceDate:[entry objectForKey:@"sinceDate"]] / 86400];
-        //cell.titleLabel.text = [entry objectForKey:@"title"];
+        cell.titleLabel.text = [entry objectForKey:@"title"];
         cell.delegate = self;
         cell.editing = isEditing;
         return cell;
     }
 }
-
-
 
 #pragma mark - deleting cells
 
@@ -77,13 +74,8 @@
 }
 
 - (void)setEditing:(BOOL)editing {
-    if ([[SinceDataManager sharedManager] numEntries] == 1) {
-        // If we are down to one we can't delete anymore
-        isEditing = NO;
-    } else {
-        // Otherwise we do whatever we chose
-        isEditing = editing;
-    }
+    // Set the ivar
+    isEditing = editing;
     
     // Set all tableviewcells to the editing status
     for (int i = 0; i < [self numberOfSections]; i++) {
@@ -96,12 +88,16 @@
     }
 }
 
-- (void)deleteButtonPressedForCell:(SinceEntryPickerCollectionViewCell *)cell {
+- (void)deleteButtonPressedForCell:(UICollectionViewCell *)cell {
+    // Tell the data manager to delete the entry
     NSIndexPath *deleteIndex = [self indexPathForCell:cell];
     [[SinceDataManager sharedManager] removeDataAtIndex:deleteIndex.row];
     [self deleteItemsAtIndexPaths:@[deleteIndex]];
     
-    self.editing = YES;
+    // No editing if there are no more entries remaining
+    if ([[SinceDataManager sharedManager] numEntries] == 0) {
+        self.editing = NO;
+    }
 }
 
 @end

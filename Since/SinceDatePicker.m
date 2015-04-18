@@ -184,8 +184,7 @@ static NSArray *months = nil;
     if (velocity.y == 0) {
         // Determine the offset of the scrollview
         CGFloat mod = fmodf(scrollView.contentOffset.y, kCellHeight);
-        CGFloat targetMod = (kCellHeight - fmodf(self.bounds.size.height, kCellHeight)) / 2;
-        targetMod = 0.0;
+        CGFloat targetMod = 0.0;
         
         // Using the calculated offset, lets decide if we are within half the cell height above or below the target
         if (mod == targetMod) {

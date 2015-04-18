@@ -10,8 +10,6 @@
 
 @interface SinceDateCounterGraphicView : UIView
 
-- (id)initWithSuperView:(UIView *)superview;
-
 - (void)resetView:(NSDate *)sinceDate colors:(NSString *)colorScheme;
 
 @end

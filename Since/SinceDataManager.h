@@ -8,19 +8,27 @@
 
 #import <Foundation/Foundation.h>
 
+@protocol SinceDataManagerDelegate <NSObject>
+
+- (void)activeEntryWasChangedToEntry:(NSMutableDictionary *)entry;
+
+@end
+
 @interface SinceDataManager : NSObject
 
-+ (id)sharedManager;
+@property (strong, nonatomic) id<SinceDataManagerDelegate> delegate;
+
++ (SinceDataManager *)sharedManager;
 
 - (void)retrieveData;
 
 - (void)saveData;
 
-- (NSMutableDictionary *)dataAtIndex:(NSInteger)index;
+- (NSMutableDictionary *)entryAtIndex:(NSInteger)index;
 
-- (NSMutableDictionary *)newData;
+- (void)setActiveEntryAtIndex:(NSInteger)index;
 
-- (void)addData:(NSDictionary *)data;
+- (void)newData;
 
 - (void)removeDataAtIndex:(NSInteger)index;
 

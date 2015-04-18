@@ -25,8 +25,7 @@
 
 @implementation SinceDateCounterGraphicView
 
-- (id)initWithSuperView:(UIView *)superview {
-    CGRect frame = CGRectMake(0, 0, superview.bounds.size.width, superview.bounds.size.width);
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         // Layer of arcs
@@ -42,10 +41,6 @@
         dayCountLabel.adjustsFontSizeToFitWidth = YES;
         dayCountLabel.numberOfLines = 0;
         [self addSubview:dayCountLabel];
-        
-        // Add self as subview
-        [superview addSubview:self];
-        self.center = superview.center;
     }
     return self;
 }
@@ -140,7 +135,11 @@
 }
 
 - (void)changeCenterAndBackgroundColor:(NSDictionary *)colors {
-    // And the center circle
+    // Cancel and animate color of background circle
+    CAShapeLayer *centerCirclePresentationLayer = centerCircleLayer.presentationLayer;
+    [centerCircleLayer removeAllAnimations];
+    centerCircleLayer.fillColor = centerCirclePresentationLayer.fillColor;
+    
     UIColor *newFillColor = [colors objectForKey:@"centerColor"];
     CABasicAnimation *fillColorAnimation = [CABasicAnimation animationWithKeyPath:@"fillColor"];
     fillColorAnimation.fromValue = (id)centerCircleLayer.fillColor;
@@ -152,6 +151,10 @@
     [centerCircleLayer addAnimation:fillColorAnimation forKey:fillColorAnimation.keyPath];
     
     // And the background of the superview
+    CALayer *backgroundPresentationLayer = self.superview.layer.presentationLayer;
+    [self.superview.layer removeAllAnimations];
+    self.superview.layer.backgroundColor = backgroundPresentationLayer.backgroundColor;
+    
     UIColor *newBackgroundColor = [colors objectForKey:@"backgroundColor"];
     CABasicAnimation *backgroundColorAnimation = [CABasicAnimation animationWithKeyPath:@"backgroundColor"];
     backgroundColorAnimation.fromValue = (id)self.superview.backgroundColor.CGColor;

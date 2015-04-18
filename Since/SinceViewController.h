@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SinceDataManager.h"
 
-@interface SinceViewController : UIViewController
+@interface SinceViewController : UIViewController <SinceDataManagerDelegate>
 
 @property (strong, nonatomic) NSMutableDictionary *entry;
 

@@ -46,10 +46,9 @@
     }
     
     // Provide data
-    NSMutableArray *sortedKeys = [[ColorSchemes colorSchemes] mutableCopy];
-    [sortedKeys sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-    cell.colorScheme = [sortedKeys objectAtIndex:indexPath.row];
-    cell.label.text = [sortedKeys objectAtIndex:indexPath.row];
+    NSArray *schemes = [ColorSchemes colorSchemes];
+    cell.colorScheme = [schemes objectAtIndex:indexPath.row];
+    cell.label.text = [schemes objectAtIndex:indexPath.row];
     
     return cell;
 }

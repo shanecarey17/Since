@@ -33,7 +33,9 @@ static NSDictionary *colorSchemes = nil;
 }
 
 + (NSArray *)colorSchemes {
-    return [colorSchemes allKeys];
+    NSMutableArray *sortedKeys = [[colorSchemes allKeys] mutableCopy];
+    [sortedKeys sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    return sortedKeys;
 }
 
 + (NSDictionary *)colorSchemeWithName:(NSString *)colorSchemeName {

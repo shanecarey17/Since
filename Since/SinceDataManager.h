@@ -14,6 +14,7 @@
 
 @end
 
+
 @interface SinceDataManager : NSObject
 
 @property (strong, nonatomic) id<SinceDataManagerDelegate> delegate;

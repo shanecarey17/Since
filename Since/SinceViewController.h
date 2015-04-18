@@ -11,7 +11,5 @@
 
 @interface SinceViewController : UIViewController <SinceDataManagerDelegate>
 
-@property (strong, nonatomic) NSMutableDictionary *entry;
-
 @end
 

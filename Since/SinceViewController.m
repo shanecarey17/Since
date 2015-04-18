@@ -21,7 +21,6 @@
 #import "UIView+AnchorPosition.h"
 
 @interface SinceViewController () <UITableViewDelegate, UIGestureRecognizerDelegate, UICollectionViewDelegate, UITextFieldDelegate>
-
 {
     // UI elements
     SinceDateCounterGraphicView *graphicView;
@@ -41,6 +40,8 @@
     BOOL colorPickerIsVisible;
     BOOL entryPickerIsVisible;
 }
+
+@property (strong, nonatomic) NSMutableDictionary *entry;
 
 @end
 
@@ -260,6 +261,9 @@
 #pragma mark - Color picker
 
 - (void)dragColorSchemePicker:(UIPanGestureRecognizer *)panGestureRecognizer {
+    // Visible while gesture is in action
+    colorPickerIsVisible = YES;
+    
     // Hold on to this
     static CGFloat startingAngle;
     
@@ -378,9 +382,7 @@
         entryTitleField.layer.transform = rotateTransform;
         graphicView.layer.transform = rotateTransform;
         colorSchemePicker.frame = CGRectMake(0, 0, 2 * self.view.bounds.size.width / 5.0f, self.view.bounds.size.height);
-    } completion:^(BOOL finished){
-        colorPickerIsVisible = YES;
-    }];
+    } completion:nil];
 }
 
 - (void)hideColorPicker {

@@ -142,6 +142,7 @@
         } else {
             // We have a valid date
             [_entry setObject:chosenDate forKey:@"sinceDate"];
+            [entryPicker reloadData];
             
             // Set and hide date picker
             [self hideDatePicker];
@@ -193,7 +194,6 @@
     
     // Set flag
     datePickerIsVisible = YES;
-    tapToReset.enabled = NO;
 }
 
 - (void)hideDatePicker {
@@ -208,15 +208,11 @@
         } completion:^(BOOL finished){
             // Reset view with date
             [self resetGraphicView];
-            
-            // Update the displayed date
-            [entryPicker reloadData];
         }];
     }];
     
     // Set flag
     datePickerIsVisible = NO;
-    tapToReset.enabled = YES;
 }
 
 #pragma mark - Graphic View
@@ -405,64 +401,65 @@
 }
 
 - (void)revealEntryPicker:(UIPanGestureRecognizer *)sender {
+    // Get where we are panning
+    CGFloat yTracking = [sender locationInView:self.view].y;
+    if (yTracking < self.view.frame.size.height * 6 / 7) {
+        // Cancel the gesture
+        sender.enabled = NO;
+        sender.enabled = YES;
+    }
+
+    // State logic
     switch (sender.state) {
         case UIGestureRecognizerStateBegan: {
-            // Animate quickly to where our finger is
-            CGFloat yTracking = [sender locationInView:self.view].y;
-            if (yTracking > self.view.bounds.size.height - entryPicker.bounds.size.height) {
+            if ([sender velocityInView:entryPicker].y < 0 && entryPickerIsVisible) {
+                // Don't let the view jump up if we pull up form suspended
+            } else {
+                // Animate quickly to where our finger is
                 [UIView animateWithDuration:0.3 animations:^{
                     entryPicker.frame = CGRectMake(0, yTracking, entryPicker.frame.size.width, entryPicker.frame.size.height);
                 }];
+                
                 // From this point our entry picker is visible
                 entryPickerIsVisible = YES;
-            } else {
-                // Cancel the gesture
-                sender.enabled = NO;
-                sender.enabled = YES;
             }
             break;
         }
+        
         case UIGestureRecognizerStateChanged: {
             // Move to where the finger is
-            CGFloat yTracking = [sender locationInView:self.view].y;
-            if (yTracking >= self.view.bounds.size.height * 6 / 7) {
-                // Move the frame up
+            [UIView animateWithDuration:0.1 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
                 entryPicker.frame = CGRectMake(0, yTracking, entryPicker.frame.size.width, entryPicker.frame.size.height);
-            } else {
-                // TODO Stretch the frame out
-            }
+            }completion:^(BOOL finished){
+                // nothing here
+            }];
             break;
         }
-            
-        case UIGestureRecognizerStateEnded: {
-            // Animate the view to either suspended or hidden
-            if ([sender locationInView:self.view].y < self.view.bounds.size.height * 13 / 14) {
+        
+        case UIGestureRecognizerStateEnded: case UIGestureRecognizerStateCancelled: {
+            // Animate the view to either suspended or hidden (depending on where our finger left off)
+            if ([sender locationInView:self.view].y < self.view.frame.size.height * 13 / 14) {
                 [self showEntryPicker];
             } else {
                 [self hideEntryPicker];
             }
-            
             break;
         }
-            
-        case UIGestureRecognizerStatePossible:
-            break;
-        case UIGestureRecognizerStateCancelled:
-            break;
-        case UIGestureRecognizerStateFailed:
+
+        default:
             break;
     }
 }
 
 - (void)showEntryPicker {
     [UIView animateWithDuration:0.3f animations:^{
-        entryPicker.frame = CGRectMake(0, 6 * self.view.bounds.size.height / 7, entryPicker.frame.size.width, entryPicker.frame.size.height);
+        entryPicker.frame = CGRectMake(0, self.view.frame.size.height * 6 / 7, entryPicker.frame.size.width, entryPicker.frame.size.height);
     }];
 }
 
 - (void)hideEntryPicker {
     [UIView animateWithDuration:0.3f animations:^{
-        entryPicker.frame = CGRectMake(0, self.view.bounds.size.height, entryPicker.frame.size.width, entryPicker.frame.size.height);
+        entryPicker.frame = CGRectMake(0, self.view.frame.size.height, entryPicker.frame.size.width, entryPicker.frame.size.height);
     } completion:^(BOOL finished){
         entryPickerIsVisible = NO;
     }];

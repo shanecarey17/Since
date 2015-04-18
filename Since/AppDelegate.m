@@ -33,7 +33,6 @@
     [self.window setBackgroundColor:[UIColor whiteColor]];
     [self.window makeKeyAndVisible];
     
-    NSLog(@"%@", [[SinceDataManager sharedManager] dataAtIndex:0]);
     mainViewController.entry = [[SinceDataManager sharedManager] dataAtIndex:0];
     
     return YES;

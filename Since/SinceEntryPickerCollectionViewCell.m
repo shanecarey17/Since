@@ -80,8 +80,6 @@
 - (void)layoutSubviews {
     // Things that depend on the size of the cell
     deleteButton.layer.cornerRadius = deleteButton.bounds.size.width / 2;
-    CAShapeLayer *sublayer = deleteButton.layer.sublayers[0];
-    NSLog(@"%f", sublayer.frame.origin.x);
 }
 
 - (void)setEditing:(BOOL)editing {

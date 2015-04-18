@@ -24,7 +24,7 @@
     // Create the layout
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    layout.itemSize = CGSizeMake(frame.size.height, frame.size.height);
+    layout.itemSize = CGSizeMake(frame.size.width / 4, frame.size.width / 4);
     
     // Initialize
     self = [super initWithFrame:frame collectionViewLayout:layout];
@@ -68,9 +68,7 @@
     }
 }
 
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake(50, 50);
-}
+
 
 #pragma mark - deleting cells
 

@@ -201,7 +201,7 @@
     // Create the circle
     centerCircleLayer = [[CAShapeLayer alloc] init];
     centerCircleLayer.bounds = self.bounds;
-    centerCircleLayer.position = CGPointMake(self.bounds.size.width / 2.f, self.bounds.size.height / 2.f);
+    centerCircleLayer.position = self.center;
     centerCircleLayer.strokeColor = [UIColor clearColor].CGColor;
     centerCircleLayer.fillColor = color.CGColor;
     centerCircleLayer.lineWidth = 0.0f;

@@ -108,7 +108,7 @@
 }
 
 - (void)initEntryPicker {
-    entryPicker = [[SinceEntryPickerCollectionView alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height / 7)];
+    entryPicker = [[SinceEntryPickerCollectionView alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height / 8)];
     entryPicker.delegate = self;
     UILongPressGestureRecognizer *holdToEdit = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(editEntryPicker)];
     holdToEdit.minimumPressDuration = 1.0;
@@ -123,7 +123,7 @@
 }
 
 - (void)initEntryTitleField {
-    entryTitleField = [[SinceTitleTextField alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height / 4)];
+    entryTitleField = [[SinceTitleTextField alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, graphicView.frame.origin.y)];
     entryTitleField.keyboardAppearance = UIKeyboardAppearanceDark;
     entryTitleField.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:entryTitleField.bounds.size.height / 4];
     entryTitleField.tintColor = [UIColor clearColor];
@@ -133,6 +133,8 @@
     entryTitleField.delegate = self;
     [self.view addSubview:entryTitleField];
 }
+
+#pragma mark - view enter/exit
 
 - (void)viewDidAppear:(BOOL)animated {
     // Reset the view on open
@@ -441,7 +443,7 @@
     // Get where we are panning
     CGFloat yTracking = [sender locationInView:self.view].y;
     
-    if (yTracking < self.view.frame.size.height * 6 / 7) {
+    if (yTracking < self.view.frame.size.height - entryPicker.frame.size.height) {
         // Cancel the gesture if we are out of range
         sender.enabled = NO;
         sender.enabled = YES;
@@ -477,7 +479,7 @@
         
         case UIGestureRecognizerStateEnded: case UIGestureRecognizerStateCancelled: {
             // Animate the view to either suspended or hidden
-            if (yTracking > self.view.frame.size.height * 13 / 14 || yTracking < self.view.frame.size.height / 4) {
+            if (yTracking > self.view.frame.size.height - entryPicker.frame.size.height / 2 || yTracking < self.view.frame.size.height / 4) {
                 // Hide if we are out of bounds or near bottom
                 [self hideEntryPicker];
             } else {
@@ -494,7 +496,7 @@
 
 - (void)showEntryPicker {
     [UIView animateWithDuration:0.3f animations:^{
-        entryPicker.frame = CGRectMake(0, self.view.frame.size.height * 6 / 7, entryPicker.frame.size.width, entryPicker.frame.size.height);
+        entryPicker.frame = CGRectMake(0, self.view.frame.size.height - entryPicker.frame.size.height, entryPicker.frame.size.width, entryPicker.frame.size.height);
     }];
 }
 
@@ -548,7 +550,6 @@
 
     if ([entryTitleField isFirstResponder]) {
         // If the keyboard is up, don't accept the touch but lose the keyboard
-        NSLog(@"keyboard up");
         [entryTitleField resignFirstResponder];
         return NO;
     }

@@ -44,22 +44,22 @@
     _titleLabel.textColor = [UIColor whiteColor];
     _titleLabel.textAlignment = NSTextAlignmentCenter;
     _titleLabel.numberOfLines = 0;
-    _titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:12];
+    _titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:_titleLabel];
     
     // Constraints
     NSLayoutConstraint *centerXCountLabel = [NSLayoutConstraint constraintWithItem:_dayCountLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
-    NSLayoutConstraint *centerYCountLabel = [NSLayoutConstraint constraintWithItem:_dayCountLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+    NSLayoutConstraint *topCountLabel = [NSLayoutConstraint constraintWithItem:_dayCountLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:10];
     NSLayoutConstraint *widthCountLabel = [NSLayoutConstraint constraintWithItem:_dayCountLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:0.5 constant:0];
     NSLayoutConstraint *heightCountLabel = [NSLayoutConstraint constraintWithItem:_dayCountLabel attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:0.5 constant:0];
     
     NSLayoutConstraint *topTitleLabel = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_dayCountLabel attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-    NSLayoutConstraint *bottomTitleLabel = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+    NSLayoutConstraint *bottomTitleLabel = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:-10];
     NSLayoutConstraint *leftTitleLabel = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
     NSLayoutConstraint *rightTitleLabel = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeRight multiplier:1 constant:0];
     
-    [self.contentView addConstraints:@[centerXCountLabel, centerYCountLabel, widthCountLabel, heightCountLabel, topTitleLabel, bottomTitleLabel, leftTitleLabel, rightTitleLabel]];
+    [self.contentView addConstraints:@[centerXCountLabel, topCountLabel, widthCountLabel, heightCountLabel, topTitleLabel, bottomTitleLabel, leftTitleLabel, rightTitleLabel]];
 }
 
 - (void)initDeleteButton {

@@ -59,7 +59,7 @@
         // Get cell for stored entry
         SinceEntryPickerCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"entryCell" forIndexPath:indexPath];
         NSDictionary *entry = [[SinceDataManager sharedManager] entryAtIndex:indexPath.row];
-        cell.dayCountLabel.text = [NSString stringWithFormat:@"%ld", (NSInteger)[[NSDate date] timeIntervalSinceDate:[entry objectForKey:@"sinceDate"]] / 86400];
+        cell.dayCountLabel.text = [NSString stringWithFormat:@"%d", (int)[[NSDate date] timeIntervalSinceDate:[entry objectForKey:@"sinceDate"]] / 86400];
         cell.titleLabel.text = [entry objectForKey:@"title"];
         cell.delegate = self;
         cell.editing = isEditing;

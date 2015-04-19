@@ -14,31 +14,38 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        // Initialize
-        self.label = [[UILabel alloc] initWithFrame:self.contentView.frame];
-        [self.contentView addSubview:self.label];
-        
-        // Customize
+        // Self
         self.backgroundColor = [UIColor clearColor];
         self.contentView.backgroundColor = [UIColor clearColor];
-        self.label.translatesAutoresizingMaskIntoConstraints = NO;
-        self.label.textAlignment = NSTextAlignmentCenter;
-        self.label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:22];
-        self.label.layer.masksToBounds = YES;
+        
+        // Label
+        self.label = [self createLabel];
+        [self.contentView addSubview:self.label];
         
         // Layout constraints
-        NSLayoutConstraint *xConstraint = [NSLayoutConstraint constraintWithItem:self.label attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterX multiplier:1 constant:1];
-        NSLayoutConstraint *yConstraint = [NSLayoutConstraint constraintWithItem:self.label attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1];
-        NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:self.label attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.label attribute:NSLayoutAttributeHeight multiplier:1 constant:0];
-        NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:self.label attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeHeight multiplier:1 constant:-20];
-        [self.contentView addConstraints:@[xConstraint, yConstraint, widthConstraint, heightConstraint]];
+        NSArray *constraints = [self createConstraints];
+        [self.contentView addConstraints:constraints];
                                          
     }
     return self;
 }
 
-- (void)awakeFromNib {
-    // Initialization code
+- (UILabel *)createLabel {
+    UILabel *label = [[UILabel alloc] init];
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+    label.textAlignment = NSTextAlignmentCenter;
+    label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:22];
+    label.layer.masksToBounds = YES;
+    return label;
+}
+
+- (NSArray *)createConstraints {
+    NSLayoutConstraint *xConstraint = [NSLayoutConstraint constraintWithItem:self.label attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterX multiplier:1 constant:1];
+    NSLayoutConstraint *yConstraint = [NSLayoutConstraint constraintWithItem:self.label attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1];
+    NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:self.label attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.label attribute:NSLayoutAttributeHeight multiplier:1 constant:0];
+    NSLayoutConstraint *heightConstraint = [NSLayoutConstraint constraintWithItem:self.label attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeHeight multiplier:1 constant:-20];
+    
+    return @[xConstraint, yConstraint, widthConstraint, heightConstraint];
 }
 
 - (void)layoutSubviews {

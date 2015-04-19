@@ -27,7 +27,7 @@
     [self.window setBackgroundColor:[UIColor whiteColor]];
     [self.window makeKeyAndVisible];
     
-    [[SinceDataManager sharedManager] setDelegate:mainViewController];
+    [[SinceDataManager sharedManager] setController:mainViewController];
     [[SinceDataManager sharedManager] retrieveData];
     
     return YES;

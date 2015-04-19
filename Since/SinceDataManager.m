@@ -17,12 +17,12 @@
 
 @end
 
+
 @implementation SinceDataManager
 
 + (id)sharedManager {
-    
     // Singleton initialization
-    static SinceDataManager *manager = nil;
+    static SinceDataManager *manager;
     static dispatch_once_t token;
     dispatch_once(&token, ^{
         manager = [[self alloc] init];
@@ -34,8 +34,10 @@
     _activeEntry = activeEntry;
     
     // Notify delegate that active entry has changed
-    [_delegate activeEntryWasChangedToEntry:_activeEntry];
+    [_controller setEntry:_activeEntry];
 }
+
+#pragma mark - file system access
 
 - (void)retrieveData {
     // Retrieve data from plist
@@ -74,6 +76,8 @@
     return [documentsDirectory stringByAppendingPathComponent:@"sinceData.plist"];
 }
 
+#pragma mark - data structure methods
+
 - (NSInteger)numEntries {
     // Return total number of entries
     return [_dataArray count];
@@ -101,11 +105,6 @@
     
     // Set new entry active
     self.activeEntry = newEntry;
-}
-
-- (void)addData:(NSDictionary *)data {
-    // Add the entry to the end of the array
-    [_dataArray addObject:data];
 }
 
 - (void)removeDataAtIndex:(NSInteger)index {

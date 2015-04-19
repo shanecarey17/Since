@@ -11,6 +11,7 @@
 #define   RAND_FLOAT ((double)arc4random() / 0x100000000)
 
 #import "SinceViewController.h"
+#import "SinceDataManager.h"
 #import "SinceDateCounterGraphicView.h"
 #import "SinceTitleTextField.h"
 #import "SinceDatePicker.h"
@@ -21,6 +22,7 @@
 #import "UIView+AnchorPosition.h"
 
 @interface SinceViewController () <UITableViewDelegate, UIGestureRecognizerDelegate, UICollectionViewDelegate, UITextFieldDelegate>
+
 {
     // UI elements
     SinceDateCounterGraphicView *graphicView;
@@ -40,8 +42,6 @@
     BOOL colorPickerIsVisible;
     BOOL entryPickerIsVisible;
 }
-
-@property (strong, nonatomic) NSMutableDictionary *entry;
 
 @end
 
@@ -147,7 +147,7 @@
     [self hideEntryPicker];
 }
 
-#pragma mark -Entry
+#pragma mark - Entry
 
 - (void)setEntry:(NSMutableDictionary *)entry {
     _entry = entry;
@@ -471,9 +471,7 @@
             // Move to where the finger is
             [UIView animateWithDuration:0.1 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
                 entryPicker.frame = CGRectMake(0, yTracking, entryPicker.frame.size.width, entryPicker.frame.size.height);
-            }completion:^(BOOL finished){
-                // nothing here
-            }];
+            }completion:nil];
             break;
         }
         
@@ -585,12 +583,6 @@
     
     // Otherwise fuck it
     return YES;
-}
-
-#pragma mark - Data manager delegate
-
-- (void)activeEntryWasChangedToEntry:(NSMutableDictionary *)entry {
-    self.entry = entry;
 }
 
 @end

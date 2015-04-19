@@ -7,17 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-
-@protocol SinceDataManagerDelegate <NSObject>
-
-- (void)activeEntryWasChangedToEntry:(NSMutableDictionary *)entry;
-
-@end
-
+#import "SinceViewController.h"
 
 @interface SinceDataManager : NSObject
 
-@property (strong, nonatomic) id<SinceDataManagerDelegate> delegate;
+@property (strong, nonatomic) SinceViewController *controller;
 
 + (SinceDataManager *)sharedManager;
 

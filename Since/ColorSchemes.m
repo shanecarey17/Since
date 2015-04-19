@@ -22,13 +22,14 @@ static NSDictionary *colorSchemes = nil;
                      @"Neon" : [ColorSchemes neonColorScheme],
                      @"Vintage" : [ColorSchemes vintageColorScheme],
                      @"Retro" : [ColorSchemes retroColorScheme],
-                     @"Ahab" : [ColorSchemes seaColorScheme],
+                     @"Sea" : [ColorSchemes seaColorScheme],
                      @"Brush" : [ColorSchemes earthColorScheme],
                      @"Blaze" : [ColorSchemes fireColorScheme],
                      @"Cozy" : [ColorSchemes warmColorScheme],
                      @"Fiji" : [ColorSchemes exoticColorScheme],
-                     @"Mangold" : [ColorSchemes modColorScheme],
-                     @"Warhol" : [ColorSchemes popColorScheme]
+                     @"Mod" : [ColorSchemes modColorScheme],
+                     @"Pop" : [ColorSchemes popColorScheme],
+                     @"Citrus" : [ColorSchemes randomColorScheme]
                      };
 }
 

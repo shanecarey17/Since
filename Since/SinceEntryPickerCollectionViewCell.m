@@ -11,9 +11,9 @@
 #import "SinceEntryPickerCollectionViewCell.h"
 #import "SinceEntryDeleteButton.h"
 
-@interface SinceEntryPickerCollectionViewCell () {
-    
-    UIButton *deleteButton;
+@interface SinceEntryPickerCollectionViewCell ()
+{
+    UIButton *_deleteButton;
 }
 
 @end
@@ -23,63 +23,71 @@
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        [self initLabels];
-        [self initDeleteButton];
+        _dayCountLabel = [self createDayCountLabel];
+        [self.contentView addSubview:_dayCountLabel];
+        
+        _titleLabel = [self createTitleLabel];
+        [self.contentView addSubview:_titleLabel];
+        
+        _deleteButton = [self createDeleteButton];
+        [_deleteButton addTarget:self action:@selector(deleteButtonPressed) forControlEvents:UIControlEventTouchDown];
+        [self.contentView addSubview:_deleteButton];
+        
+        NSArray *constraints = [self createConstraints];
+        [self.contentView addConstraints:constraints];
     }
     return self;
 }
 
-- (void)initLabels {
-    // Initialize
-    _dayCountLabel = [[UILabel alloc] init];
-    _dayCountLabel.textColor = [UIColor whiteColor];
-    _dayCountLabel.textAlignment = NSTextAlignmentCenter;
-    _dayCountLabel.numberOfLines = 0;
-    _dayCountLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:self.bounds.size.width / 3];
-    _dayCountLabel.adjustsFontSizeToFitWidth = YES;
-    _dayCountLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addSubview:_dayCountLabel];
-    
-    _titleLabel = [[UILabel alloc] init];
-    _titleLabel.textColor = [UIColor whiteColor];
-    _titleLabel.textAlignment = NSTextAlignmentCenter;
-    _titleLabel.numberOfLines = 0;
-    _titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
-    _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addSubview:_titleLabel];
-    
-    // Constraints
+- (NSArray *)createConstraints {
     NSLayoutConstraint *centerXCountLabel = [NSLayoutConstraint constraintWithItem:_dayCountLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
     NSLayoutConstraint *topCountLabel = [NSLayoutConstraint constraintWithItem:_dayCountLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:10];
     NSLayoutConstraint *widthCountLabel = [NSLayoutConstraint constraintWithItem:_dayCountLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:0.5 constant:0];
     NSLayoutConstraint *heightCountLabel = [NSLayoutConstraint constraintWithItem:_dayCountLabel attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:0.5 constant:0];
     
     NSLayoutConstraint *topTitleLabel = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_dayCountLabel attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-    NSLayoutConstraint *bottomTitleLabel = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:-10];
+    NSLayoutConstraint *heightTitleLabel = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:16];
     NSLayoutConstraint *leftTitleLabel = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
     NSLayoutConstraint *rightTitleLabel = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeRight multiplier:1 constant:0];
     
-    [self.contentView addConstraints:@[centerXCountLabel, topCountLabel, widthCountLabel, heightCountLabel, topTitleLabel, bottomTitleLabel, leftTitleLabel, rightTitleLabel]];
+    NSLayoutConstraint *topButton = [NSLayoutConstraint constraintWithItem:_deleteButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTopMargin multiplier:1 constant:0];
+    NSLayoutConstraint *rightButton = [NSLayoutConstraint constraintWithItem:_deleteButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeRightMargin multiplier:1 constant:0];
+    NSLayoutConstraint *widthButton = [NSLayoutConstraint constraintWithItem:_deleteButton attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:0.25 constant:0];
+    NSLayoutConstraint *heightButton = [NSLayoutConstraint constraintWithItem:_deleteButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:0.25 constant:0];
+    
+    return @[centerXCountLabel, topCountLabel, widthCountLabel, heightCountLabel, topTitleLabel, heightTitleLabel, leftTitleLabel, rightTitleLabel, topButton, rightButton, widthButton, heightButton];
 }
 
-- (void)initDeleteButton {
-    deleteButton = [[SinceEntryDeleteButton alloc] init];
+- (UILabel *)createDayCountLabel {
+    UILabel *dayCountLabel = [[UILabel alloc] init];
+    dayCountLabel.textColor = [UIColor whiteColor];
+    dayCountLabel.textAlignment = NSTextAlignmentCenter;
+    dayCountLabel.numberOfLines = 0;
+    dayCountLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:self.bounds.size.width / 3];
+    dayCountLabel.adjustsFontSizeToFitWidth = YES;
+    dayCountLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    return dayCountLabel;
+}
+
+- (UILabel *)createTitleLabel {
+    UILabel *titleLabel = [[UILabel alloc] init];
+    titleLabel.textColor = [UIColor whiteColor];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.numberOfLines = 0;
+    titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
+    titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    return titleLabel;
+}
+
+- (UIButton *)createDeleteButton {
+    SinceEntryDeleteButton *deleteButton = [[SinceEntryDeleteButton alloc] init];
     deleteButton.translatesAutoresizingMaskIntoConstraints = NO;
     deleteButton.alpha = 0.0;
-    [self.contentView addSubview:deleteButton];
-    
-    NSLayoutConstraint *topButton = [NSLayoutConstraint constraintWithItem:deleteButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTopMargin multiplier:1 constant:0];
-    NSLayoutConstraint *rightButton = [NSLayoutConstraint constraintWithItem:deleteButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeRightMargin multiplier:1 constant:0];
-    NSLayoutConstraint *widthButton = [NSLayoutConstraint constraintWithItem:deleteButton attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:0.25 constant:0];
-    NSLayoutConstraint *heightButton = [NSLayoutConstraint constraintWithItem:deleteButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:0.25 constant:0];
-    [self.contentView addConstraints:@[topButton, rightButton, widthButton, heightButton]];
-    
-    [deleteButton addTarget:self action:@selector(deleteButtonPressed) forControlEvents:UIControlEventTouchDown];
+    return deleteButton;
 }
 
 - (void)layoutSubviews {
-    // Things that depend on the size of the cell
-    deleteButton.layer.cornerRadius = deleteButton.bounds.size.width / 2;
+    _deleteButton.layer.cornerRadius = _deleteButton.bounds.size.width / 2;
 }
 
 - (void)setEditing:(BOOL)editing {
@@ -92,7 +100,7 @@
             } completion:nil];
         // Fade in delete button
         [UIView animateWithDuration:0.5 animations:^{
-            deleteButton.alpha = 1.0;
+            _deleteButton.alpha = 1.0;
         }];
     } else {
         // Stop the wobble
@@ -101,7 +109,7 @@
             } completion:nil];
         // Fade out the button
         [UIView animateWithDuration:0.5 animations:^{
-            deleteButton.alpha = 0.0;
+            _deleteButton.alpha = 0.0;
         }];
     }
 }

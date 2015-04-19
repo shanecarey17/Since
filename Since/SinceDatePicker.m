@@ -38,8 +38,12 @@ static NSArray *months = nil;
     // Constant frame for optimal looks and performance (otherwise something goes wrong with tableviewcell alignment)
     self = [super initWithFrame:CGRectMake(0, 0, 250, 300)];
     if (self) {
+        // Self
+        self.backgroundColor = [UIColor clearColor];
+        
         // Create the mask
-        [self initAlphaMask];
+        CAGradientLayer *alphaMask = [self createAlphaMask];
+        [self.layer setMask:alphaMask];
         
         // Set up the columns of the date picker
         [self initColumns];
@@ -47,16 +51,15 @@ static NSArray *months = nil;
     return self;
 }
 
-- (void)initAlphaMask {
+- (CAGradientLayer *)createAlphaMask {
     // Customize self, add transparent gradient mask
-    self.backgroundColor = [UIColor clearColor];
     CAGradientLayer *mask = [CAGradientLayer layer];
     mask.locations = @[@0.3, @0.333, @0.666, @0.7];
     mask.colors = @[(id)[UIColor clearColor].CGColor, (id)[UIColor whiteColor].CGColor, (id)[UIColor whiteColor].CGColor, (id)[UIColor clearColor].CGColor];
     mask.frame = self.bounds;
     mask.startPoint = CGPointMake(0, 0);
     mask.endPoint = CGPointMake(0, 1);
-    self.layer.mask = mask;
+    return mask;
 }
 
 - (void)initColumns {
@@ -184,7 +187,7 @@ static NSArray *months = nil;
     if (velocity.y == 0) {
         // Determine the offset of the scrollview
         CGFloat mod = fmodf(scrollView.contentOffset.y, kCellHeight);
-        CGFloat targetMod = 0.0;
+        CGFloat targetMod = 0.0; // TODO fix this for general
         
         // Using the calculated offset, lets decide if we are within half the cell height above or below the target
         if (mod == targetMod) {

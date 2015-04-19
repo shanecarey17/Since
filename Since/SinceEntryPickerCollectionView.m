@@ -46,25 +46,35 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row == [[SinceDataManager sharedManager] numEntries]) {
         // Our final cell is used to add a new entry
-        UICollectionViewCell *addCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"addCell" forIndexPath:indexPath];
-        UILabel *plusLabel = [[UILabel alloc] initWithFrame:addCell.contentView.frame];
-        plusLabel.text = @"+";
-        plusLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:36];
-        plusLabel.textColor = [UIColor whiteColor];
-        plusLabel.numberOfLines = 0;
-        plusLabel.textAlignment = NSTextAlignmentCenter;
-        [addCell.contentView addSubview:plusLabel];
-        return addCell;
+        return [self addCellForIndexPath:indexPath];
     } else {
         // Get cell for stored entry
-        SinceEntryPickerCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"entryCell" forIndexPath:indexPath];
         NSDictionary *entry = [[SinceDataManager sharedManager] entryAtIndex:indexPath.row];
-        cell.dayCountLabel.text = [NSString stringWithFormat:@"%d", (int)[[NSDate date] timeIntervalSinceDate:[entry objectForKey:@"sinceDate"]] / 86400];
-        cell.titleLabel.text = [entry objectForKey:@"title"];
-        cell.delegate = self;
-        cell.editing = isEditing;
-        return cell;
+        NSInteger dayCount = [[NSDate date] timeIntervalSinceDate:[entry objectForKey:@"sinceDate"]] / 86400;
+        NSString *title = [entry objectForKey:@"title"];
+        return [self entryCellForIndexPath:indexPath dayCount:dayCount title:title];
     }
+}
+
+- (UICollectionViewCell *)addCellForIndexPath:(NSIndexPath *)indexPath {
+    UICollectionViewCell *addCell = [self dequeueReusableCellWithReuseIdentifier:@"addCell" forIndexPath:indexPath];
+    UILabel *plusLabel = [[UILabel alloc] initWithFrame:addCell.contentView.frame];
+    plusLabel.text = @"+";
+    plusLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:36];
+    plusLabel.textColor = [UIColor whiteColor];
+    plusLabel.numberOfLines = 0;
+    plusLabel.textAlignment = NSTextAlignmentCenter;
+    [addCell.contentView addSubview:plusLabel];
+    return addCell;
+}
+
+- (SinceEntryPickerCollectionViewCell *)entryCellForIndexPath:(NSIndexPath *)indexPath dayCount:(NSInteger)count title:(NSString *)title {
+    SinceEntryPickerCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:@"entryCell" forIndexPath:indexPath];
+    [cell.dayCountLabel setText:[NSString stringWithFormat:@"%ld", count]];
+    [cell.titleLabel setText:title];
+    cell.delegate = self;
+    cell.editing = isEditing;
+    return cell;
 }
 
 #pragma mark - deleting cells
@@ -75,15 +85,17 @@
 
 - (void)setEditing:(BOOL)editing {
     // Set the ivar
-    isEditing = editing;
+    if ([[SinceDataManager sharedManager] numEntries] == 1) {
+        // Don't allow editing if there is only one entry
+        isEditing = NO;
+    } else {
+        isEditing = editing;
+    }
     
     // Set all tableviewcells to the editing status
-    for (int i = 0; i < [self numberOfSections]; i++) {
-        for (int j = 0; j < [self numberOfItemsInSection:i]; j++) {
-            UICollectionViewCell *cell = [self cellForItemAtIndexPath:[NSIndexPath indexPathForItem:j inSection:i]];
-            if ([cell isKindOfClass:[SinceEntryPickerCollectionViewCell class]]) {
-                [(SinceEntryPickerCollectionViewCell *)cell setEditing:isEditing];
-            }
+    for (SinceEntryPickerCollectionViewCell *cell in [self visibleCells]) {
+        if ([cell isKindOfClass:[SinceEntryPickerCollectionViewCell class]]) {
+            cell.editing = isEditing;
         }
     }
 }
@@ -94,10 +106,8 @@
     [[SinceDataManager sharedManager] removeDataAtIndex:deleteIndex.row];
     [self deleteItemsAtIndexPaths:@[deleteIndex]];
     
-    // No editing if there are no more entries remaining
-    if ([[SinceDataManager sharedManager] numEntries] == 0) {
-        self.editing = NO;
-    }
+    // Keep editing
+    self.editing = YES;
 }
 
 @end

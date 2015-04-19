@@ -8,21 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol SinceEntryDeleteDelegate <NSObject>
-
-- (void)deleteButtonPressedForCell:(UICollectionViewCell *)cell;
-
-@end
-
-
 @interface SinceEntryPickerCollectionViewCell : UICollectionViewCell
 
 @property (strong, nonatomic) UILabel *dayCountLabel;
 
 @property (strong, nonatomic) UILabel *titleLabel;
 
-@property (nonatomic) BOOL editing;
+@property (strong, nonatomic) UIButton *deleteButton;
 
-@property (weak, nonatomic) id<SinceEntryDeleteDelegate> delegate;
+@property (nonatomic) BOOL editing;
 
 @end

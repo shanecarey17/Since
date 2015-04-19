@@ -11,13 +11,6 @@
 #import "SinceEntryPickerCollectionViewCell.h"
 #import "SinceEntryDeleteButton.h"
 
-@interface SinceEntryPickerCollectionViewCell ()
-{
-    UIButton *_deleteButton;
-}
-
-@end
-
 @implementation SinceEntryPickerCollectionViewCell
 
 - (id)initWithFrame:(CGRect)frame {
@@ -30,7 +23,6 @@
         [self.contentView addSubview:_titleLabel];
         
         _deleteButton = [self createDeleteButton];
-        [_deleteButton addTarget:self action:@selector(deleteButtonPressed) forControlEvents:UIControlEventTouchDown];
         [self.contentView addSubview:_deleteButton];
         
         NSArray *constraints = [self createConstraints];
@@ -112,11 +104,6 @@
             _deleteButton.alpha = 0.0;
         }];
     }
-}
-
-- (void)deleteButtonPressed {
-    // Let the collection know to delete the cell
-    [self.delegate deleteButtonPressedForCell:self];
 }
 
 @end

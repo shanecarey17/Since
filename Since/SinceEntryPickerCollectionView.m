@@ -10,7 +10,7 @@
 #import "SinceEntryPickerCollectionViewCell.h"
 #import "SinceDataManager.h"
 
-@interface SinceEntryPickerCollectionView () <UICollectionViewDataSource, SinceEntryDeleteDelegate>
+@interface SinceEntryPickerCollectionView () <UICollectionViewDataSource>
 {
     BOOL isEditing;
 }
@@ -60,7 +60,7 @@
     UICollectionViewCell *addCell = [self dequeueReusableCellWithReuseIdentifier:@"addCell" forIndexPath:indexPath];
     UILabel *plusLabel = [[UILabel alloc] initWithFrame:addCell.contentView.frame];
     plusLabel.text = @"+";
-    plusLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:36];
+    plusLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:addCell.contentView.frame.size.height / 4];
     plusLabel.textColor = [UIColor whiteColor];
     plusLabel.numberOfLines = 0;
     plusLabel.textAlignment = NSTextAlignmentCenter;
@@ -72,12 +72,13 @@
     SinceEntryPickerCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:@"entryCell" forIndexPath:indexPath];
     [cell.dayCountLabel setText:[NSString stringWithFormat:@"%ld", count]];
     [cell.titleLabel setText:title];
-    cell.delegate = self;
+    [cell.deleteButton addTarget:self action:@selector(deleteButtonPressedForCell:) forControlEvents:UIControlEventTouchDown];
+    [cell.deleteButton setTag:indexPath.row];
     cell.editing = isEditing;
     return cell;
 }
 
-#pragma mark - deleting cells
+#pragma mark - editing
 
 - (BOOL)isEditing {
     return isEditing;
@@ -100,9 +101,9 @@
     }
 }
 
-- (void)deleteButtonPressedForCell:(UICollectionViewCell *)cell {
+- (void)deleteButtonPressedForCell:(UIButton *)button {
     // Tell the data manager to delete the entry
-    NSIndexPath *deleteIndex = [self indexPathForCell:cell];
+    NSIndexPath *deleteIndex = [NSIndexPath indexPathForItem:button.tag inSection:0];
     [[SinceDataManager sharedManager] removeDataAtIndex:deleteIndex.row];
     [self deleteItemsAtIndexPaths:@[deleteIndex]];
     

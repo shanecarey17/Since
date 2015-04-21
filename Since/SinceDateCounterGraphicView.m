@@ -121,7 +121,6 @@
     // During the transaction, add an animation to reset each arc to zero
     for (CAShapeLayer *layer in progressShapesLayer.sublayers) {
         CABasicAnimation *toZeroAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-        toZeroAnimation.fromValue = @(layer.strokeEnd);
         toZeroAnimation.toValue = @0.0f;
         toZeroAnimation.duration = 0.6f;
         toZeroAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];

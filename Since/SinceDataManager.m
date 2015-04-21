@@ -53,10 +53,10 @@
         // Write current data into array (possibly from previous version using user defaults)
         NSDate *sinceDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"sinceDate"];
         if (sinceDate == nil) {
-            sinceDate = [NSDate dateWithTimeIntervalSinceNow:-250560];
+            sinceDate = [NSDate dateWithTimeIntervalSinceNow:-2534765];
         }
-        NSString *colorScheme = @"Mono";
-        NSString *title = @"Since I...";
+        NSString *colorScheme = @"Citrus";
+        NSString *title = @"Since";
         
         // Add this data to the stored data
         NSMutableDictionary *currData = [NSMutableDictionary dictionaryWithObjects:@[sinceDate, colorScheme, title] forKeys:@[@"sinceDate", @"colorScheme", @"title"]];

@@ -42,6 +42,8 @@
     CGContextSetLineJoin(context, kCGLineJoinRound);
     CGContextSetStrokeColorWithColor(context, [UIColor whiteColor].CGColor);
     CGContextSetFillColorWithColor(context, [UIColor whiteColor].CGColor);
+    
+    // Draw the path with extrusion
     CGContextBeginPath(context);
     switch (_direction) {
         case SinceTutorialLabelSpeechDirectionNone:
@@ -104,7 +106,7 @@
     UITextView *textView = [[UITextView alloc] init];
     textView.translatesAutoresizingMaskIntoConstraints = NO;
     textView.textAlignment = NSTextAlignmentCenter;
-    textView.font = [UIFont fontWithName:@"Helvetica-Light" size:18];
+    textView.font = [UIFont fontWithName:@"Helvetica-Light" size:14];
     textView.textColor = [UIColor darkTextColor];
     textView.backgroundColor = [UIColor clearColor];
     [textView setEditable:NO];

@@ -115,11 +115,11 @@ static NSDictionary *colorSchemes = nil;
 
 + (NSDictionary *)neonColorScheme {
     return @{@"titleColor" : [UIColor blackColor],
-             @"centerColor" : [UIColor colorWithRed:0 green:1.0 blue:0.804 alpha:1.0],
+             @"centerColor" : [UIColor colorWithRed:1.0 green:0.443 blue:0.224 alpha:1.0],
              @"backgroundColor" : [UIColor whiteColor],
              @"arcColors" : @[
                      [UIColor colorWithRed:0.62 green:0.973 blue:0.259 alpha:1.0],
-                     [UIColor colorWithRed:1.0 green:0.443 blue:0.224 alpha:1.0],
+                     [UIColor colorWithRed:0 green:1.0 blue:0.804 alpha:1.0],
                      [UIColor colorWithRed:1.0 green:0.224 blue:0.663 alpha:1.0],
                      [UIColor colorWithHex:0x00CCFF],
                      [UIColor colorWithRed:1.0 green:0.745 blue:0 alpha:1.0],
@@ -162,17 +162,17 @@ static NSDictionary *colorSchemes = nil;
 }
 
 + (NSDictionary *)retroColorScheme {
-    return @{@"titleColor" : [UIColor blackColor],
+    return @{@"titleColor" : [UIColor colorWithHex:0x56361F],
              @"centerColor" : [UIColor colorWithRed:0.961 green:0.38 blue:0.306 alpha:1.0],
              @"backgroundColor" : [UIColor colorWithRed:1.0 green:0.98 blue:0.753 alpha:1.0],
              @"arcColors" : @[
                      [UIColor colorWithRed:0.42 green:0.827 blue:0.706 alpha:1.0],
                      [UIColor colorWithRed:0.98 green:0.902 blue:0.306 alpha:1.0],
                      [UIColor colorWithRed:0.596 green:0.373 blue:0.388 alpha:1.0],
+                     [UIColor colorWithHex:0xF38264],
                      [UIColor colorWithRed:0.275 green:0.541 blue:0.514 alpha:1.0],
                      [UIColor colorWithRed:0.09 green:0.208 blue:0.31 alpha:1.0],
-                     [UIColor colorWithHex:0xC5894D],
-                     [UIColor colorWithRed:1.0 green:0.737 blue:0.557 alpha:1.0]
+                     [UIColor colorWithHex:0xC5894D]
                      ],
              @"pickerColors" : @{
                      @"cellBackgroundColor" : [UIColor colorWithRed:0.298 green:0.188 blue:0.141 alpha:1.0],
@@ -210,7 +210,7 @@ static NSDictionary *colorSchemes = nil;
 }
 
 + (NSDictionary *)earthColorScheme {
-    return @{@"titleColor" : [UIColor colorWithHex:0x400707],
+    return @{@"titleColor" : [UIColor colorWithRed:0.482 green:0.627 blue:0.243 alpha:1.0],
              @"centerColor" : [UIColor colorWithRed:0.212 green:0.286 blue:0.204 alpha:1.0],
              @"backgroundColor" : [UIColor colorWithRed:0.835 green:0.961 blue:0.824 alpha:1.0],
              @"arcColors" : @[
@@ -282,7 +282,7 @@ static NSDictionary *colorSchemes = nil;
 }
 
 + (NSDictionary *)exoticColorScheme {
-    return @{@"titleColor" : [UIColor colorWithHex:0xA35C36],
+    return @{@"titleColor" : [UIColor colorWithHex:0x5E412F],
              @"centerColor" : [UIColor colorWithHex:0x5E412F],
              @"backgroundColor" : [UIColor colorWithHex:0xFCEBB6],
              @"arcColors" : @[
@@ -331,30 +331,30 @@ static NSDictionary *colorSchemes = nil;
 
 + (NSDictionary *)popColorScheme {
     return @{@"titleColor" : [UIColor blackColor],
-             @"centerColor" : [UIColor colorWithHex:0xDD5A8E],
-             @"backgroundColor" : [UIColor colorWithHex:0x8FBDCD],
+             @"centerColor" : [UIColor colorWithHex:0xDB1216],
+             @"backgroundColor" : [UIColor colorWithHex:0xF7F7F7],
              @"arcColors" : @[
-                     [UIColor colorWithHex:0xF3B345],
-                     [UIColor colorWithHex:0x4E6F5A],
-                     [UIColor colorWithHex:0xEFCEDA],
-                     [UIColor colorWithHex:0xFCE348],
-                     [UIColor colorWithHex:0xA91209],
-                     [UIColor colorWithHex:0xBB6C67],
-                     [UIColor colorWithHex:0x0460AB]
+                     [UIColor colorWithHex:0x052E80],
+                     [UIColor colorWithHex:0xFFDC08],
+                     [UIColor colorWithHex:0xF2A297],
+                     [UIColor colorWithHex:0x000000],
+                     [UIColor colorWithHex:0x342154],
+                     [UIColor colorWithHex:0xC22011],
+                     [UIColor colorWithHex:0xC4BCD1]
                      ],
              @"pickerColors" : @{
-                     @"cellBackgroundColor" : [UIColor colorWithHex:0xAFEAAA],
+                     @"cellBackgroundColor" : [UIColor blackColor],
                      @"cellTextColor" : [UIColor whiteColor],
                      },
              @"displayColors" : @[
-                     [UIColor colorWithHex:0xDD5A8E],
-                     [UIColor colorWithHex:0x8FBDCD],
-                     [UIColor colorWithHex:0xF3B345]]
+                     [UIColor colorWithHex:0xDB1216],
+                     [UIColor colorWithHex:0xF7F7F7],
+                     [UIColor colorWithHex:0x052E80]]
              };
 }
 
 + (NSDictionary *)citrusColorScheme {
-    return @{@"titleColor" : [UIColor colorWithHex:0x114F28],
+    return @{@"titleColor" : [UIColor colorWithHex:0xE04545],
              @"centerColor" : [UIColor colorWithHex:0xE95363],
              @"backgroundColor" : [UIColor colorWithHex:0xEFEFEF],
              @"arcColors" : @[

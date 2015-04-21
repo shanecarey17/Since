@@ -36,6 +36,7 @@
     label.textAlignment = NSTextAlignmentCenter;
     label.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:22];
     label.layer.masksToBounds = YES;
+    label.layer.cornerRadius = self.bounds.size.width / 2;
     return label;
 }
 

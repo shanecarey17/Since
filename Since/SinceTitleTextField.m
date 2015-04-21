@@ -17,7 +17,7 @@
         self.alpha = 0;
     }completion:^(BOOL finished){
         [super setText:text];
-        self.textColor = [[ColorSchemes colorSchemeWithName:colorScheme] objectForKey:@"arcColors"][0];
+        self.textColor = [[ColorSchemes colorSchemeWithName:colorScheme] objectForKey:@"titleColor"];
         [UIView animateWithDuration:0.6 animations:^{
             self.alpha = 1;
         }];

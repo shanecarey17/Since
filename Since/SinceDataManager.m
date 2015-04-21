@@ -26,6 +26,7 @@
     static dispatch_once_t token;
     dispatch_once(&token, ^{
         manager = [[self alloc] init];
+        manager.dataArray = [[NSMutableArray alloc] init];
     });
     return manager;
 }
@@ -45,7 +46,8 @@
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
         // We have already updated to new data storage
-        _dataArray = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
+        NSArray *retrievedArray = [[NSArray alloc] initWithContentsOfFile:filePath];
+        [_dataArray addObjectsFromArray:retrievedArray];
         
     } else {
         // Write current data into array (possibly from previous version using user defaults)

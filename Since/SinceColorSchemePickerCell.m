@@ -79,7 +79,8 @@
 - (void)layoutSubviews {
     self.contentView.alpha = powf(self.bounds.size.width, 2) / powf(self.bounds.size.height, 2);
     self.contentView.frame = self.bounds;
-    [self.contentView setNeedsUpdateConstraints];
+    [self.contentView setNeedsLayout];
+    [self.contentView layoutIfNeeded];
     [self drawColors];
 }
 
@@ -106,11 +107,9 @@
 - (void)setColorScheme:(NSString *)colorScheme {
     _colorScheme = colorScheme;
     NSDictionary *colors = [ColorSchemes colorSchemeWithName:colorScheme];
-    NSArray *colorsArray = @[(id)[(UIColor *)[colors objectForKey:@"centerColor"] CGColor],
-                             (id)[(UIColor *)[colors objectForKey:@"backgroundColor"] CGColor],
-                             (id)[(UIColor *) [(NSArray *)[colors objectForKey:@"arcColors"] firstObject] CGColor]];
+    NSArray *colorsArray = [colors objectForKey:@"displayColors"];
     [_colorView.layer.sublayers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
-        [(CAShapeLayer *)obj setStrokeColor:(__bridge CGColorRef)(colorsArray[idx])];
+        [(CAShapeLayer *)obj setStrokeColor:[(UIColor *)colorsArray[idx] CGColor]];
     }];
 }
 

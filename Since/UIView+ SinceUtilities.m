@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Shane Carey. All rights reserved.
 //
 
-#import "UIView+AnchorPosition.h"
+#import "UIView+SinceUtilities.h"
 
-@implementation UIView (AnchorPosition)
+@implementation UIView (SinceUtilities)
 
 - (void)setAnchorPointAdjustPosition:(CGPoint)anchorPoint {
     // Change anchor point by setting around bounds of view
@@ -28,6 +28,13 @@
     
     self.layer.position = position;
     self.layer.anchorPoint = anchorPoint;
+}
+
+- (void)disableAllSubviewsRecursive:(BOOL)enabled {
+    self.userInteractionEnabled = enabled;
+    for (UIView *subView in self.subviews) {
+        [subView disableAllSubviewsRecursive:enabled];
+    }
 }
 
 @end

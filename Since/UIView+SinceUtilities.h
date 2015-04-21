@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UIView (AnchorPosition)
+@interface UIView (SinceUtilities)
 
 - (void)setAnchorPointAdjustPosition:(CGPoint)anchorPoint;
+
+- (void)disableAllSubviewsRecursive:(BOOL)enabled;
 
 @end

@@ -30,11 +30,4 @@
     self.layer.anchorPoint = anchorPoint;
 }
 
-- (void)disableAllSubviewsRecursive:(BOOL)enabled {
-    self.userInteractionEnabled = enabled;
-    for (UIView *subView in self.subviews) {
-        [subView disableAllSubviewsRecursive:enabled];
-    }
-}
-
 @end

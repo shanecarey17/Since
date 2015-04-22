@@ -15,10 +15,15 @@
 #import "ColorSchemes.h"
 
 @interface SinceDateCounterGraphicView () {
-    NSInteger numProgressShapes;
     CALayer *progressShapesLayer;
     CAShapeLayer *centerCircleLayer;
+    CAShapeLayer *arrowLayer;
+    
     CountingLabel *dayCountLabel;
+    
+    NSDate *_date;
+    NSDictionary *_colors;
+    NSUInteger _timer_sem;
 }
 
 @end
@@ -41,6 +46,10 @@
         dayCountLabel.adjustsFontSizeToFitWidth = YES;
         dayCountLabel.numberOfLines = 0;
         [self addSubview:dayCountLabel];
+        dayCountLabel.layer.zPosition = 1000;
+        
+        // Timer
+        [self setTimer];
     }
     return self;
 }
@@ -52,85 +61,168 @@
     }
 }
 
+#pragma mark - Timer
+
+- (void)setTimer {
+    NSTimer *timer = [NSTimer timerWithTimeInterval:1.0 target:self selector:@selector(increment:) userInfo:nil repeats:YES];
+    [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+}
+
+- (void)increment:(NSTimer *)timer {
+    // We will only
+    if (!_timer_sem) {
+        NSArray *components = [self componentsArrayWithDate:_date];
+        
+        [CATransaction begin];
+        [CATransaction setCompletionBlock:^{
+            if (components.count - 1 > progressShapesLayer.sublayers.count) {
+                // We need to redraw
+                [self drawLayersWithColors:_colors numArcs:components.count];
+            }
+        }];
+        [self setArcsToProgress:components duration:0.9];
+        [CATransaction commit];
+    }
+}
+
+#pragma mark - Reset
+
 - (void)resetView:(NSDate *)sinceDate colors:(NSString *)colorScheme {
+    // Set date
+    _date = sinceDate;
+    
+    // Increase timer semapore
+    _timer_sem++;
+    
     // Get the components from the date
     NSArray *sinceComponents = [self componentsArrayWithDate:sinceDate];
     NSDictionary *colors = [ColorSchemes colorSchemeWithName:colorScheme];
+    _colors = colors;
+
+    // Cancel the current animation
+    [self cancelArcAnimations];
+    
+    [CATransaction begin];
+    [CATransaction setAnimationDuration:0.6];
+    [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+    [CATransaction setCompletionBlock:^{
+        // Redraw layers
+        [self drawLayersWithColors:colors numArcs:sinceComponents.count];
+        
+        [CATransaction begin];
+        [CATransaction setAnimationDuration:3.0];
+        [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
+        [CATransaction setCompletionBlock:^{
+            // Decrease semaphore
+            _timer_sem--;
+        }];
+        
+        // Animate to progress
+        [self setArcsToProgress:sinceComponents duration:3.0];
+        
+        [CATransaction commit];
+        
+        // Label count up
+        [dayCountLabel countFromValue:0 toValue:[(NSNumber *)sinceComponents[0] integerValue] duration:3.0f timing:CountingLabelTimingFunctionEaseOut];
+    }];
     
     // Reset the arcs
-    [self resetArcs:sinceComponents colors:colors];
+    [self setArcsToZeroWithDuration:0.6];
+    
+    [CATransaction commit];
+    
+    // Label count down
+    [dayCountLabel countToValue:0 duration:0.6 timing:CountingLabelTimingFunctionEaseIn];
     
     // Set other colors
     [self changeCenterAndBackgroundColor:colors];
     
-    // Count label down
-    [dayCountLabel countToValue:0 duration:0.6f timing:CountingLabelTimingFunctionEaseIn];
 }
 
+#pragma mark - Data
+
 - (NSArray *)componentsArrayWithDate:(NSDate *)date {
-    NSInteger intervalSinceDate = (NSInteger)[[NSDate date] timeIntervalSinceDate:date];
+    // Timer interval since date
+    NSInteger intervalSinceDate = labs((NSInteger)[[NSDate date] timeIntervalSinceDate:date]);
+    
+    // Components Array
     NSMutableArray *componentsArr = [[NSMutableArray alloc] init];
+    
     // Day count is the first entry in the array
     [componentsArr addObject:@(intervalSinceDate / 86400)];
-    // Day percentage
-    [componentsArr addObject:@(intervalSinceDate % 86400 / 86400.f)];
-    // Week percentage
-    [componentsArr addObject:intervalSinceDate > 86400 ? @(intervalSinceDate % 604800 / 604800.f) : [NSNull null]];
-    // Month percentage
-    [componentsArr addObject:intervalSinceDate > 604800 ? @(intervalSinceDate % 2592000 / 2592000.f) : [NSNull null]];
-    // Year percentage
-    [componentsArr addObject:intervalSinceDate > 2592000 ? @(intervalSinceDate % 31536000 / 31536000.f) : [NSNull null]];
-    // 2 year percentage
-    [componentsArr addObject:intervalSinceDate > 31536000 ? @(intervalSinceDate % 63072000 / 63072000.f) : [NSNull null]];
-    // 5 year percentage
-    [componentsArr addObject:intervalSinceDate > 63072000 ? @(intervalSinceDate % 157680000 / 157680000.f) : [NSNull null]];
-    // 10 year percentage
-    [componentsArr addObject:intervalSinceDate > 157680000 ? @(intervalSinceDate % 315360000 / 315360000.f) : [NSNull null]];
     
-    // Set internal variables with array
-    numProgressShapes = 0;
-    for (NSObject *object in componentsArr) {
-        if (![object isEqual:[NSNull null]]) {
-            numProgressShapes++;
-        } else break;
-    }
+    // Minute percentage
+    [componentsArr addObject:@(intervalSinceDate % 60 / 60.f)];
+    
+    // Hour percentage
+    if (intervalSinceDate > 60) {
+        [componentsArr addObject:@(intervalSinceDate % 3600 / 3600.f)];
+    } else return [NSArray arrayWithArray:componentsArr];
+    
+    // Day percentage
+    if (intervalSinceDate > 3600) {
+        [componentsArr addObject:@(intervalSinceDate % 86400 / 86400.f)];
+    } else return [NSArray arrayWithArray:componentsArr];
+    
+    // Week percentage
+    if (intervalSinceDate > 86400) {
+        [componentsArr addObject:@(intervalSinceDate % 604800 / 604800.f)];
+    } else return [NSArray arrayWithArray:componentsArr];
+    
+    // Month percentage
+    if (intervalSinceDate > 604800) {
+        [componentsArr addObject:@(intervalSinceDate % 2592000 / 2592000.f)];
+    } else return [NSArray arrayWithArray:componentsArr];
+    
+    // Year percentage
+    if (intervalSinceDate > 2592000) {
+        [componentsArr addObject:@(intervalSinceDate % 31536000 / 31536000.f)];
+    } else return [NSArray arrayWithArray:componentsArr];
+    
+    // 2 year percentage
+    if (intervalSinceDate > 31536000) {
+        [componentsArr addObject:@(intervalSinceDate % 63072000 / 63072000.f)];
+    } else return [NSArray arrayWithArray:componentsArr];
+    
+    // 5 year percentage
+    if (intervalSinceDate > 63072000) {
+        [componentsArr addObject:@(intervalSinceDate % 157680000 / 157680000.f)];
+    } else return [NSArray arrayWithArray:componentsArr];
+    
+    // 10 year percentage
+    if (intervalSinceDate > 157680000) {
+        [componentsArr addObject:@(intervalSinceDate % 315360000 / 315360000.f)];
+    } else return [NSArray arrayWithArray:componentsArr];
     
     // Return a hard copy of the array
     return [NSArray arrayWithArray:componentsArr];
 }
 
-- (void)resetArcs:(NSArray *)components colors:(NSDictionary *)colors {
-    // Cancel the current animation and disable interaction
-    [self cancelArcAnimations];
-    self.userInteractionEnabled = NO;
-    
-    // Create the transaction
-    [CATransaction begin];
-    [CATransaction setAnimationDuration:0.6f];
-    [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-    
-    // After the transaction we want to redraw our arcs (need to do this before adding animations to layer)
-    [CATransaction setCompletionBlock:^{
-        [self drawLayers:components colors:colors];
-        // Count up
-        [dayCountLabel countFromValue:0 toValue:[(NSNumber *)components[0] integerValue] duration:3.0f timing:CountingLabelTimingFunctionEaseOut];
-        // Now we can tap again
-        self.userInteractionEnabled = YES;
-    }];
-    
+#pragma mark - Arc Animation
+
+- (void)setArcsToZeroWithDuration:(CGFloat)duration {
     // During the transaction, add an animation to reset each arc to zero
     for (CAShapeLayer *layer in progressShapesLayer.sublayers) {
-        CABasicAnimation *toZeroAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-        toZeroAnimation.toValue = @0.0f;
-        toZeroAnimation.duration = 0.6f;
-        toZeroAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-        toZeroAnimation.fillMode = kCAFillModeBoth;
-        toZeroAnimation.removedOnCompletion = NO;
-        [layer addAnimation:toZeroAnimation forKey:toZeroAnimation.keyPath];
+        [self addAnimationToArc:layer toProgress:0.0 duration:duration];
     }
-    
-    // Commit the transaction
-    [CATransaction commit];
+}
+
+- (void)setArcsToProgress:(NSArray *)components duration:(CGFloat)duration {
+    [progressShapesLayer.sublayers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
+        [self addAnimationToArc:(CAShapeLayer *)obj toProgress:[(NSNumber *)components[idx + 1] floatValue] duration:duration];
+    }];
+}
+
+- (void)addAnimationToArc:(CAShapeLayer *)arc toProgress:(CGFloat)progress duration:(CGFloat)duration {
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+    animation.fromValue = @(arc.strokeEnd);
+    animation.toValue = @(progress);
+    animation.duration = duration;
+    animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    animation.removedOnCompletion = NO;
+    animation.fillMode = kCAFillModeBoth;
+    [arc addAnimation:animation forKey:animation.keyPath];
+    arc.strokeEnd = progress;
 }
 
 - (void)changeCenterAndBackgroundColor:(NSDictionary *)colors {
@@ -175,7 +267,9 @@
     }
 }
 
-- (void)drawLayers:(NSArray *)sinceComponents colors:(NSDictionary *)colors {
+#pragma mark - Drawing
+
+- (void)drawLayersWithColors:(NSDictionary *)colors numArcs:(NSUInteger)numArcs {
     // Draw the center circle if it doesn't exist
     if (centerCircleLayer == nil) {
         [self drawCenterCircle:colors[@"centerColor"]];
@@ -185,27 +279,26 @@
     progressShapesLayer.sublayers = nil;
     
     // Draw in our new shapes
-    for (int i = 0; i < numProgressShapes - 1; i++) {
-        [self drawArcWithProgress:[(NSNumber *)[sinceComponents objectAtIndex:i + 1] floatValue] index:i color:colors[@"arcColors"][i]];
+    NSInteger width = self.bounds.size.width;
+    NSInteger innerRadius = width / 6;
+    NSInteger outerRadius = width;
+    for (int i = 0; i < numArcs - 1; i++) {
+        CGFloat radius = -1 * ((2 * i + 1) * (innerRadius - outerRadius)) / (4 * (numArcs + 1)) + innerRadius + 2;
+        CGFloat lineWidth = ((outerRadius - innerRadius) / (numArcs + 1) / 2) - 2;
+        [self drawArcWithRadius:radius width:lineWidth color:colors[@"arcColors"][i]];
     }
     
     // Layout arcs
     [self layoutSublayersOfLayer:progressShapesLayer];
-    
-    // Bring the label to the front
-    [self bringSubviewToFront:dayCountLabel];
 }
 
 - (void)drawCenterCircle:(UIColor *)color {
     // Create the circle
     centerCircleLayer = [[CAShapeLayer alloc] init];
     centerCircleLayer.bounds = self.bounds;
-    centerCircleLayer.position = self.center;
+    centerCircleLayer.position = CGPointMake(self.bounds.size.width / 2.f, self.bounds.size.height / 2.f);
     centerCircleLayer.strokeColor = [UIColor clearColor].CGColor;
     centerCircleLayer.fillColor = color.CGColor;
-    centerCircleLayer.lineWidth = 0.0f;
-    centerCircleLayer.strokeEnd = 0.0f;
-    [self.layer addSublayer:centerCircleLayer];
     
     // We want our cirle to be 1/6 the view, set radius
     CGPoint center = CGPointMake(progressShapesLayer.bounds.size.width / 2.f, progressShapesLayer.bounds.size.height / 2.f);
@@ -214,23 +307,19 @@
     
     // Assign the circle
     centerCircleLayer.path = path.CGPath;
+    
+    [self.layer addSublayer:centerCircleLayer];
 }
 
-- (void)drawArcWithProgress:(float)progress index:(NSInteger)index color:(UIColor *)color {
+- (void)drawArcWithRadius:(CGFloat)radius width:(CGFloat)width color:(UIColor *)color {
     // New shape layer
     CAShapeLayer *shapeLayer = [[CAShapeLayer alloc] init];
     shapeLayer.bounds = self.bounds;
-    shapeLayer.position = self.center;
+    shapeLayer.position = CGPointMake(self.bounds.size.width / 2.f, self.bounds.size.height / 2.f);
     shapeLayer.fillColor = [UIColor clearColor].CGColor;
     shapeLayer.strokeEnd = 0.0f;
     shapeLayer.strokeColor = color.CGColor;
-    
-    // Calculate the radius of the arc based on how many arcs there are
-    NSInteger width = self.bounds.size.width;
-    NSInteger innerRadius = width / 6;
-    NSInteger outerRadius = width;
-    NSInteger radius = -1 * ((2 * index + 1) * (innerRadius - outerRadius)) / (4 * (numProgressShapes + 1)) + innerRadius + 2;
-    shapeLayer.lineWidth = ((outerRadius - innerRadius) / (numProgressShapes + 1) / 2) - 2;
+    shapeLayer.lineWidth = width;
     
     // Draw the path
     CGPoint center = CGPointMake(progressShapesLayer.bounds.size.width / 2.f, progressShapesLayer.bounds.size.height / 2.f);
@@ -239,16 +328,6 @@
     
     // Add to the layer of the view
     [progressShapesLayer addSublayer:shapeLayer];
-    
-    // Configure the animation
-    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-    animation.fromValue = [NSNumber numberWithFloat:0.0f];
-    animation.duration = 3.0f;
-    animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
-    animation.fillMode = kCAFillModeBoth;
-    animation.removedOnCompletion = NO;
-    shapeLayer.strokeEnd = progress;
-    [shapeLayer addAnimation:animation forKey:animation.keyPath];
 }
 
 @end

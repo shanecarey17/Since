@@ -12,6 +12,4 @@
 
 - (void)setAnchorPointAdjustPosition:(CGPoint)anchorPoint;
 
-- (void)disableAllSubviewsRecursive:(BOOL)enabled;
-
 @end

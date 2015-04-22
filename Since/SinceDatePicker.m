@@ -127,11 +127,6 @@ static NSArray *months = nil;
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"MMM d yyyy"];
     NSDate *dateFromString = [formatter dateFromString:[NSString stringWithFormat:@"%@ %@ %@", monthString, dayString, yearString]];
-
-    // Return nil if our date is in the future
-    if ([dateFromString timeIntervalSinceNow] > 0) {
-        return nil;
-    }
     
     // Otherwise return our new date
     return dateFromString;

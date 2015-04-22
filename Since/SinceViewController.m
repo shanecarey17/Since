@@ -55,6 +55,7 @@
     
     // Register for a notification to reset graphic view on open and hide stuff on close
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetCurrentDisplay) name:@"UIApplicationWillEnterForegroundNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recieveDidEnterBackgroundNotification) name:@"UIApplicationDidEnterBackgroundNotification" object:nil];
     
     // Initialize subiews (date picker under graphic view)
     [self initColorPicker];
@@ -142,7 +143,10 @@
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"tutorialWasViewed"]) {
         [self tutorial:nil];
     }
-    [self resetCurrentDisplay];
+}
+
+- (void)recieveDidEnterBackgroundNotification {
+    [entryPicker setEditing:NO];
 }
 
 - (BOOL)canBecomeFirstResponder {

@@ -70,10 +70,9 @@
 
 - (SinceEntryPickerCollectionViewCell *)entryCellForIndexPath:(NSIndexPath *)indexPath dayCount:(NSInteger)count title:(NSString *)title {
     SinceEntryPickerCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:@"entryCell" forIndexPath:indexPath];
-    [cell.dayCountLabel setText:[NSString stringWithFormat:@"%ld", count]];
+    [cell.dayCountLabel setText:[NSString stringWithFormat:@"%ld", labs(count)]];
     [cell.titleLabel setText:title];
     [cell.deleteButton addTarget:self action:@selector(deleteButtonPressedForCell:) forControlEvents:UIControlEventTouchDown];
-    [cell.deleteButton setTag:indexPath.row];
     cell.editing = isEditing;
     return cell;
 }
@@ -103,7 +102,8 @@
 
 - (void)deleteButtonPressedForCell:(UIButton *)button {
     // Tell the data manager to delete the entry
-    NSIndexPath *deleteIndex = [NSIndexPath indexPathForItem:button.tag inSection:0];
+    CGPoint buttonPosition = [button convertPoint:CGPointZero toView:self];
+    NSIndexPath *deleteIndex = [self indexPathForItemAtPoint:buttonPosition];
     [[SinceDataManager sharedManager] removeDataAtIndex:deleteIndex.row];
     [self deleteItemsAtIndexPaths:@[deleteIndex]];
     

@@ -98,8 +98,8 @@
 - (void)newData {
     // Create the entry data
     NSString *colorScheme = [[ColorSchemes colorSchemes] objectAtIndex:arc4random() % [[ColorSchemes colorSchemes] count]];
-    NSDate *sinceDate = [NSDate dateWithTimeIntervalSinceNow:-250560];
-    NSString *title = @"Since...";
+    NSDate *sinceDate = [NSDate dateWithTimeIntervalSinceNow:-638348];
+    NSString *title = @"Since";
     
     // Create the entry and add it to our array
     NSMutableDictionary *newEntry = [[NSMutableDictionary alloc] initWithObjects:@[colorScheme, sinceDate, title] forKeys:@[@"colorScheme", @"sinceDate", @"title"]];

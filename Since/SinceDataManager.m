@@ -95,10 +95,14 @@
     self.activeEntry = [_dataArray objectAtIndexedSubscript:index];
 }
 
-- (void)newData {
+- (void)newEntry {
     // Create the entry data
+    NSDate *sinceDate = [NSDate date];
+    NSCalendar *calendar = [NSCalendar autoupdatingCurrentCalendar];
+    NSUInteger preservedComponents = (NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay);
+    sinceDate = [calendar dateFromComponents:[calendar components:preservedComponents fromDate:sinceDate]];
+    
     NSString *colorScheme = [[ColorSchemes colorSchemes] objectAtIndex:arc4random() % [[ColorSchemes colorSchemes] count]];
-    NSDate *sinceDate = [NSDate dateWithTimeIntervalSinceNow:-638348];
     NSString *title = @"Since";
     
     // Create the entry and add it to our array
@@ -109,7 +113,7 @@
     self.activeEntry = newEntry;
 }
 
-- (void)removeDataAtIndex:(NSInteger)index {
+- (void)removeEntryAtIndex:(NSInteger)index {
     // If we are deleting the active entry
     if (index == [_dataArray indexOfObject:_activeEntry]) {
         if ([_dataArray count] == 1) {
@@ -123,6 +127,10 @@
     
     // Remove data at given index
     [_dataArray removeObjectAtIndex:index];
+}
+
+- (void)swapEntryFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex {
+    [_dataArray exchangeObjectAtIndex:fromIndex withObjectAtIndex:toIndex];
 }
 
 @end

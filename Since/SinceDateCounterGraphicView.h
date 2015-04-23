@@ -10,6 +10,10 @@
 
 @interface SinceDateCounterGraphicView : UIView
 
+@property (strong, nonatomic) NSDate *date;
+
+@property (strong, nonatomic) NSDictionary *colorScheme;
+
 - (void)resetView:(NSDate *)sinceDate colors:(NSString *)colorScheme;
 
 @end

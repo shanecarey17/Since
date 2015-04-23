@@ -22,7 +22,7 @@
 #import "SinceEntryPickerCollectionView.h"
 #import "UIView+SinceUtilities.h"
 
-@interface SinceViewController () <UITableViewDelegate, UIGestureRecognizerDelegate, UICollectionViewDelegate, UITextFieldDelegate>
+@interface SinceViewController () <UITableViewDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate>
 
 {
     // UI elements
@@ -112,10 +112,6 @@
 
 - (void)initEntryPicker {
     entryPicker = [[SinceEntryPickerCollectionView alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height / 8)];
-    entryPicker.delegate = self;
-    UILongPressGestureRecognizer *holdToEdit = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(editEntryPicker)];
-    holdToEdit.minimumPressDuration = 1.0;
-    [entryPicker addGestureRecognizer:holdToEdit];
     
     panToExposeEntryPicker = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(revealEntryPicker:)];
     panToExposeEntryPicker.cancelsTouchesInView = NO;
@@ -424,32 +420,6 @@
 }
 
 #pragma mark - Entry picker
-
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (entryPicker.editing) {
-        // Stop editing the picker
-        entryPicker.editing = NO;
-    } else {
-        // Let's do something with the cell we chose
-        if (indexPath.row == [[SinceDataManager sharedManager] numEntries]) {
-            // Create a new entry
-            [[SinceDataManager sharedManager] newData];
-            
-            // Animated insertion
-            NSIndexPath *insertIndex = [NSIndexPath indexPathForItem:indexPath.row inSection:0];
-            [collectionView insertItemsAtIndexPaths:@[insertIndex]];
-            [collectionView reloadItemsAtIndexPaths:@[insertIndex]];
-            [collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionLeft animated:YES];
-        } else {
-            // Select the chosen entry
-            [[SinceDataManager sharedManager] setActiveEntryAtIndex:indexPath.row];
-        }
-    }
-}
-
-- (void)editEntryPicker {
-    entryPicker.editing = YES;
-}
 
 - (void)revealEntryPicker:(UIPanGestureRecognizer *)sender {
     // Get where we are panning

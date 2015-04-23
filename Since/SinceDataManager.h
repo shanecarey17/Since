@@ -23,9 +23,11 @@
 
 - (void)setActiveEntryAtIndex:(NSInteger)index;
 
-- (void)newData;
+- (void)newEntry;
 
-- (void)removeDataAtIndex:(NSInteger)index;
+- (void)removeEntryAtIndex:(NSInteger)index;
+
+- (void)swapEntryFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex;
 
 - (NSInteger)numEntries;
 

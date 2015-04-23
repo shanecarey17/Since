@@ -21,8 +21,6 @@
     
     CountingLabel *dayCountLabel;
     
-    NSDate *_date;
-    NSDictionary *_colors;
     NSUInteger _timer_sem;
 }
 
@@ -38,6 +36,10 @@
         progressShapesLayer.bounds = self.frame;
         [self.layer addSublayer:progressShapesLayer];
         
+        // Layers
+        [self drawCenterCircle];
+        [self drawArrow];
+        
         // Init the label
         dayCountLabel = [[CountingLabel alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width / 4, self.bounds.size.width / 6)];
         dayCountLabel.textAlignment = NSTextAlignmentCenter;
@@ -46,12 +48,92 @@
         dayCountLabel.adjustsFontSizeToFitWidth = YES;
         dayCountLabel.numberOfLines = 0;
         [self addSubview:dayCountLabel];
-        dayCountLabel.layer.zPosition = 1000;
         
         // Timer
         [self setTimer];
     }
     return self;
+}
+
+#pragma mark - Drawing
+
+- (void)drawLayersWithColors:(NSDictionary *)colors numArcs:(NSUInteger)numArcs {
+    // Draw the center circle if it doesn't exist
+    if (centerCircleLayer == nil) {
+        
+    }
+    
+    // Remove arc layers
+    progressShapesLayer.sublayers = nil;
+    
+    // Draw in our new shapes
+    NSInteger width = self.bounds.size.width;
+    NSInteger innerRadius = width / 6;
+    NSInteger outerRadius = width;
+    for (int i = 0; i < numArcs - 1; i++) {
+        CGFloat radius = -1 * ((2 * i + 1) * (innerRadius - outerRadius)) / (4 * (numArcs + 1)) + innerRadius + 2;
+        CGFloat lineWidth = ((outerRadius - innerRadius) / (numArcs + 1) / 2) - 2;
+        [self drawArcWithRadius:radius width:lineWidth color:colors[@"arcColors"][i]];
+    }
+    
+    // Layout arcs
+    [self layoutSublayersOfLayer:progressShapesLayer];
+}
+
+- (void)drawArcWithRadius:(CGFloat)radius width:(CGFloat)width color:(UIColor *)color {
+    // New shape layer
+    CAShapeLayer *shapeLayer = [[CAShapeLayer alloc] init];
+    shapeLayer.bounds = self.bounds;
+    shapeLayer.position = CGPointMake(self.bounds.size.width / 2.f, self.bounds.size.height / 2.f);
+    shapeLayer.fillColor = [UIColor clearColor].CGColor;
+    shapeLayer.strokeEnd = 0.0f;
+    shapeLayer.strokeColor = color.CGColor;
+    shapeLayer.lineWidth = width;
+    
+    // Draw the path
+    CGPoint center = CGPointMake(progressShapesLayer.bounds.size.width / 2.f, progressShapesLayer.bounds.size.height / 2.f);
+    UIBezierPath *path = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:DEGREES_TO_RADIANS(-90) endAngle:DEGREES_TO_RADIANS(270) clockwise:YES];
+    shapeLayer.path = path.CGPath;
+    
+    // Add to the layer of the view
+    [progressShapesLayer addSublayer:shapeLayer];
+}
+
+- (void)drawCenterCircle {
+    // Create the circle
+    centerCircleLayer = [[CAShapeLayer alloc] init];
+    centerCircleLayer.bounds = self.bounds;
+    centerCircleLayer.position = CGPointMake(self.bounds.size.width / 2.f, self.bounds.size.height / 2.f);
+    centerCircleLayer.strokeColor = [UIColor clearColor].CGColor;
+    
+    // We want our cirle to be 1/6 the view, set radius
+    CGPoint center = CGPointMake(progressShapesLayer.bounds.size.width / 2.f, progressShapesLayer.bounds.size.height / 2.f);
+    NSInteger radius = self.bounds.size.width / 6;
+    UIBezierPath *path = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:DEGREES_TO_RADIANS(-90) endAngle:DEGREES_TO_RADIANS(270) clockwise:YES];
+    
+    // Assign the circle
+    centerCircleLayer.path = path.CGPath;
+    
+    [self.layer addSublayer:centerCircleLayer];
+}
+
+- (void)drawArrow {
+    // Create arrow
+    arrowLayer = [[CAShapeLayer alloc] init];
+    arrowLayer.bounds = self.bounds;
+    arrowLayer.position = CGPointMake(self.bounds.size.width / 2.f, self.bounds.size.height / 2.f);
+    arrowLayer.fillColor = [UIColor clearColor].CGColor;
+    arrowLayer.strokeColor = [UIColor whiteColor].CGColor;
+    arrowLayer.lineWidth = 2.0;
+    
+    UIBezierPath *arrowPath = [[UIBezierPath alloc] init];
+    [arrowPath moveToPoint:CGPointZero];
+    [arrowPath addLineToPoint:CGPointZero];
+    [arrowPath addLineToPoint:CGPointZero];
+    
+    arrowLayer.path = arrowPath.CGPath;
+    
+    [self.layer addSublayer:arrowLayer];
 }
 
 - (void)layoutSublayersOfLayer:(CALayer *)layer {
@@ -77,7 +159,7 @@
         [CATransaction setCompletionBlock:^{
             if (components.count - 1 > progressShapesLayer.sublayers.count) {
                 // We need to redraw
-                [self drawLayersWithColors:_colors numArcs:components.count];
+                [self drawLayersWithColors:_colorScheme numArcs:components.count];
             }
         }];
         [self setArcsToProgress:components duration:0.9];
@@ -97,7 +179,7 @@
     // Get the components from the date
     NSArray *sinceComponents = [self componentsArrayWithDate:sinceDate];
     NSDictionary *colors = [ColorSchemes colorSchemeWithName:colorScheme];
-    _colors = colors;
+    _colorScheme = colors;
 
     // Cancel the current animation
     [self cancelArcAnimations];
@@ -106,6 +188,7 @@
     [CATransaction setAnimationDuration:0.6];
     [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
     [CATransaction setCompletionBlock:^{
+        
         // Redraw layers
         [self drawLayersWithColors:colors numArcs:sinceComponents.count];
         
@@ -200,6 +283,16 @@
 
 #pragma mark - Arc Animation
 
+- (void)cancelArcAnimations {
+    CALayer *currentProgressShapesLayer = progressShapesLayer.presentationLayer;
+    [progressShapesLayer removeAllAnimations];
+    for (NSUInteger i = 0; i < progressShapesLayer.sublayers.count; i++) {
+        CAShapeLayer *arcLayer = [progressShapesLayer.sublayers objectAtIndex:i];
+        CAShapeLayer *presentingArcLayer = [currentProgressShapesLayer.sublayers objectAtIndex:i];
+        arcLayer.strokeEnd = presentingArcLayer.strokeEnd;
+    }
+}
+
 - (void)setArcsToZeroWithDuration:(CGFloat)duration {
     // During the transaction, add an animation to reset each arc to zero
     for (CAShapeLayer *layer in progressShapesLayer.sublayers) {
@@ -255,79 +348,6 @@
     backgroundColorAnimation.removedOnCompletion = NO;
     self.superview.backgroundColor = (id)newBackgroundColor;
     [self.superview.layer addAnimation:backgroundColorAnimation forKey:backgroundColorAnimation.keyPath];
-}
-
-- (void)cancelArcAnimations {
-    CALayer *currentProgressShapesLayer = progressShapesLayer.presentationLayer;
-    [progressShapesLayer removeAllAnimations];
-    for (NSUInteger i = 0; i < progressShapesLayer.sublayers.count; i++) {
-        CAShapeLayer *arcLayer = [progressShapesLayer.sublayers objectAtIndex:i];
-        CAShapeLayer *presentingArcLayer = [currentProgressShapesLayer.sublayers objectAtIndex:i];
-        arcLayer.strokeEnd = presentingArcLayer.strokeEnd;
-    }
-}
-
-#pragma mark - Drawing
-
-- (void)drawLayersWithColors:(NSDictionary *)colors numArcs:(NSUInteger)numArcs {
-    // Draw the center circle if it doesn't exist
-    if (centerCircleLayer == nil) {
-        [self drawCenterCircle:colors[@"centerColor"]];
-    }
-    
-    // Remove arc layers
-    progressShapesLayer.sublayers = nil;
-    
-    // Draw in our new shapes
-    NSInteger width = self.bounds.size.width;
-    NSInteger innerRadius = width / 6;
-    NSInteger outerRadius = width;
-    for (int i = 0; i < numArcs - 1; i++) {
-        CGFloat radius = -1 * ((2 * i + 1) * (innerRadius - outerRadius)) / (4 * (numArcs + 1)) + innerRadius + 2;
-        CGFloat lineWidth = ((outerRadius - innerRadius) / (numArcs + 1) / 2) - 2;
-        [self drawArcWithRadius:radius width:lineWidth color:colors[@"arcColors"][i]];
-    }
-    
-    // Layout arcs
-    [self layoutSublayersOfLayer:progressShapesLayer];
-}
-
-- (void)drawCenterCircle:(UIColor *)color {
-    // Create the circle
-    centerCircleLayer = [[CAShapeLayer alloc] init];
-    centerCircleLayer.bounds = self.bounds;
-    centerCircleLayer.position = CGPointMake(self.bounds.size.width / 2.f, self.bounds.size.height / 2.f);
-    centerCircleLayer.strokeColor = [UIColor clearColor].CGColor;
-    centerCircleLayer.fillColor = color.CGColor;
-    
-    // We want our cirle to be 1/6 the view, set radius
-    CGPoint center = CGPointMake(progressShapesLayer.bounds.size.width / 2.f, progressShapesLayer.bounds.size.height / 2.f);
-    NSInteger radius = self.bounds.size.width / 6;
-    UIBezierPath *path = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:DEGREES_TO_RADIANS(-90) endAngle:DEGREES_TO_RADIANS(270) clockwise:YES];
-    
-    // Assign the circle
-    centerCircleLayer.path = path.CGPath;
-    
-    [self.layer addSublayer:centerCircleLayer];
-}
-
-- (void)drawArcWithRadius:(CGFloat)radius width:(CGFloat)width color:(UIColor *)color {
-    // New shape layer
-    CAShapeLayer *shapeLayer = [[CAShapeLayer alloc] init];
-    shapeLayer.bounds = self.bounds;
-    shapeLayer.position = CGPointMake(self.bounds.size.width / 2.f, self.bounds.size.height / 2.f);
-    shapeLayer.fillColor = [UIColor clearColor].CGColor;
-    shapeLayer.strokeEnd = 0.0f;
-    shapeLayer.strokeColor = color.CGColor;
-    shapeLayer.lineWidth = width;
-    
-    // Draw the path
-    CGPoint center = CGPointMake(progressShapesLayer.bounds.size.width / 2.f, progressShapesLayer.bounds.size.height / 2.f);
-    UIBezierPath *path = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:DEGREES_TO_RADIANS(-90) endAngle:DEGREES_TO_RADIANS(270) clockwise:YES];
-    shapeLayer.path = path.CGPath;
-    
-    // Add to the layer of the view
-    [progressShapesLayer addSublayer:shapeLayer];
 }
 
 @end

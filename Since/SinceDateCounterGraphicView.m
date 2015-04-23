@@ -151,16 +151,20 @@
 }
 
 - (void)increment:(NSTimer *)timer {
-    // We will only
-    if (!_timer_sem) {
+    // We will only increment if there are no continuing animations
+    if (_timer_sem == 0) {
         NSArray *components = [self componentsArrayWithDate:_date];
         
+        if (components.count - 1 != progressShapesLayer.sublayers.count) {
+            // We need to redraw
+            [self drawLayersWithColors:_colorScheme numArcs:components.count];
+        }
+        
         [CATransaction begin];
+        [CATransaction setAnimationDuration:0.5];
+        [CATransaction setAnimationTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
         [CATransaction setCompletionBlock:^{
-            if (components.count - 1 > progressShapesLayer.sublayers.count) {
-                // We need to redraw
-                [self drawLayersWithColors:_colorScheme numArcs:components.count];
-            }
+            dayCountLabel.text = [NSString stringWithFormat:@"%ld", (long)[(NSNumber *)components[0] integerValue]];
         }];
         [self setArcsToProgress:components duration:0.9];
         [CATransaction commit];

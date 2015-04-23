@@ -14,7 +14,6 @@
 #import "SinceDatePickerCell.h"
 
 @interface SinceDatePicker () <UITableViewDataSource, UITableViewDelegate>
-
 {
     UITableView *monthTableView;
     UITableView *dayTableView;
@@ -104,7 +103,7 @@ static NSArray *months = nil;
     
     NSInteger monthIndex = kCenterCell - (kCenterCell % 12) + [dateComponents month] - 1;
     NSInteger dayIndex = kCenterCell - (kCenterCell % 31) + [dateComponents day] - 1;
-    NSInteger yearIndex = kCenterCell + [nowComponents year] - [dateComponents year];
+    NSInteger yearIndex = kCenterCell + [nowComponents year] - [dateComponents year] - 50;
     
     [monthTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:monthIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
     [dayTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:dayIndex inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
@@ -164,7 +163,7 @@ static NSArray *months = nil;
         cell.label.text = [NSString stringWithFormat:@"%ld", (long)indexPath.row % 31 + 1];
     } else {
         NSDateComponents *nowComponents = [[NSCalendar currentCalendar] components:NSCalendarUnitYear fromDate:[NSDate date]];
-        cell.label.text = [NSString stringWithFormat:@"%ld", (long)[nowComponents year] - (indexPath.row % 50)];
+        cell.label.text = [NSString stringWithFormat:@"%ld", (long)[nowComponents year] - (indexPath.row % 100) + 50];
     }
     
     // Return the cell

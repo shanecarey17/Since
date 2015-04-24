@@ -373,9 +373,9 @@ static NSDictionary *colorSchemes = nil;
                      @"cellTextColor" : [UIColor whiteColor],
                      },
              @"displayColors" : @[
-                     [UIColor colorWithHex:0xDB1216],
-                     [UIColor colorWithHex:0xF7F7F7],
-                     [UIColor colorWithHex:0x052E80]]
+                     [UIColor colorWithHex:0xBC243B],
+                     [UIColor colorWithHex:0xEEE3CD],
+                     [UIColor colorWithHex:0x1D4E89]]
              };
 }
 

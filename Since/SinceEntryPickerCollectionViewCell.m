@@ -66,7 +66,7 @@
     titleLabel.textColor = [UIColor whiteColor];
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.numberOfLines = 0;
-    titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:12];
+    titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:self.bounds.size.width / 8];
     titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     return titleLabel;
 }

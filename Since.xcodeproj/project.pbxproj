@@ -13,6 +13,7 @@
 		7B18020B1AC39C6900BFC526 /* SinceDatePickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B18020A1AC39C6900BFC526 /* SinceDatePickerCell.m */; };
 		7B18020E1AC4F30500BFC526 /* SinceColorSchemes.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B18020D1AC4F30500BFC526 /* SinceColorSchemes.m */; };
 		7B528CEF1ACA6598000931F0 /* UIView+ SinceUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B528CEE1ACA6598000931F0 /* UIView+ SinceUtilities.m */; };
+		7B53BF701AE9EC00006AC965 /* SinceLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B53BF6F1AE9EC00006AC965 /* SinceLoadingView.m */; };
 		7B6F00631AC713C1003B6E90 /* SinceColorSchemePickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B6F00621AC713C1003B6E90 /* SinceColorSchemePickerCell.m */; };
 		7B8B4B331AE96D80001DE319 /* SincePurchasesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B8B4B321AE96D80001DE319 /* SincePurchasesManager.m */; };
 		7B8B4B341AE986DB001DE319 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B8B4B2F1AE96C1D001DE319 /* StoreKit.framework */; };
@@ -69,6 +70,8 @@
 		7B18020D1AC4F30500BFC526 /* SinceColorSchemes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceColorSchemes.m; sourceTree = "<group>"; };
 		7B528CED1ACA6598000931F0 /* UIView+SinceUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+SinceUtilities.h"; sourceTree = "<group>"; };
 		7B528CEE1ACA6598000931F0 /* UIView+ SinceUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ SinceUtilities.m"; sourceTree = "<group>"; };
+		7B53BF6E1AE9EC00006AC965 /* SinceLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceLoadingView.h; sourceTree = "<group>"; };
+		7B53BF6F1AE9EC00006AC965 /* SinceLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceLoadingView.m; sourceTree = "<group>"; };
 		7B6F00611AC713C1003B6E90 /* SinceColorSchemePickerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceColorSchemePickerCell.h; sourceTree = "<group>"; };
 		7B6F00621AC713C1003B6E90 /* SinceColorSchemePickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceColorSchemePickerCell.m; sourceTree = "<group>"; };
 		7B8B4B2F1AE96C1D001DE319 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -153,6 +156,8 @@
 				7BF46F9E1AE03FDF00DC8AF0 /* SinceDataManager.m */,
 				7B8B4B311AE96D80001DE319 /* SincePurchasesManager.h */,
 				7B8B4B321AE96D80001DE319 /* SincePurchasesManager.m */,
+				7B53BF6E1AE9EC00006AC965 /* SinceLoadingView.h */,
+				7B53BF6F1AE9EC00006AC965 /* SinceLoadingView.m */,
 				7B18020C1AC4F30500BFC526 /* SinceColorSchemes.h */,
 				7B18020D1AC4F30500BFC526 /* SinceColorSchemes.m */,
 				7BD449711AC1AB8E008A450E /* SinceViewController.h */,
@@ -327,6 +332,7 @@
 				7B18020E1AC4F30500BFC526 /* SinceColorSchemes.m in Sources */,
 				7B8B4B331AE96D80001DE319 /* SincePurchasesManager.m in Sources */,
 				7B18020B1AC39C6900BFC526 /* SinceDatePickerCell.m in Sources */,
+				7B53BF701AE9EC00006AC965 /* SinceLoadingView.m in Sources */,
 				7B1802021AC3446000BFC526 /* SinceDateCounterGraphicView.m in Sources */,
 				7BD449731AC1AB8E008A450E /* SinceViewController.m in Sources */,
 				7BF46FA51AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.m in Sources */,
@@ -465,7 +471,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "7ecf3caf-9bfa-4f12-840b-a60bdd5f7418";
 			};
 			name = Debug;
 		};
@@ -479,7 +485,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "7ecf3caf-9bfa-4f12-840b-a60bdd5f7418";
 			};
 			name = Release;
 		};

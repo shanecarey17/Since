@@ -11,9 +11,11 @@
 		7B1802051AC34A5900BFC526 /* CountingLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B1802041AC34A5900BFC526 /* CountingLabel.m */; };
 		7B1802081AC3757B00BFC526 /* SinceDatePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B1802071AC3757B00BFC526 /* SinceDatePicker.m */; };
 		7B18020B1AC39C6900BFC526 /* SinceDatePickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B18020A1AC39C6900BFC526 /* SinceDatePickerCell.m */; };
-		7B18020E1AC4F30500BFC526 /* ColorSchemes.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B18020D1AC4F30500BFC526 /* ColorSchemes.m */; };
+		7B18020E1AC4F30500BFC526 /* SinceColorSchemes.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B18020D1AC4F30500BFC526 /* SinceColorSchemes.m */; };
 		7B528CEF1ACA6598000931F0 /* UIView+ SinceUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B528CEE1ACA6598000931F0 /* UIView+ SinceUtilities.m */; };
 		7B6F00631AC713C1003B6E90 /* SinceColorSchemePickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B6F00621AC713C1003B6E90 /* SinceColorSchemePickerCell.m */; };
+		7B8B4B331AE96D80001DE319 /* SincePurchasesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B8B4B321AE96D80001DE319 /* SincePurchasesManager.m */; };
+		7B8B4B341AE986DB001DE319 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B8B4B2F1AE96C1D001DE319 /* StoreKit.framework */; };
 		7BCA2B351ACB855900AE6659 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BCA2B341ACB855900AE6659 /* UIColor+Hex.m */; };
 		7BD4496D1AC1AB8E008A450E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BD4496C1AC1AB8E008A450E /* main.m */; };
 		7BD449701AC1AB8E008A450E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BD4496F1AC1AB8E008A450E /* AppDelegate.m */; };
@@ -63,12 +65,15 @@
 		7B1802071AC3757B00BFC526 /* SinceDatePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceDatePicker.m; sourceTree = "<group>"; };
 		7B1802091AC39C6900BFC526 /* SinceDatePickerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceDatePickerCell.h; sourceTree = "<group>"; };
 		7B18020A1AC39C6900BFC526 /* SinceDatePickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceDatePickerCell.m; sourceTree = "<group>"; };
-		7B18020C1AC4F30500BFC526 /* ColorSchemes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorSchemes.h; sourceTree = "<group>"; };
-		7B18020D1AC4F30500BFC526 /* ColorSchemes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorSchemes.m; sourceTree = "<group>"; };
+		7B18020C1AC4F30500BFC526 /* SinceColorSchemes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceColorSchemes.h; sourceTree = "<group>"; };
+		7B18020D1AC4F30500BFC526 /* SinceColorSchemes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceColorSchemes.m; sourceTree = "<group>"; };
 		7B528CED1ACA6598000931F0 /* UIView+SinceUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+SinceUtilities.h"; sourceTree = "<group>"; };
 		7B528CEE1ACA6598000931F0 /* UIView+ SinceUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+ SinceUtilities.m"; sourceTree = "<group>"; };
 		7B6F00611AC713C1003B6E90 /* SinceColorSchemePickerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceColorSchemePickerCell.h; sourceTree = "<group>"; };
 		7B6F00621AC713C1003B6E90 /* SinceColorSchemePickerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceColorSchemePickerCell.m; sourceTree = "<group>"; };
+		7B8B4B2F1AE96C1D001DE319 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		7B8B4B311AE96D80001DE319 /* SincePurchasesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SincePurchasesManager.h; sourceTree = "<group>"; };
+		7B8B4B321AE96D80001DE319 /* SincePurchasesManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SincePurchasesManager.m; sourceTree = "<group>"; };
 		7BCA2B331ACB855900AE6659 /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		7BCA2B341ACB855900AE6659 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		7BD449671AC1AB8E008A450E /* Since.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Since.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -106,6 +111,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7B8B4B341AE986DB001DE319 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,6 +128,7 @@
 		7BD4495E1AC1AB8E008A450E = {
 			isa = PBXGroup;
 			children = (
+				7B8B4B2F1AE96C1D001DE319 /* StoreKit.framework */,
 				7BD449691AC1AB8E008A450E /* Since */,
 				7BD449831AC1AB8E008A450E /* SinceTests */,
 				7BD449681AC1AB8E008A450E /* Products */,
@@ -144,8 +151,10 @@
 				7BD4496F1AC1AB8E008A450E /* AppDelegate.m */,
 				7BF46F9D1AE03FDF00DC8AF0 /* SinceDataManager.h */,
 				7BF46F9E1AE03FDF00DC8AF0 /* SinceDataManager.m */,
-				7B18020C1AC4F30500BFC526 /* ColorSchemes.h */,
-				7B18020D1AC4F30500BFC526 /* ColorSchemes.m */,
+				7B8B4B311AE96D80001DE319 /* SincePurchasesManager.h */,
+				7B8B4B321AE96D80001DE319 /* SincePurchasesManager.m */,
+				7B18020C1AC4F30500BFC526 /* SinceColorSchemes.h */,
+				7B18020D1AC4F30500BFC526 /* SinceColorSchemes.m */,
 				7BD449711AC1AB8E008A450E /* SinceViewController.h */,
 				7BD449721AC1AB8E008A450E /* SinceViewController.m */,
 				7BE479091AE48CCB009CEA13 /* SinceTutorialView.h */,
@@ -260,6 +269,11 @@
 					7BD449661AC1AB8E008A450E = {
 						CreatedOnToolsVersion = 6.2;
 						DevelopmentTeam = 874R8ZJ7E9;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+						};
 					};
 					7BD4497F1AC1AB8E008A450E = {
 						CreatedOnToolsVersion = 6.2;
@@ -310,7 +324,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7B18020E1AC4F30500BFC526 /* ColorSchemes.m in Sources */,
+				7B18020E1AC4F30500BFC526 /* SinceColorSchemes.m in Sources */,
+				7B8B4B331AE96D80001DE319 /* SincePurchasesManager.m in Sources */,
 				7B18020B1AC39C6900BFC526 /* SinceDatePickerCell.m in Sources */,
 				7B1802021AC3446000BFC526 /* SinceDateCounterGraphicView.m in Sources */,
 				7BD449731AC1AB8E008A450E /* SinceViewController.m in Sources */,
@@ -444,7 +459,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Since/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -458,7 +473,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Since/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;

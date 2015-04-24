@@ -7,7 +7,7 @@
 //
 
 #import "SinceDataManager.h"
-#import "ColorSchemes.h"
+#import "SinceColorSchemes.h"
 
 @interface SinceDataManager ()
 
@@ -53,7 +53,10 @@
         // Write current data into array (possibly from previous version using user defaults)
         NSDate *sinceDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"sinceDate"];
         if (sinceDate == nil) {
-            sinceDate = [NSDate dateWithTimeIntervalSinceNow:-2534765];
+            sinceDate = [NSDate date];
+            NSCalendar *calendar = [NSCalendar autoupdatingCurrentCalendar];
+            NSUInteger preservedComponents = (NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay);
+            sinceDate = [calendar dateFromComponents:[calendar components:preservedComponents fromDate:sinceDate]];
         }
         NSString *colorScheme = @"Citrus";
         NSString *title = @"Since";
@@ -102,7 +105,7 @@
     NSUInteger preservedComponents = (NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay);
     sinceDate = [calendar dateFromComponents:[calendar components:preservedComponents fromDate:sinceDate]];
     
-    NSString *colorScheme = [[ColorSchemes colorSchemes] objectAtIndex:arc4random() % [[ColorSchemes colorSchemes] count]];
+    NSString *colorScheme = [[SinceColorSchemes colorSchemes] objectAtIndex:arc4random() % [[SinceColorSchemes colorSchemes] count]];
     NSString *title = @"Since";
     
     // Create the entry and add it to our array

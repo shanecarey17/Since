@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ColorSchemes : NSObject
+@interface SinceColorSchemes : NSObject
 
 + (NSArray *)colorSchemes;
 

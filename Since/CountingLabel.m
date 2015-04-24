@@ -45,7 +45,7 @@
     
     // Calculate value and set text
     NSInteger value = [self calculateValueWithTiming:function startValue:start endValue:end duration:duration progress:progress];
-    self.text = [NSString stringWithFormat:@"%ld", value];
+    self.text = [NSString stringWithFormat:@"%ld", (long)value];
     
     // Update progress
     progress += 1 / 30.0f;

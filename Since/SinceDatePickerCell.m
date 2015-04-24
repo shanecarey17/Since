@@ -7,7 +7,7 @@
 //
 
 #import "SinceDatePickerCell.h"
-#import "ColorSchemes.h"
+#import "SinceColorSchemes.h"
 
 @implementation SinceDatePickerCell
 
@@ -55,8 +55,8 @@
 
 - (void)setColorScheme:(NSString *)colorScheme {
     _colorScheme = colorScheme;
-    self.label.textColor = [[[ColorSchemes colorSchemeWithName:colorScheme] objectForKey:@"pickerColors"] objectForKey:@"cellTextColor"];
-    self.label.backgroundColor = [[[ColorSchemes colorSchemeWithName:colorScheme] objectForKey:@"pickerColors"] objectForKey:@"cellBackgroundColor"];
+    self.label.textColor = [[[SinceColorSchemes colorSchemeWithName:colorScheme] objectForKey:@"pickerColors"] objectForKey:@"cellTextColor"];
+    self.label.backgroundColor = [[[SinceColorSchemes colorSchemeWithName:colorScheme] objectForKey:@"pickerColors"] objectForKey:@"cellBackgroundColor"];
 }
 
 @end

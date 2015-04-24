@@ -13,7 +13,7 @@
 
 @property (strong, nonatomic) SinceViewController *controller;
 
-+ (SinceDataManager *)sharedManager;
++ (instancetype)sharedManager;
 
 - (void)retrieveData;
 

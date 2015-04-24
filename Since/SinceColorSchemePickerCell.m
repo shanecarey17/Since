@@ -9,7 +9,7 @@
 #define kNumLines 3
 
 #import "SinceColorSchemePickerCell.h"
-#import "ColorSchemes.h"
+#import "SinceColorSchemes.h"
 
 @interface SinceColorSchemePickerCell ()
 
@@ -106,7 +106,7 @@
 
 - (void)setColorScheme:(NSString *)colorScheme {
     _colorScheme = colorScheme;
-    NSDictionary *colors = [ColorSchemes colorSchemeWithName:colorScheme];
+    NSDictionary *colors = [SinceColorSchemes colorSchemeWithName:colorScheme];
     NSArray *colorsArray = [colors objectForKey:@"displayColors"];
     [_colorView.layer.sublayers enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop){
         [(CAShapeLayer *)obj setStrokeColor:[(UIColor *)colorsArray[idx] CGColor]];

@@ -12,7 +12,7 @@
 
 #import "SinceDateCounterGraphicView.h"
 #import "CountingLabel.h"
-#import "ColorSchemes.h"
+#import "SinceColorSchemes.h"
 
 @interface SinceDateCounterGraphicView () {
     CALayer *progressShapesLayer;
@@ -182,7 +182,7 @@
     
     // Get the components from the date
     NSArray *sinceComponents = [self componentsArrayWithDate:sinceDate];
-    NSDictionary *colors = [ColorSchemes colorSchemeWithName:colorScheme];
+    NSDictionary *colors = [SinceColorSchemes colorSchemeWithName:colorScheme];
     _colorScheme = colors;
 
     // Cancel the current animation

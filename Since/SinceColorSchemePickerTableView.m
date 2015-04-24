@@ -7,7 +7,7 @@
 //
 
 #import "SinceColorSchemePickerTableView.h"
-#import "ColorSchemes.h"
+#import "SinceColorSchemes.h"
 #import "SinceColorSchemePickerCell.h"
 
 @interface SinceColorSchemePickerTableView () <UITableViewDataSource>
@@ -34,7 +34,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [[ColorSchemes colorSchemes] count];
+    return [[SinceColorSchemes colorSchemes] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -46,7 +46,7 @@
     }
     
     // Provide data
-    NSArray *schemes = [ColorSchemes colorSchemes];
+    NSArray *schemes = [SinceColorSchemes colorSchemes];
     cell.colorScheme = [schemes objectAtIndex:indexPath.row];
     cell.label.text = [schemes objectAtIndex:indexPath.row];
     

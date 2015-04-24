@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "SinceViewController.h"
-#import "ColorSchemes.h"
+#import "SinceColorSchemes.h"
 #import "SinceDataManager.h"
 
 @interface AppDelegate ()

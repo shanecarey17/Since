@@ -7,7 +7,7 @@
 //
 
 #import "SinceTitleTextField.h"
-#import "ColorSchemes.h"
+#import "SinceColorSchemes.h"
 
 @implementation SinceTitleTextField
 
@@ -17,7 +17,7 @@
         self.alpha = 0;
     }completion:^(BOOL finished){
         [super setText:text];
-        self.textColor = [[ColorSchemes colorSchemeWithName:colorScheme] objectForKey:@"titleColor"];
+        self.textColor = [[SinceColorSchemes colorSchemeWithName:colorScheme] objectForKey:@"titleColor"];
         [UIView animateWithDuration:0.6 animations:^{
             self.alpha = 1;
         }];

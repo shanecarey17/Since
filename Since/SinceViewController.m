@@ -16,7 +16,7 @@
 #import "SinceDateCounterGraphicView.h"
 #import "SinceTitleTextField.h"
 #import "SinceDatePicker.h"
-#import "ColorSchemes.h"
+#import "SinceColorSchemes.h"
 #import "SinceColorSchemePickerTableView.h"
 #import "SinceColorSchemePickerCell.h"
 #import "SinceEntryPickerCollectionView.h"
@@ -644,7 +644,7 @@
         [self animateTransitionOfView:tutorialView transitions:^{
             tutorialView.frame = CGRectMake(0, 0, 250, 185);
             tutorialView.center = tutorialView.center = CGPointMake(self.view.center.x, self.view.bounds.size.height * 3 / 5);
-            tutorialView.textLabel.text = @"Colorful arcs represent the day, week, month, year, etc. \nTap the display to animate the arcs";
+            tutorialView.textLabel.text = @"Colorful arcs represent the minute, hour, day, week, month, year, etc. Tap the display to animate the arcs";
         } completion:^{
             [self resetCurrentDisplay];
         }];
@@ -685,10 +685,10 @@
         // Entry picker step
         [self hideColorPicker];
         [self animateTransitionOfView:tutorialView transitions:^{
-            tutorialView.frame = CGRectMake(0, 0, 200, 200);
+            tutorialView.frame = CGRectMake(0, 0, 200, 215);
             tutorialView.center = CGPointMake(self.view.center.x, self.view.bounds.size.height * 7 / 8);
             tutorialView.direction = SinceTutorialLabelSpeechDirectionDown;
-            tutorialView.textLabel.text = @"Since allows you to track multiple dates. Drag up from the bottom to create or select a date";
+            tutorialView.textLabel.text = @"Since allows you to track multiple dates for 99¢. Drag up from the bottom to create or select a date. Press and hold to edit";
         } completion:^{
             [self showEntryPicker];
         }];

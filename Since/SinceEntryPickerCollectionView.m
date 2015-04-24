@@ -6,11 +6,14 @@
 //  Copyright (c) 2015 Shane Carey. All rights reserved.
 //
 
+#import <objc/runtime.h>
+
 #import "SinceEntryPickerCollectionView.h"
 #import "SinceEntryPickerCollectionViewCell.h"
 #import "SinceDataManager.h"
+#import "SincePurchasesManager.h"
 
-@interface SinceEntryPickerCollectionView () <UICollectionViewDataSource, UICollectionViewDelegate>
+@interface SinceEntryPickerCollectionView () <UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate>
 {
     BOOL isEditing;
     
@@ -98,14 +101,8 @@
     } else {
         // Let's do something with the cell we chose
         if (indexPath.row == [[SinceDataManager sharedManager] numEntries]) {
-            // Create a new entry
-            [[SinceDataManager sharedManager] newEntry];
-            
-            // Animated insertion
-            NSIndexPath *insertIndex = [NSIndexPath indexPathForItem:indexPath.row inSection:0];
-            [collectionView insertItemsAtIndexPaths:@[insertIndex]];
-            [collectionView reloadItemsAtIndexPaths:@[insertIndex]];
-            [collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionLeft animated:YES];
+            // Add an entry
+            [self addEntry:indexPath];
         } else {
             // Select the chosen entry
             [[SinceDataManager sharedManager] setActiveEntryAtIndex:indexPath.row];
@@ -116,11 +113,10 @@
 #pragma mark - editing
 
 - (void)editGestureRecieved:(UIGestureRecognizer *)gesture {
-    if (!isEditing) {
+    if ([[SinceDataManager sharedManager] numEntries] > 1) {
         [self setEditing:YES];
+        [self dragAndDrop:gesture];
     }
-    
-    [self dragAndDrop:gesture];
 }
 
 - (void)dragAndDrop:(UIGestureRecognizer *)gesture {
@@ -169,21 +165,24 @@
                 }];
             }
             
-            // Scroll
-            if ([gesture locationInView:self].x < [self contentOffset].x + 50) {
-                
-                // Scroll left 100
-                CGFloat newXOffset = [self contentOffset].x - 100 < 0 ? 0 :[self contentOffset].x - 100;
-                [self setContentOffset:CGPointMake(newXOffset, 0) animated:YES];
-                
-            } else if ([gesture locationInView:self].x > [self contentOffset].x + self.bounds.size.width - 50) {
-                
-                // Scroll right 100
-                CGFloat newXOffset = [self contentOffset].x + 100 > [self contentSize].width - self.bounds.size.width ? [self contentSize].width - self.bounds.size.width : [self contentOffset].x + 100;
-                [self setContentOffset:CGPointMake(newXOffset, 0) animated:YES];
-                
+            if (self.contentSize.width > self.bounds.size.width) {
+                // Scroll if there is need to (cells don't fill screen)
+                if ([gesture locationInView:self].x < [self contentOffset].x + 50) {
+                    
+                    // Scroll left 100
+                    CGFloat newXOffset = [self contentOffset].x - 100 < 0 ? 0 :[self contentOffset].x - 100;
+                    [self setContentOffset:CGPointMake(newXOffset, 0) animated:YES];
+                    
+                } else if ([gesture locationInView:self].x > [self contentOffset].x + self.bounds.size.width - 50) {
+                    
+                    // Scroll right 100
+                    CGFloat newXOffset = [self contentOffset].x + 100 > [self contentSize].width - self.bounds.size.width ? [self contentSize].width - self.bounds.size.width : [self contentOffset].x + 100;
+                    [self setContentOffset:CGPointMake(newXOffset, 0) animated:YES];
+                    
+                }
+
             }
-            
+    
             break;
         }
         
@@ -234,6 +233,48 @@
     
     // Keep editing
     self.editing = YES;
+}
+
+- (void)addEntry:(NSIndexPath *)indexPath {
+    if ([[SincePurchasesManager sharedManager] hasPurchasedItemForKey:kMultipleDatesPurchaseIdentifier]) {
+        // User has purchased the in app purchase
+        
+        // Create a new entry
+        [[SinceDataManager sharedManager] newEntry];
+        
+        // Animated insertion
+        [self insertItemsAtIndexPaths:@[indexPath]];
+        [self reloadItemsAtIndexPaths:@[indexPath]];
+        [self scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionLeft animated:YES];
+    } else {
+        // User has not purchased the in app purchase
+        [self showMultipleDatesPurchaseAlert];
+    }
+}
+
+#pragma mark - multiple dates purchase
+
+- (void)showMultipleDatesPurchaseAlert {
+    // Show UIAlertView
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Purchase Multiple Dates" message:@"Would you like to purchase the Mutiple Dates Upgrade for 99¢?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Purchase", @"Restore", nil];
+    [alert show];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 1:
+            // User will purchase item
+            [[SincePurchasesManager sharedManager] purchaseItemForKey:kMultipleDatesPurchaseIdentifier];
+            break;
+        
+        case 2:
+            // User will restore purchases
+            [[SincePurchasesManager sharedManager] restorePurchases];
+            break;
+            
+        default:
+            break;
+    }
 }
 
 @end

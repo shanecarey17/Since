@@ -6,28 +6,28 @@
 //  Copyright (c) 2015 Shane Carey. All rights reserved.
 //
 
-#import "ColorSchemes.h"
+#import "SinceColorSchemes.h"
 #import "UIColor+Hex.h"
 
-@implementation ColorSchemes
+@implementation SinceColorSchemes
 
 static NSDictionary *colorSchemes = nil;
 
 + (void)initialize {
-    colorSchemes = @{@"B & W" : [ColorSchemes bwColorScheme],
-                     @"Inverse" : [ColorSchemes reverseColorScheme],
-                     @"Mono" : [ColorSchemes monoColorScheme],
-                     @"Neon" : [ColorSchemes neonColorScheme],
-                     @"Vintage" : [ColorSchemes vintageColorScheme],
-                     @"Retro" : [ColorSchemes retroColorScheme],
-                     @"Sea" : [ColorSchemes seaColorScheme],
-                     @"Brush" : [ColorSchemes earthColorScheme],
-                     @"Blaze" : [ColorSchemes fireColorScheme],
-                     @"Warm" : [ColorSchemes warmColorScheme],
-                     @"Exotic" : [ColorSchemes exoticColorScheme],
-                     @"Mod" : [ColorSchemes modColorScheme],
-                     @"Pop" : [ColorSchemes popColorScheme],
-                     @"Citrus" : [ColorSchemes citrusColorScheme]
+    colorSchemes = @{@"B & W" : [SinceColorSchemes bwColorScheme],
+                     @"Inverse" : [SinceColorSchemes reverseColorScheme],
+                     @"Mono" : [SinceColorSchemes monoColorScheme],
+                     @"Neon" : [SinceColorSchemes neonColorScheme],
+                     @"Vintage" : [SinceColorSchemes vintageColorScheme],
+                     @"Retro" : [SinceColorSchemes retroColorScheme],
+                     @"Sea" : [SinceColorSchemes seaColorScheme],
+                     @"Brush" : [SinceColorSchemes earthColorScheme],
+                     @"Blaze" : [SinceColorSchemes fireColorScheme],
+                     @"Warm" : [SinceColorSchemes warmColorScheme],
+                     @"Exotic" : [SinceColorSchemes exoticColorScheme],
+                     @"Mod" : [SinceColorSchemes modColorScheme],
+                     @"Pop" : [SinceColorSchemes popColorScheme],
+                     @"Citrus" : [SinceColorSchemes citrusColorScheme]
                      };
 }
 
@@ -355,18 +355,18 @@ static NSDictionary *colorSchemes = nil;
 
 + (NSDictionary *)popColorScheme {
     return @{@"titleColor" : [UIColor blackColor],
-             @"centerColor" : [UIColor colorWithHex:0xDB1216],
-             @"backgroundColor" : [UIColor colorWithHex:0xF7F7F7],
+             @"centerColor" : [UIColor colorWithHex:0xBC243B],
+             @"backgroundColor" : [UIColor colorWithHex:0xEEE3CD],
              @"arcColors" : @[
-                     [UIColor colorWithHex:0x052E80],
-                     [UIColor colorWithHex:0xFFDC08],
-                     [UIColor colorWithHex:0x000000],
+                     [UIColor colorWithHex:0x1D4E89],
+                     [UIColor colorWithHex:0xF5C71A],
+                     [UIColor colorWithHex:0x343233],
                      [UIColor colorWithHex:0xF2A297],
-                     [UIColor colorWithHex:0x342154],
-                     [UIColor colorWithHex:0xFFDC08],
+                     [UIColor colorWithHex:0x019875],
+                     [UIColor colorWithHex:0xC14E5D],
                      [UIColor colorWithHex:0xC4BCD1],
-                     [UIColor colorWithHex:0x052E80],
-                     [UIColor colorWithHex:0xF2A297]
+                     [UIColor colorWithHex:0xCFDFD2],
+                     [UIColor colorWithHex:0x342154]
                      ],
              @"pickerColors" : @{
                      @"cellBackgroundColor" : [UIColor blackColor],
@@ -403,10 +403,6 @@ static NSDictionary *colorSchemes = nil;
                      [UIColor colorWithHex:0xEFEFEF],
                      [UIColor colorWithHex:0xC7E35D]]
              };
-}
-
-+ (NSDictionary *)deepColorScheme {
-    return nil;
 }
 
 @end

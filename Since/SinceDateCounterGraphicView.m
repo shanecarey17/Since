@@ -33,7 +33,7 @@
     if (self) {
         // Layer of arcs
         progressShapesLayer = [[CALayer alloc] init];
-        progressShapesLayer.bounds = self.frame;
+        progressShapesLayer.frame = self.bounds;
         [self.layer addSublayer:progressShapesLayer];
         
         // Layers
@@ -41,12 +41,7 @@
         [self drawArrow];
         
         // Init the label
-        dayCountLabel = [[CountingLabel alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width / 4, self.bounds.size.width / 6)];
-        dayCountLabel.textAlignment = NSTextAlignmentCenter;
-        dayCountLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:self.bounds.size.width / 6];
-        dayCountLabel.textColor = [UIColor whiteColor];
-        dayCountLabel.adjustsFontSizeToFitWidth = YES;
-        dayCountLabel.numberOfLines = 0;
+        dayCountLabel = [self countingLabel];
         [self addSubview:dayCountLabel];
         
         // Timer
@@ -58,11 +53,6 @@
 #pragma mark - Drawing
 
 - (void)drawLayersWithColors:(NSDictionary *)colors numArcs:(NSUInteger)numArcs {
-    // Draw the center circle if it doesn't exist
-    if (centerCircleLayer == nil) {
-        
-    }
-    
     // Remove arc layers
     progressShapesLayer.sublayers = nil;
     
@@ -75,24 +65,19 @@
         CGFloat lineWidth = ((outerRadius - innerRadius) / (numArcs + 1) / 2) - 2;
         [self drawArcWithRadius:radius width:lineWidth color:colors[@"arcColors"][i]];
     }
-    
-    // Layout arcs
-    [self layoutSublayersOfLayer:progressShapesLayer];
 }
 
 - (void)drawArcWithRadius:(CGFloat)radius width:(CGFloat)width color:(UIColor *)color {
     // New shape layer
     CAShapeLayer *shapeLayer = [[CAShapeLayer alloc] init];
-    shapeLayer.bounds = self.bounds;
-    shapeLayer.position = CGPointMake(self.bounds.size.width / 2.f, self.bounds.size.height / 2.f);
+    shapeLayer.frame = self.bounds;
     shapeLayer.fillColor = [UIColor clearColor].CGColor;
     shapeLayer.strokeEnd = 0.0f;
     shapeLayer.strokeColor = color.CGColor;
     shapeLayer.lineWidth = width;
     
     // Draw the path
-    CGPoint center = CGPointMake(progressShapesLayer.bounds.size.width / 2.f, progressShapesLayer.bounds.size.height / 2.f);
-    UIBezierPath *path = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:DEGREES_TO_RADIANS(-90) endAngle:DEGREES_TO_RADIANS(270) clockwise:YES];
+    UIBezierPath *path = [UIBezierPath bezierPathWithArcCenter:shapeLayer.position radius:radius startAngle:DEGREES_TO_RADIANS(-90) endAngle:DEGREES_TO_RADIANS(270) clockwise:YES];
     shapeLayer.path = path.CGPath;
     
     // Add to the layer of the view
@@ -102,14 +87,12 @@
 - (void)drawCenterCircle {
     // Create the circle
     centerCircleLayer = [[CAShapeLayer alloc] init];
-    centerCircleLayer.bounds = self.bounds;
-    centerCircleLayer.position = CGPointMake(self.bounds.size.width / 2.f, self.bounds.size.height / 2.f);
+    centerCircleLayer.frame = self.bounds;
     centerCircleLayer.strokeColor = [UIColor clearColor].CGColor;
     
     // We want our cirle to be 1/6 the view, set radius
-    CGPoint center = CGPointMake(progressShapesLayer.bounds.size.width / 2.f, progressShapesLayer.bounds.size.height / 2.f);
     NSInteger radius = self.bounds.size.width / 6;
-    UIBezierPath *path = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:DEGREES_TO_RADIANS(-90) endAngle:DEGREES_TO_RADIANS(270) clockwise:YES];
+    UIBezierPath *path = [UIBezierPath bezierPathWithArcCenter:self.center radius:radius startAngle:DEGREES_TO_RADIANS(-90) endAngle:DEGREES_TO_RADIANS(270) clockwise:YES];
     
     // Assign the circle
     centerCircleLayer.path = path.CGPath;
@@ -117,10 +100,21 @@
     [self.layer addSublayer:centerCircleLayer];
 }
 
+- (CountingLabel *)countingLabel {
+    CountingLabel *countingLabel = [[CountingLabel alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width / 4, self.bounds.size.width / 6)];
+    countingLabel.center = self.center;
+    countingLabel.textAlignment = NSTextAlignmentCenter;
+    countingLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:self.bounds.size.width / 6];
+    countingLabel.textColor = [UIColor whiteColor];
+    countingLabel.adjustsFontSizeToFitWidth = YES;
+    countingLabel.numberOfLines = 0;
+    return countingLabel;
+}
+
 - (void)drawArrow {
     // Create arrow
     arrowLayer = [[CAShapeLayer alloc] init];
-    arrowLayer.bounds = self.bounds;
+    arrowLayer.frame = self.bounds;
     arrowLayer.position = CGPointMake(self.bounds.size.width / 2.f, self.bounds.size.height / 2.f);
     arrowLayer.fillColor = [UIColor clearColor].CGColor;
     arrowLayer.strokeColor = [UIColor whiteColor].CGColor;
@@ -134,13 +128,6 @@
     arrowLayer.path = arrowPath.CGPath;
     
     [self.layer addSublayer:arrowLayer];
-}
-
-- (void)layoutSublayersOfLayer:(CALayer *)layer {
-    for (CALayer *subLayer in layer.sublayers) {
-        // Every sublayer is centered in the view
-        subLayer.position = CGPointMake(self.bounds.size.width / 2.f, self.bounds.size.height / 2.f);
-    }
 }
 
 #pragma mark - Timer

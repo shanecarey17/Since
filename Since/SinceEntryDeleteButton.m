@@ -28,7 +28,6 @@
     CGContextMoveToPoint(context, self.bounds.size.width / 3, self.bounds.size.height / 2);
     CGContextAddLineToPoint(context, self.bounds.size.width * 2 / 3, self.bounds.size.height / 2);
     CGContextStrokePath(context);
-    
 }
 
 

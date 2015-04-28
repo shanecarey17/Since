@@ -120,7 +120,7 @@
     // If we are deleting the active entry
     if (index == [_dataArray indexOfObject:_activeEntry]) {
         if ([_dataArray count] == 1) {
-            self.activeEntry = nil;
+            return;
         } else if (index > 0) {
             self.activeEntry = [_dataArray objectAtIndex:index - 1];
         } else if (index == 0) {

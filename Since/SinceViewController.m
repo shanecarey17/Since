@@ -69,6 +69,7 @@
     // Set up graphics view
     graphicView = [[SinceDateCounterGraphicView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.width)];
     graphicView.center = self.view.center;
+    [graphicView setAnchorPointAdjustPosition:CGPointMake(0.75, 0.5)];
     [self.view addSubview:graphicView];
     
     // Double tap for date picker
@@ -92,7 +93,6 @@
 - (void)initColorPicker {
     // Tableview for color picking
     colorSchemePicker = [[SinceColorSchemePickerTableView alloc] initWithFrame:CGRectMake(0, 0, 0, self.view.bounds.size.height)];
-    colorSchemePicker.delegate = self;
     [self.view addSubview:colorSchemePicker];
     
     // Set flag
@@ -103,6 +103,7 @@
     // Date picker
     datePicker = [[SinceDatePicker alloc] init];
     datePicker.center = CGPointMake(self.view.center.x, (self.view.bounds.size.width + self.view.bounds.size.height) / 2);
+    [datePicker setAnchorPointAdjustPosition:CGPointMake(0.75, 0.5)];
     datePicker.alpha = 0.0f;
     [self.view addSubview:datePicker];
     
@@ -123,13 +124,7 @@
 
 - (void)initEntryTitleField {
     entryTitleField = [[SinceTitleTextField alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, graphicView.frame.origin.y)];
-    entryTitleField.keyboardAppearance = UIKeyboardAppearanceDark;
-    entryTitleField.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:entryTitleField.bounds.size.height / 4];
-    entryTitleField.tintColor = [UIColor clearColor];
-    entryTitleField.text = [_entry objectForKey:@"title"];
-    entryTitleField.textColor = [UIColor blackColor];
-    entryTitleField.textAlignment = NSTextAlignmentCenter;
-    entryTitleField.delegate = self;
+    [entryTitleField setAnchorPointAdjustPosition:CGPointMake(0.75, 0.5)];
     [self.view addSubview:entryTitleField];
 }
 
@@ -143,10 +138,9 @@
 
 - (void)recieveDidEnterBackgroundNotification {
     [entryPicker setEditing:NO];
-}
-
-- (BOOL)canBecomeFirstResponder {
-    return YES;
+    [self hideEntryPicker];
+    [self hideDatePicker];
+    [self hideColorPicker];
 }
 
 #pragma mark - Entry
@@ -161,13 +155,11 @@
     [self resetCurrentDisplay];
 }
 
-#pragma mark - Current Display
-
 - (void)resetCurrentDisplay {
     [graphicView resetView:[_entry objectForKey:@"sinceDate"] colors:[_entry objectForKey:@"colorScheme"]];
     [entryTitleField setText:[_entry objectForKey:@"title"] colorScheme:[_entry objectForKey:@"colorScheme"]];
     [datePicker setColorScheme:[_entry objectForKey:@"colorScheme"]];
-
+    [entryPicker reloadData];
 }
 
 #pragma mark - Date picker
@@ -184,12 +176,12 @@
         NSDate *chosenDate = [datePicker date];
         if (chosenDate == nil) {
             // Shake for invalid date
-            [self datePickerInvalidShake];
+            CAKeyframeAnimation *invalidShake = [self invalidShakeAnimation];
+            [datePicker.layer addAnimation:invalidShake forKey:invalidShake.keyPath];
             
         } else {
             // We have a valid date
-            [_entry setObject:chosenDate forKey:@"sinceDate"];
-            [entryPicker reloadData];
+            [[SinceDataManager sharedManager] setActiveEntryObject:chosenDate forKey:@"sinceDate"];
             
             // Set and hide date picker
             [self hideDatePicker];
@@ -197,39 +189,21 @@
     }
 }
 
-- (void)datePickerInvalidShake {
-    // Animate a headshake for invalid date
-    CGPoint center = datePicker.center;
-    [UIView animateKeyframesWithDuration:0.75f delay:0.0f options:UIViewKeyframeAnimationOptionCalculationModeCubic animations:^{
-        // Add keyframes to shake
-        [UIView addKeyframeWithRelativeStartTime:0.0f relativeDuration:0.125f animations:^{
-            datePicker.center = CGPointMake(center.x + 10, center.y);
-        }];
-        [UIView addKeyframeWithRelativeStartTime:0.125f relativeDuration:0.125f animations:^{
-            datePicker.center = CGPointMake(center.x - 10, center.y);
-        }];
-        [UIView addKeyframeWithRelativeStartTime:0.25f relativeDuration:0.125f animations:^{
-            datePicker.center = CGPointMake(center.x + 10, center.y);
-        }];
-        [UIView addKeyframeWithRelativeStartTime:0.375f relativeDuration:0.125f animations:^{
-            datePicker.center = CGPointMake(center.x - 10, center.y);
-        }];
-        [UIView addKeyframeWithRelativeStartTime:0.5f relativeDuration:0.125f animations:^{
-            datePicker.center = CGPointMake(center.x + 10, center.y);
-        }];
-        [UIView addKeyframeWithRelativeStartTime:0.625f relativeDuration:0.125f animations:^{
-            datePicker.center = center;
-        }];
-        
-    } completion:^(BOOL finished){
-        // Scroll back to original date
-        [datePicker setDate:[_entry objectForKey:@"sinceDate"]];
-    }];
+- (CAKeyframeAnimation *)invalidShakeAnimation {
+    CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
+    animation.duration = 0.07;
+    animation.values = @[[NSValue valueWithCATransform3D:CATransform3DMakeTranslation(-10, 0, 0)],
+                         [NSValue valueWithCATransform3D:CATransform3DMakeTranslation(10, 0, 0)]];
+    animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    animation.autoreverses = YES;
+    animation.repeatCount = 2;
+    return animation;
 }
 
 - (void)showDatePicker {
     // Animate graphic translate up and hide entry view
     [self hideEntryPicker];
+    [entryTitleField setAnchorPointAdjustPosition:CGPointMake(0.5, 0.5)];
     [UIView animateWithDuration:0.3f animations:^{
         entryTitleField.transform = CGAffineTransformTranslate(CGAffineTransformMakeScale(0.75, 0.75), 0, -25);
         graphicView.transform = CGAffineTransformMakeTranslation(0, -50);
@@ -256,7 +230,7 @@
             graphicView.transform = CGAffineTransformIdentity;
         } completion:^(BOOL finished){
             // Reset view with date
-            [self resetCurrentDisplay];
+            [entryTitleField setAnchorPointAdjustPosition:CGPointMake(0.75, 0.5)];
         }];
     }];
     
@@ -270,24 +244,6 @@
     // Visible while gesture is in action
     colorPickerIsVisible = YES;
     
-    // Hold on to this
-    static CGFloat startingAngle;
-    
-    // If we are beginning our pan, change the anchor point of the view
-    if (panGestureRecognizer.state == UIGestureRecognizerStateBegan) {
-        // Change anchor point
-        [entryTitleField setAnchorPointAdjustPosition:CGPointMake(0.75, 0.5)];
-        [graphicView setAnchorPointAdjustPosition:CGPointMake(0.75, 0.5)];
-        
-        // Get the starting angle of the view (this is constant for entire pan gesture)
-        startingAngle = atan2(graphicView.layer.transform.m31, graphicView.layer.transform.m11);
-        return;
-    }
-    
-    // Get the x offset
-    CGFloat xOffset =  [panGestureRecognizer translationInView:self.view].x;
-    CGFloat previousAngle = atan2(graphicView.layer.transform.m31, graphicView.layer.transform.m11);
-    
     // Constants
     const CGFloat suspendedAngle = DEGREES_TO_RADIANS(-55);
     const CGFloat maxPullAngle = DEGREES_TO_RADIANS(70);
@@ -298,72 +254,48 @@
     static CGFloat maxXOffset = 0;
     static CGFloat maxAngle = 0;
     
-    // The gesture is continuing
+    // The gesture is moving
     if (panGestureRecognizer.state == UIGestureRecognizerStateChanged) {
+        // Necessary for calculating angle
+        CGFloat xOffset =  [panGestureRecognizer translationInView:self.view].x;
+        CGFloat previousAngle = atan2(graphicView.layer.transform.m31, graphicView.layer.transform.m11);
+        
         // Calculate the angle of rotation and distance to pull colorScheme selector
         CGFloat angle;
         
-        // Determine angle
-        if (startingAngle == 0) {
-            // We are dragging from resting position
-            if (xOffset > prevXOffset) {
-                // We dragged right
-                angle = previousAngle - ((maxPullAngle - fabs(previousAngle)) * (xOffset / self.view.bounds.size.width));
-                
-                // Save for when we slide left (this is our new max bound)
-                maxAngle = angle;
-                maxXOffset = xOffset;
-            } else {
-                // We dragged left
-                angle = maxAngle *  (xOffset / maxXOffset);
-            }
+        if (xOffset > prevXOffset) {
+            // We dragged right
+            angle = previousAngle - ((maxPullAngle - fabs(previousAngle)) * (xOffset / self.view.bounds.size.width));
+            
+            // Save for when we slide left (this is our new max bound)
+            maxAngle = angle;
+            maxXOffset = xOffset;
+        } else if (maxAngle == 0) {
+            // We are dragging left first
+            angle = previousAngle + ((minPullAngle - fabs(previousAngle)) * (xOffset / self.view.bounds.size.width));
         } else {
-            // We are dragging from suspended position
-            if (xOffset > prevXOffset) {
-                // We dragged right
-                angle = previousAngle - ((maxPullAngle - fabs(previousAngle)) * (xOffset / self.view.bounds.size.width));
-                
-                // Save for when we slide left (this is our new max bound)
-                maxAngle = angle;
-                maxXOffset = xOffset;
-            } else {
-                // We dragged left
-                if (maxAngle == 0) {
-                    // We are dragging left first
-                    angle = previousAngle + ((minPullAngle - fabs(previousAngle)) * (xOffset / self.view.bounds.size.width));
-                } else {
-                    // We have already dragged right, this is continuing left
-                    angle = maxAngle *  (xOffset / maxXOffset);
-                }
-            }
+            // We dragged left (after dragging right)
+            angle = maxAngle *  (xOffset / maxXOffset);
         }
         
-        // We don't want to rotate into positive angles (left side into screen)
-        if (angle > 0.0f) {
-            angle = 0.0f;
-        }
+        // Angle is negative
+        angle = angle < 0 ? angle : 0;
         
         // The width of the picker follows the ratio
-        // width/(view.width / 2) == angle/maxPullAngle
         CGFloat pickerXOffset = (self.view.bounds.size.width / 2.0f) * fabs(angle / maxPullAngle);
         
         // Hold the last position (necessary to calculate angle and offset)
         prevXOffset = xOffset;
         
-        // The transform
+        // The rotation transform
         CATransform3D rotationTransform = CATransform3DIdentity;
         rotationTransform.m34 = 1.0f / -500;
         rotationTransform = CATransform3DRotate(rotationTransform, angle, 0.0f, 1.0f, 0.0f);
         entryTitleField.layer.transform = rotationTransform;
         graphicView.layer.transform = rotationTransform;
         
-        // Move the colorPicker tableview in (wierd exception when offset approaches 0)
-        @try {
-            colorSchemePicker.frame = CGRectMake(0, 0, pickerXOffset, self.view.bounds.size.height);
-        }
-        @catch (NSException *exception) {
-            colorSchemePicker.frame = CGRectMake(0, 0, 0, self.view.bounds.size.height);
-        }
+        // Move the colorPicker tableview in (careful of NAN width)
+        colorSchemePicker.frame = CGRectMake(0, 0, pickerXOffset == NAN ? 0 : pickerXOffset, self.view.bounds.size.height);
         return;
     }
     
@@ -371,7 +303,10 @@
     if (panGestureRecognizer.state == UIGestureRecognizerStateEnded) {
         // Reset static max angle (the max angle is the farthest angle for any continuing complete drag)
         maxAngle = 0;
-        if (previousAngle > suspendedAngle) {
+        
+        // Hide or show depending on the angle
+        CGFloat endAngle = atan2(graphicView.layer.transform.m31, graphicView.layer.transform.m11);
+        if (endAngle > suspendedAngle) {
             [self hideColorPicker];
         } else {
             [self showColorPicker];
@@ -380,10 +315,6 @@
 }
 
 - (void)showColorPicker {
-    [colorSchemePicker layoutIfNeeded];
-    [entryTitleField setAnchorPointAdjustPosition:CGPointMake(0.75, 0.5)];
-    [graphicView setAnchorPointAdjustPosition:CGPointMake(0.75, 0.5)];
-    
     // Animate to suspended position
     CATransform3D rotateTransform = CATransform3DIdentity;
     rotateTransform.m34 = 1.0f / -500;
@@ -392,7 +323,6 @@
         entryTitleField.layer.transform = rotateTransform;
         graphicView.layer.transform = rotateTransform;
         colorSchemePicker.frame = CGRectMake(0, 0, 2 * self.view.bounds.size.width / 5.0f, self.view.bounds.size.height);
-        [colorSchemePicker layoutIfNeeded];
     } completion:nil];
 }
 
@@ -404,19 +334,7 @@
         colorSchemePicker.frame = CGRectMake(0, 0, 0, self.view.bounds.size.height);
     } completion:^(BOOL completion) {
         colorPickerIsVisible = NO;
-        [entryTitleField setAnchorPointAdjustPosition:CGPointMake(0.5, 0.5)];
-        [graphicView setAnchorPointAdjustPosition:CGPointMake(0.5, 0.5)];
     }];
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *colorScheme = [(SinceColorSchemePickerCell *)[tableView cellForRowAtIndexPath:indexPath] colorScheme];
-    [_entry setObject:colorScheme forKey:@"colorScheme"];
-    [self resetCurrentDisplay];
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 2 * self.view.bounds.size.width / 5;
 }
 
 #pragma mark - Entry picker
@@ -427,13 +345,12 @@
     CGFloat entryPickerWidth = entryPicker.bounds.size.width;
     CGFloat entryPickerHeight = entryPicker.bounds.size.height;
     CGFloat suspendedYPosition = self.view.frame.size.height - entryPicker.frame.size.height;
-    CGFloat hideThreshold = self.view.frame.size.height - entryPicker.frame.size.height / 2;
 
     // State logic
     switch (sender.state) {
         case UIGestureRecognizerStateBegan: {
             if (yTracking < suspendedYPosition || (entryPickerIsVisible && [sender velocityInView:self.view].y < 0)) {
-                // Cancel the gesture if we are out of range or we are bouncing up
+                // Cancel the gesture if we are out of range or we are bouncing up (bug?)
                 sender.enabled = NO;
                 sender.enabled = YES;
                 return;
@@ -463,6 +380,7 @@
         
         case UIGestureRecognizerStateEnded: {
             // Animate the view to either suspended or hidden
+            CGFloat hideThreshold = self.view.frame.size.height - entryPicker.frame.size.height / 2;
             if (yTracking > hideThreshold) {
                 // Hide if we are out of bounds or near bottom
                 [self hideEntryPicker];
@@ -493,42 +411,7 @@
     }];
 }
 
-#pragma mark - Title Field
-
-- (BOOL)textField:(UITextField *) textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    
-    NSUInteger oldLength = [textField.text length];
-    NSUInteger replacementLength = [string length];
-    NSUInteger rangeLength = range.length;
-    
-    NSUInteger newLength = oldLength - rangeLength + replacementLength;
-    
-    BOOL returnKey = [string rangeOfString: @"\n"].location != NSNotFound;
-    
-    return newLength <= 16 || returnKey;
-}
-
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    if (datePickerIsVisible) {
-        return NO;
-    } else {
-        [self hideColorPicker];
-        [self hideEntryPicker];
-        return YES;
-    }
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [textField resignFirstResponder];
-    return NO;
-}
-
-- (void)textFieldDidEndEditing:(UITextField *)textField {
-    [_entry setObject:textField.text forKey:@"title"];
-    [entryPicker reloadData];
-}
-
-#pragma mark - UIGestureRecognizer delegate
+#pragma mark - should we accept the gesture based on the state?
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     
@@ -545,31 +428,13 @@
     
     // All of our other gesture recognizers
     if (gestureRecognizer == panToExposeColorPicker) {
-        // We only pan if the date picker is not visible
-        if (!datePickerIsVisible && !entryPickerIsVisible) {
-            return YES;
-        } else {
-            return NO;
-        }
+        return !datePickerIsVisible && !entryPickerIsVisible;
     } else if (gestureRecognizer == tapToShowDatePicker) {
-        // We only show date picker if color picker is not visible (entry picker animates away)
-        if (!colorPickerIsVisible) {
-            return YES;
-        } else {
-            return NO;
-        }
+        return !colorPickerIsVisible;
     } else if (gestureRecognizer == panToExposeEntryPicker) {
-        if (!colorPickerIsVisible && !datePickerIsVisible) {
-            return YES;
-        } else {
-            return NO;
-        }
+        return !colorPickerIsVisible && !datePickerIsVisible;
     } else if (gestureRecognizer == tapToReset) {
-        if (!datePickerIsVisible) {
-            return YES;
-        } else {
-            return NO;
-        }
+        return !datePickerIsVisible;
     }
     
     // Otherwise fuck it
@@ -577,6 +442,10 @@
 }
 
 #pragma mark - Tutorial
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
+}
 
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
     if (motion == UIEventSubtypeMotionShake) {
@@ -623,7 +492,7 @@
     // Create a block for each step
     void (^introStep)() = ^{
         // Into step
-        [self animateTransitionOfView:tutorialView transitions:^{
+        [tutorialView fadeTransitions:^{
             tutorialView.frame = CGRectMake(0, 0, 200, 125);
             tutorialView.center = self.view.center;
             tutorialView.textLabel.text = @"Welcome to Since!\nPress to continue";
@@ -632,7 +501,7 @@
     };
     void (^overviewStep)() = ^{
         // Overview step
-        [self animateTransitionOfView:tutorialView transitions:^{
+        [tutorialView fadeTransitions:^{
             tutorialView.frame = CGRectMake(0, 0, 200, 170);
             tutorialView.center = CGPointMake(self.view.center.x, self.view.bounds.size.height * 3 / 5);
             tutorialView.direction = SinceTutorialLabelSpeechDirectionUp;
@@ -641,7 +510,7 @@
     };
     void (^arcStep)() = ^{
         // Arc description step
-        [self animateTransitionOfView:tutorialView transitions:^{
+        [tutorialView fadeTransitions:^{
             tutorialView.frame = CGRectMake(0, 0, 250, 185);
             tutorialView.center = tutorialView.center = CGPointMake(self.view.center.x, self.view.bounds.size.height * 3 / 5);
             tutorialView.textLabel.text = @"Colorful arcs represent the minute, hour, day, week, month, year, etc. Tap the display to animate the arcs";
@@ -651,7 +520,7 @@
     };
     void (^titleStep)() = ^{
         // Title step
-        [self animateTransitionOfView:tutorialView transitions:^{
+        [tutorialView fadeTransitions:^{
             tutorialView.frame = CGRectMake(0, 0, 200, 170);
             tutorialView.center = CGPointMake(self.view.center.x, entryTitleField.frame.size.height);
             tutorialView.direction = SinceTutorialLabelSpeechDirectionUp;
@@ -660,7 +529,7 @@
     };
     void (^dateStep)() = ^{
         // Date picker step
-        [self animateTransitionOfView:tutorialView transitions:^{
+        [tutorialView fadeTransitions:^{
             tutorialView.frame = CGRectMake(0, 0, 250, 180);
             tutorialView.center = CGPointMake(self.view.center.x, datePicker.frame.origin.y + datePicker.bounds.size.height / 3);
             tutorialView.direction = SinceTutorialLabelSpeechDirectionDown;
@@ -672,7 +541,7 @@
     void (^colorStep)() = ^{
         // Color picker step
         [self hideDatePicker];
-        [self animateTransitionOfView:tutorialView transitions:^{
+        [tutorialView fadeTransitions:^{
             tutorialView.frame = CGRectMake(0, 0, 150, 290);
             tutorialView.center = CGPointMake(self.view.bounds.size.width * 2 / 5, self.view.center.y);
             tutorialView.direction = SinceTutorialLabelSpeechDirectionLeft;
@@ -684,7 +553,7 @@
     void (^entryStep)() = ^{
         // Entry picker step
         [self hideColorPicker];
-        [self animateTransitionOfView:tutorialView transitions:^{
+        [tutorialView fadeTransitions:^{
             tutorialView.frame = CGRectMake(0, 0, 200, 215);
             tutorialView.center = CGPointMake(self.view.center.x, self.view.bounds.size.height * 7 / 8);
             tutorialView.direction = SinceTutorialLabelSpeechDirectionDown;
@@ -716,7 +585,7 @@
         [attrStr addAttributes:urlAttributes range:linkRange];
         
         // Transition
-        [self animateTransitionOfView:tutorialView transitions:^{
+        [tutorialView fadeTransitions:^{
             tutorialView.frame = CGRectMake(0, 0, 250, 190);
             tutorialView.center = self.view.center;
             tutorialView.direction = SinceTutorialLabelSpeechDirectionNone;
@@ -724,7 +593,7 @@
         } completion:nil];
     };
     void (^endStep)() = ^{
-        [self animateTransitionOfView:tutorialView transitions:^{
+        [tutorialView fadeTransitions:^{
             [tutorialView removeFromSuperview];
             tutorialView = nil;
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"tutorialWasViewed"];
@@ -736,24 +605,6 @@
     // Add to array
     NSArray *tutorialSteps = [NSArray arrayWithObjects:introStep, overviewStep, arcStep, titleStep, dateStep, colorStep, entryStep, outroStep, endStep, nil];
     return tutorialSteps;
-}
-
-- (void)animateTransitionOfView:(UIView *)view transitions:(void (^)(void))transitions completion:(void (^)(void))completion {
-    // Animates transition of tutorial view from one step to another
-    [UIView animateWithDuration:0.3 animations:^{
-        view.alpha = 0.0;
-    }completion:^(BOOL finished){
-        if (transitions) {
-            transitions();
-        }
-        [UIView animateWithDuration:0.3 delay:0.2 options:kNilOptions animations:^{
-            view.alpha = 1.0;
-        } completion:^(BOOL finished){
-            if (completion) {
-                completion();
-            }
-        }];
-    }];
 }
 
 @end

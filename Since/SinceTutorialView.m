@@ -135,6 +135,24 @@
     return @[labelTopConstraint, labelLeftConstraint, labelRightConstraint, labelBottomConstraint, buttonBottomConstraint, buttonXCenter, buttonHeight, buttonWidth];
 }
 
+- (void)fadeTransitions:(void (^)(void))transitions completion:(void (^)(void))completion {
+    // Animates transition of tutorial view from one step to another
+    [UIView animateWithDuration:0.3 animations:^{
+        self.alpha = 0.0;
+    }completion:^(BOOL finished){
+        if (transitions) {
+            transitions();
+        }
+        [UIView animateWithDuration:0.3 delay:0.2 options:kNilOptions animations:^{
+            self.alpha = 1.0;
+        } completion:^(BOOL finished){
+            if (completion) {
+                completion();
+            }
+        }];
+    }];
+}
+
 - (void)setDirection:(SinceTutorialLabelSpeechDirection)direction {
     _direction = direction;
     switch (direction) {

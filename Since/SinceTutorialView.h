@@ -24,4 +24,6 @@ typedef NS_ENUM(NSInteger, SinceTutorialLabelSpeechDirection) {
 
 @property (nonatomic) SinceTutorialLabelSpeechDirection direction;
 
+- (void)fadeTransitions:(void (^)(void))transitions completion:(void (^)(void))completion;
+
 @end

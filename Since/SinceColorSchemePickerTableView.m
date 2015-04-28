@@ -7,10 +7,11 @@
 //
 
 #import "SinceColorSchemePickerTableView.h"
+#import "SinceDataManager.h"
 #import "SinceColorSchemes.h"
 #import "SinceColorSchemePickerCell.h"
 
-@interface SinceColorSchemePickerTableView () <UITableViewDataSource>
+@interface SinceColorSchemePickerTableView () <UITableViewDataSource, UITableViewDelegate>
 
 @end
 
@@ -20,6 +21,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.dataSource = self;
+        self.delegate = self;
         self.backgroundColor = [UIColor colorWithWhite:0.05 alpha:1.0];
         self.separatorColor = [UIColor clearColor];
         self.showsVerticalScrollIndicator = NO;
@@ -51,6 +53,17 @@
     cell.label.text = [schemes objectAtIndex:indexPath.row];
     
     return cell;
+}
+
+#pragma mark - delegate
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *colorScheme = [(SinceColorSchemePickerCell *)[tableView cellForRowAtIndexPath:indexPath] colorScheme];
+    [[SinceDataManager sharedManager] setActiveEntryObject:colorScheme forKey:@"colorScheme"];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return self.superview.bounds.size.width * 2 / 5;
 }
 
 @end

@@ -132,6 +132,11 @@
     [_dataArray removeObjectAtIndex:index];
 }
 
+- (void)setActiveEntryObject:(id)object forKey:(id<NSCopying>)key {
+    [_activeEntry setObject:object forKey:key];
+    self.activeEntry = _activeEntry;
+}
+
 - (void)swapEntryFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex {
     [_dataArray exchangeObjectAtIndex:fromIndex withObjectAtIndex:toIndex];
 }

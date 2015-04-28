@@ -7,9 +7,27 @@
 //
 
 #import "SinceTitleTextField.h"
+#import "SinceDataManager.h"
 #import "SinceColorSchemes.h"
 
+@interface SinceTitleTextField () <UITextFieldDelegate>
+
+@end
+
 @implementation SinceTitleTextField
+
+- (id)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.keyboardAppearance = UIKeyboardAppearanceDark;
+        self.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:self.bounds.size.height / 4];
+        self.tintColor = [UIColor clearColor];
+        self.textColor = [UIColor blackColor];
+        self.textAlignment = NSTextAlignmentCenter;
+        self.delegate = self;
+    }
+    return self;
+}
 
 - (void)setText:(NSString *)text colorScheme:(NSString *)colorScheme {
     // Animate text and color change
@@ -22,6 +40,30 @@
             self.alpha = 1;
         }];
     }];
+}
+
+#pragma mark - delegate
+
+- (BOOL)textField:(UITextField *) textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    NSUInteger oldLength = [textField.text length];
+    NSUInteger replacementLength = [string length];
+    NSUInteger rangeLength = range.length;
+    
+    NSUInteger newLength = oldLength - rangeLength + replacementLength;
+    
+    BOOL returnKey = [string rangeOfString: @"\n"].location != NSNotFound;
+    
+    return newLength <= 16 || returnKey;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return NO;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    [[SinceDataManager sharedManager] setActiveEntryObject:self.text forKey:@"title"];
 }
 
 @end

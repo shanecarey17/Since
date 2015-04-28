@@ -27,6 +27,8 @@
 
 - (void)removeEntryAtIndex:(NSInteger)index;
 
+- (void)setActiveEntryObject:(id)object forKey:(id<NSCopying>)key;
+
 - (void)swapEntryFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex;
 
 - (NSInteger)numEntries;

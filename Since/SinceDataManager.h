@@ -7,21 +7,27 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "SinceViewController.h"
+
+@protocol SinceDataManagerDelegate
+
+@required
+
+- (void)activeEntryWasChangedToEntry:(NSDictionary *)entry;
+
+@end
+
 
 @interface SinceDataManager : NSObject
 
-@property (strong, nonatomic) SinceViewController *controller;
+@property (weak, nonatomic) id<SinceDataManagerDelegate> delegate;
 
-+ (instancetype)sharedManager;
+- (id)init;
 
-- (void)retrieveData;
+- (void)forceDelegateCall;
 
-- (void)saveData;
+- (NSDictionary *)entryAtIndex:(NSInteger)index;
 
-- (NSMutableDictionary *)entryAtIndex:(NSInteger)index;
-
-- (void)setActiveEntryAtIndex:(NSInteger)index;
+- (void)setEntryActiveAtIndex:(NSInteger)index;
 
 - (void)newEntry;
 

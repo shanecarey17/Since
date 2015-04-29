@@ -8,8 +8,7 @@
 
 #import "CountingLabel.h"
 
-@interface CountingLabel ()
-{
+@interface CountingLabel () {
     NSTimer *timer;
 }
 

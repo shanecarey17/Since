@@ -24,7 +24,6 @@
         self.tintColor = [UIColor clearColor];
         self.textColor = [UIColor blackColor];
         self.textAlignment = NSTextAlignmentCenter;
-        self.delegate = self;
     }
     return self;
 }
@@ -42,27 +41,8 @@
     }];
 }
 
-#pragma mark - delegate
-
-- (BOOL)textField:(UITextField *) textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    NSUInteger oldLength = [textField.text length];
-    NSUInteger replacementLength = [string length];
-    NSUInteger rangeLength = range.length;
-    
-    NSUInteger newLength = oldLength - rangeLength + replacementLength;
-    
-    BOOL returnKey = [string rangeOfString: @"\n"].location != NSNotFound;
-    
-    return newLength <= 16 || returnKey;
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [textField resignFirstResponder];
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
     return NO;
-}
-
-- (void)textFieldDidEndEditing:(UITextField *)textField {
-    [[SinceDataManager sharedManager] setActiveEntryObject:self.text forKey:@"title"];
 }
 
 @end

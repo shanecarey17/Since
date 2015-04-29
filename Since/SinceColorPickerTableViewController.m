@@ -1,32 +1,29 @@
 //
-//  ColorPickerView.m
+//  ColorPickerTableViewController.m
 //  Since
 //
-//  Created by Shane Carey on 4/15/15.
+//  Created by Shane Carey on 4/29/15.
 //  Copyright (c) 2015 Shane Carey. All rights reserved.
 //
 
-#import "SinceColorSchemePickerTableView.h"
-#import "SinceDataManager.h"
-#import "SinceColorSchemes.h"
+#import "SinceColorPickerTableViewController.h"
 #import "SinceColorSchemePickerCell.h"
+#import "SinceColorSchemes.h"
+#import "SinceDataManager.h"
 
-@interface SinceColorSchemePickerTableView () <UITableViewDataSource, UITableViewDelegate>
+@interface SinceColorPickerTableViewController ()
 
 @end
 
-@implementation SinceColorSchemePickerTableView
+@implementation SinceColorPickerTableViewController
 
-- (id)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    if (self) {
-        self.dataSource = self;
-        self.delegate = self;
-        self.backgroundColor = [UIColor colorWithWhite:0.05 alpha:1.0];
-        self.separatorColor = [UIColor clearColor];
-        self.showsVerticalScrollIndicator = NO;
-    }
-    return self;
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+    self.tableView.backgroundColor = [UIColor colorWithWhite:0.05 alpha:1.0];
+    self.tableView.separatorColor = [UIColor clearColor];
+    self.tableView.showsVerticalScrollIndicator = NO;
 }
 
 #pragma mark - datasource
@@ -59,11 +56,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *colorScheme = [(SinceColorSchemePickerCell *)[tableView cellForRowAtIndexPath:indexPath] colorScheme];
-    [[SinceDataManager sharedManager] setActiveEntryObject:colorScheme forKey:@"colorScheme"];
+    [self.dataManager setActiveEntryObject:colorScheme forKey:@"colorScheme"];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return self.superview.bounds.size.width * 2 / 5;
+    return self.tableView.superview.bounds.size.width * 2 / 5;
 }
 
 @end

@@ -6,30 +6,26 @@
 //  Copyright (c) 2015 Shane Carey. All rights reserved.
 //
 
-#define   PI 3.14159265359
-#define   DEGREES_TO_RADIANS(degrees)  ((PI * degrees)/ 180)
-#define   RAND_FLOAT ((double)arc4random() / 0x100000000)
+#define   DEGREES_TO_RADIANS(degrees)  ((M_PI * degrees)/ 180)
 
 #import "SinceViewController.h"
-#import "SinceDataManager.h"
+#import "SinceColorPickerTableViewController.h"
+#import "SinceEntryPickerCollectionViewController.h"
 #import "SinceTutorialView.h"
 #import "SinceDateCounterGraphicView.h"
 #import "SinceTitleTextField.h"
 #import "SinceDatePicker.h"
-#import "SinceColorSchemes.h"
-#import "SinceColorSchemePickerTableView.h"
-#import "SinceColorSchemePickerCell.h"
-#import "SinceEntryPickerCollectionView.h"
 #import "UIView+SinceUtilities.h"
 
-@interface SinceViewController () <UITableViewDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate>
-
-{
+@interface SinceViewController () <UITableViewDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate> {
+    
+    // Child Controllers
+    SinceColorPickerTableViewController *colorPickerController;
+    SinceEntryPickerCollectionViewController *entryPickerController;
+    
     // UI elements
     SinceDateCounterGraphicView *graphicView;
     SinceDatePicker *datePicker;
-    SinceColorSchemePickerTableView *colorSchemePicker;
-    SinceEntryPickerCollectionView *entryPicker;
     SinceTitleTextField *entryTitleField;
     SinceTutorialView *tutorialView;
     
@@ -46,6 +42,10 @@
     BOOL tutorialIsInProgress;
 }
 
+@property (strong, nonatomic) SinceDataManager *dataManager;
+
+@property (strong, nonatomic) NSDictionary *entry;
+
 @end
 
 @implementation SinceViewController
@@ -53,9 +53,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Register for a notification to reset graphic view on open and hide stuff on close
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetCurrentDisplay) name:@"UIApplicationWillEnterForegroundNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recieveDidEnterBackgroundNotification) name:@"UIApplicationDidEnterBackgroundNotification" object:nil];
+    // Model
+    self.dataManager = [[SinceDataManager alloc] init];
+    self.dataManager.delegate = self;
     
     // Initialize subiews (date picker under graphic view)
     [self initColorPicker];
@@ -63,6 +63,12 @@
     [self initGraphicView];
     [self initEntryPicker];
     [self initEntryTitleField];
+    
+    // Register for notifications to reset graphic view on open and hide stuff on close
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetCurrentDisplay) name:UIApplicationWillEnterForegroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideAllSubviews) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideAllSubviews) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideAllSubviews) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)initGraphicView {
@@ -91,12 +97,26 @@
 }
 
 - (void)initColorPicker {
-    // Tableview for color picking
-    colorSchemePicker = [[SinceColorSchemePickerTableView alloc] initWithFrame:CGRectMake(0, 0, 0, self.view.bounds.size.height)];
-    [self.view addSubview:colorSchemePicker];
+    colorPickerController = [[SinceColorPickerTableViewController alloc] init];
+    [self addChildViewController:colorPickerController];
+    [colorPickerController didMoveToParentViewController:self];
+    [self.view addSubview:colorPickerController.view];
+    colorPickerController.tableView.frame = CGRectMake(0, 0, 0, self.view.bounds.size.height);
+    colorPickerController.dataManager = self.dataManager;
+}
+
+- (void)initEntryPicker {
+    entryPickerController = [[SinceEntryPickerCollectionViewController alloc] init];
+    [self addChildViewController:entryPickerController];
+    [entryPickerController didMoveToParentViewController:self];
+    [self.view addSubview:entryPickerController.view];
+    entryPickerController.view.frame = CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height / 8);
+    entryPickerController.dataManager = self.dataManager;
     
-    // Set flag
-    colorPickerIsVisible = NO;
+    panToExposeEntryPicker = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(revealEntryPicker:)];
+    panToExposeEntryPicker.cancelsTouchesInView = NO;
+    panToExposeEntryPicker.delegate = self;
+    [self.view addGestureRecognizer:panToExposeEntryPicker];
 }
 
 - (void)initDatePicker {
@@ -111,24 +131,18 @@
     datePickerIsVisible = NO;
 }
 
-- (void)initEntryPicker {
-    entryPicker = [[SinceEntryPickerCollectionView alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height, self.view.bounds.size.width, self.view.bounds.size.height / 8)];
-    
-    panToExposeEntryPicker = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(revealEntryPicker:)];
-    panToExposeEntryPicker.cancelsTouchesInView = NO;
-    panToExposeEntryPicker.delegate = self;
-    [self.view addGestureRecognizer:panToExposeEntryPicker];
-    
-    [self.view addSubview:entryPicker];
-}
-
 - (void)initEntryTitleField {
     entryTitleField = [[SinceTitleTextField alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, graphicView.frame.origin.y)];
+    entryTitleField.delegate = self;
     [entryTitleField setAnchorPointAdjustPosition:CGPointMake(0.75, 0.5)];
     [self.view addSubview:entryTitleField];
 }
 
 #pragma mark - view enter/exit
+
+- (void)viewWillAppear:(BOOL)animated {
+    [self.dataManager forceDelegateCall];
+}
 
 - (void)viewDidAppear:(BOOL)animated {
     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"tutorialWasViewed"]) {
@@ -136,30 +150,26 @@
     }
 }
 
-- (void)recieveDidEnterBackgroundNotification {
-    [entryPicker setEditing:NO];
+- (void)hideAllSubviews {
+    [entryPickerController setEditing:NO];
+    [entryPickerController.collectionView reloadData];
     [self hideEntryPicker];
     [self hideDatePicker];
     [self hideColorPicker];
 }
 
-#pragma mark - Entry
+#pragma mark - Data delegation and reloading view
 
-- (void)setEntry:(NSMutableDictionary *)entry {
-    _entry = entry;
-    
-    // Date picker
-    datePicker.date = [_entry objectForKey:@"sinceDate"];
-    
-    // Change graphic view
+- (void)activeEntryWasChangedToEntry:(NSDictionary *)entry {
+    self.entry = entry;
     [self resetCurrentDisplay];
 }
 
 - (void)resetCurrentDisplay {
-    [graphicView resetView:[_entry objectForKey:@"sinceDate"] colors:[_entry objectForKey:@"colorScheme"]];
-    [entryTitleField setText:[_entry objectForKey:@"title"] colorScheme:[_entry objectForKey:@"colorScheme"]];
-    [datePicker setColorScheme:[_entry objectForKey:@"colorScheme"]];
-    [entryPicker reloadData];
+    [graphicView resetView:[self.entry objectForKey:@"sinceDate"] colors:[self.entry objectForKey:@"colorScheme"]];
+    [entryTitleField setText:[self.entry objectForKey:@"title"] colorScheme:[self.entry objectForKey:@"colorScheme"]];
+    [datePicker setColorScheme:[self.entry objectForKey:@"colorScheme"]];
+    [datePicker setDate:[self.entry objectForKey:@"sinceDate"]];
 }
 
 #pragma mark - Date picker
@@ -181,7 +191,7 @@
             
         } else {
             // We have a valid date
-            [[SinceDataManager sharedManager] setActiveEntryObject:chosenDate forKey:@"sinceDate"];
+            [self.dataManager setActiveEntryObject:chosenDate forKey:@"sinceDate"];
             
             // Set and hide date picker
             [self hideDatePicker];
@@ -295,7 +305,7 @@
         graphicView.layer.transform = rotationTransform;
         
         // Move the colorPicker tableview in (careful of NAN width)
-        colorSchemePicker.frame = CGRectMake(0, 0, pickerXOffset == NAN ? 0 : pickerXOffset, self.view.bounds.size.height);
+        colorPickerController.tableView.frame = CGRectMake(0, 0, pickerXOffset == NAN ? 0 : pickerXOffset, self.view.bounds.size.height);
         return;
     }
     
@@ -322,7 +332,7 @@
     [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         entryTitleField.layer.transform = rotateTransform;
         graphicView.layer.transform = rotateTransform;
-        colorSchemePicker.frame = CGRectMake(0, 0, 2 * self.view.bounds.size.width / 5.0f, self.view.bounds.size.height);
+        colorPickerController.tableView.frame = CGRectMake(0, 0, 2 * self.view.bounds.size.width / 5.0f, self.view.bounds.size.height);
     } completion:nil];
 }
 
@@ -331,7 +341,7 @@
     [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         entryTitleField.layer.transform = CATransform3DIdentity;
         graphicView.layer.transform = CATransform3DIdentity;
-        colorSchemePicker.frame = CGRectMake(0, 0, 0, self.view.bounds.size.height);
+        colorPickerController.tableView.frame = CGRectMake(0, 0, 0, self.view.bounds.size.height);
     } completion:^(BOOL completion) {
         colorPickerIsVisible = NO;
     }];
@@ -342,9 +352,9 @@
 - (void)revealEntryPicker:(UIPanGestureRecognizer *)sender {
     // Get where we are panning
     CGFloat yTracking = [sender locationInView:self.view].y;
-    CGFloat entryPickerWidth = entryPicker.bounds.size.width;
-    CGFloat entryPickerHeight = entryPicker.bounds.size.height;
-    CGFloat suspendedYPosition = self.view.frame.size.height - entryPicker.frame.size.height;
+    CGFloat entryPickerWidth = entryPickerController.view.bounds.size.width;
+    CGFloat entryPickerHeight = entryPickerController.view.bounds.size.height;
+    CGFloat suspendedYPosition = self.view.frame.size.height - entryPickerController.view.frame.size.height + 1;
 
     // State logic
     switch (sender.state) {
@@ -357,12 +367,13 @@
             } else {
                 // Animate quickly to where our finger is
                 [UIView animateWithDuration:0.3 animations:^{
-                    entryPicker.frame = CGRectMake(0, yTracking, entryPickerWidth, entryPickerHeight);
+                    entryPickerController.view.frame = CGRectMake(0, yTracking, entryPickerWidth, entryPickerHeight);
                 }];
                 
                 // From this point our entry picker is visible
                 entryPickerIsVisible = YES;
-            }            break;
+            }
+            break;
         }
         
         case UIGestureRecognizerStateChanged: {
@@ -370,9 +381,9 @@
             [UIView animateWithDuration:0.1 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
                 if (yTracking < suspendedYPosition) {
                     // If we are out of range
-                    entryPicker.frame = CGRectMake(0, suspendedYPosition, entryPickerWidth, entryPickerHeight);
+                    entryPickerController.view.frame = CGRectMake(0, suspendedYPosition, entryPickerWidth, entryPickerHeight);
                 } else {
-                    entryPicker.frame = CGRectMake(0, yTracking, entryPickerWidth, entryPickerHeight);
+                    entryPickerController.view.frame = CGRectMake(0, yTracking, entryPickerWidth, entryPickerHeight);
                 }
             }completion:nil];
             break;
@@ -380,7 +391,7 @@
         
         case UIGestureRecognizerStateEnded: {
             // Animate the view to either suspended or hidden
-            CGFloat hideThreshold = self.view.frame.size.height - entryPicker.frame.size.height / 2;
+            CGFloat hideThreshold = self.view.frame.size.height - entryPickerController.view.frame.size.height / 2;
             if (yTracking > hideThreshold) {
                 // Hide if we are out of bounds or near bottom
                 [self hideEntryPicker];
@@ -398,15 +409,15 @@
 
 - (void)showEntryPicker {
     [UIView animateWithDuration:0.3f animations:^{
-        entryPicker.frame = CGRectMake(0, self.view.frame.size.height - entryPicker.frame.size.height, entryPicker.frame.size.width, entryPicker.frame.size.height);
+        entryPickerController.view.frame = CGRectMake(0, self.view.frame.size.height - entryPickerController.view.frame.size.height + 1, entryPickerController.view.frame.size.width, entryPickerController.view.frame.size.height);
     }];
 }
 
 - (void)hideEntryPicker {
     [UIView animateWithDuration:0.3f animations:^{
-        entryPicker.frame = CGRectMake(0, self.view.frame.size.height, entryPicker.frame.size.width, entryPicker.frame.size.height);
+        entryPickerController.view.frame = CGRectMake(0, self.view.frame.size.height, entryPickerController.view.frame.size.width, entryPickerController.view.frame.size.height);
     } completion:^(BOOL finished){
-        entryPicker.editing = NO;
+        entryPickerController.editing = NO;
         entryPickerIsVisible = NO;
     }];
 }
@@ -415,14 +426,8 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     
-    if (tutorialIsInProgress) {
-        // Don't do anything if the tutorial is in progress
-        return NO;
-    }
-
-    if ([entryTitleField isFirstResponder]) {
-        // If the keyboard is up, don't accept the touch but lose the keyboard
-        [entryTitleField resignFirstResponder];
+    if (tutorialIsInProgress || [entryTitleField isFirstResponder]) {
+        // Don't do anything if the tutorial is in progress or keyboard is up
         return NO;
     }
     
@@ -439,6 +444,29 @@
     
     // Otherwise fuck it
     return YES;
+}
+
+#pragma mark - title field delegate
+
+- (BOOL)textField:(UITextField *) textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    NSUInteger oldLength = [textField.text length];
+    NSUInteger replacementLength = [string length];
+    NSUInteger rangeLength = range.length;
+    
+    NSUInteger newLength = oldLength - rangeLength + replacementLength;
+    
+    BOOL returnKey = [string rangeOfString: @"\n"].location != NSNotFound;
+    
+    return newLength <= 16 || returnKey;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return NO;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    [self.dataManager setActiveEntryObject:textField.text forKey:@"title"];
 }
 
 #pragma mark - Tutorial

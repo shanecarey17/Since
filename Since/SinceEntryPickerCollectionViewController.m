@@ -1,62 +1,62 @@
 //
-//  SinceEntryPickerCollectionView.m
+//  SinceEntryPickerCollectionViewController.m
 //  Since
 //
-//  Created by Shane Carey on 4/16/15.
+//  Created by Shane Carey on 4/29/15.
 //  Copyright (c) 2015 Shane Carey. All rights reserved.
 //
 
-#import <objc/runtime.h>
-
-#import "SinceEntryPickerCollectionView.h"
+#import "SinceEntryPickerCollectionViewController.h"
 #import "SinceEntryPickerCollectionViewCell.h"
 #import "SinceDataManager.h"
 #import "SincePurchasesManager.h"
 
-@interface SinceEntryPickerCollectionView () <UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate>
+@interface SinceEntryPickerCollectionViewController ()
+
 {
-    BOOL isEditing;
-    
     UICollectionViewCell *draggingCell;
+    BOOL isEditing;
 }
 
 @end
 
-@implementation SinceEntryPickerCollectionView
+@implementation SinceEntryPickerCollectionViewController
 
-- (id)initWithFrame:(CGRect)frame {
+- (id)init {
     // Create the layout
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    layout.itemSize = CGSizeMake(frame.size.height, frame.size.height);
-    
-    // Initialize
-    self = [super initWithFrame:frame collectionViewLayout:layout];
+    self = [super initWithCollectionViewLayout:layout];
     if (self) {
-        [self registerClass:[SinceEntryPickerCollectionViewCell class] forCellWithReuseIdentifier:@"entryCell"];
-        [self registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"addCell"];
-        
-        self.backgroundColor = [UIColor colorWithWhite:0.05 alpha:1.0];
-        self.showsHorizontalScrollIndicator = NO;
-        self.dataSource = self;
-        self.delegate = self;
+        //
     }
     return self;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self.collectionView registerClass:[SinceEntryPickerCollectionViewCell class] forCellWithReuseIdentifier:@"entryCell"];
+    [self.collectionView  registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"addCell"];
+    
+    self.collectionView.backgroundColor = [UIColor colorWithWhite:0.05 alpha:1.0];
+    self.collectionView.showsHorizontalScrollIndicator = NO;
+    self.collectionView.dataSource = self;
+    self.collectionView.delegate = self;
 }
 
 #pragma mark - datasource
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return [[SinceDataManager sharedManager] numEntries] + 1;
+    return [self.dataManager numEntries] + 1;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == [[SinceDataManager sharedManager] numEntries]) {
+    if (indexPath.row == [self.dataManager numEntries]) {
         // Our final cell is used to add a new entry
         return [self addCellForIndexPath:indexPath];
     } else {
         // Get cell for stored entry
-        NSDictionary *entry = [[SinceDataManager sharedManager] entryAtIndex:indexPath.row];
+        NSDictionary *entry = [self.dataManager entryAtIndex:indexPath.row];
         NSInteger dayCount = [[NSDate date] timeIntervalSinceDate:[entry objectForKey:@"sinceDate"]] / 86400;
         NSString *title = [entry objectForKey:@"title"];
         SinceEntryPickerCollectionViewCell *cell = [self entryCellForIndexPath:indexPath dayCount:dayCount title:title];
@@ -72,7 +72,7 @@
 }
 
 - (UICollectionViewCell *)addCellForIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell *addCell = [self dequeueReusableCellWithReuseIdentifier:@"addCell" forIndexPath:indexPath];
+    UICollectionViewCell *addCell = [self.collectionView dequeueReusableCellWithReuseIdentifier:@"addCell" forIndexPath:indexPath];
     UILabel *plusLabel = [[UILabel alloc] initWithFrame:addCell.contentView.frame];
     plusLabel.text = @"+";
     plusLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:addCell.contentView.frame.size.height / 4];
@@ -84,7 +84,7 @@
 }
 
 - (SinceEntryPickerCollectionViewCell *)entryCellForIndexPath:(NSIndexPath *)indexPath dayCount:(NSInteger)count title:(NSString *)title {
-    SinceEntryPickerCollectionViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:@"entryCell" forIndexPath:indexPath];
+    SinceEntryPickerCollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:@"entryCell" forIndexPath:indexPath];
     [cell.dayCountLabel setText:[NSString stringWithFormat:@"%ld", labs(count)]];
     [cell.titleLabel setText:title];
     [cell.deleteButton addTarget:self action:@selector(deleteButtonPressedForCell:) forControlEvents:UIControlEventTouchDown];
@@ -100,20 +100,24 @@
         self.editing = NO;
     } else {
         // Let's do something with the cell we chose
-        if (indexPath.row == [[SinceDataManager sharedManager] numEntries]) {
+        if (indexPath.row == [self.dataManager numEntries]) {
             // Add an entry
             [self addEntry:indexPath];
         } else {
             // Select the chosen entry
-            [[SinceDataManager sharedManager] setActiveEntryAtIndex:indexPath.row];
+            [self.dataManager setEntryActiveAtIndex:indexPath.row];
         }
     }
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return CGSizeMake(self.collectionView.bounds.size.height, self.collectionView.bounds.size.height);
 }
 
 #pragma mark - editing
 
 - (void)editGestureRecieved:(UIGestureRecognizer *)gesture {
-    if ([[SinceDataManager sharedManager] numEntries] > 1) {
+    if ([self.dataManager numEntries] > 1) {
         [self setEditing:YES];
         [self dragAndDrop:gesture];
     }
@@ -123,8 +127,8 @@
     switch (gesture.state) {
         case UIGestureRecognizerStateBegan: {
             // Get the dragging cell
-            CGPoint location = [gesture locationInView:self];
-            draggingCell = [self cellForItemAtIndexPath:[self indexPathForItemAtPoint:location]];
+            CGPoint location = [gesture locationInView:self.collectionView];
+            draggingCell = [self.collectionView cellForItemAtIndexPath:[self.collectionView indexPathForItemAtPoint:location]];
             
             // Animate to faded and large
             [UIView animateWithDuration:0.3 animations:^{
@@ -136,18 +140,18 @@
         }
             
         case UIGestureRecognizerStateChanged: {
-            CGPoint location = [gesture locationInView:self];
+            CGPoint location = [gesture locationInView:self.collectionView];
             
             // Swap
-            NSIndexPath *swapFromIndexPath = [self indexPathForCell:draggingCell];
-            NSIndexPath *swapToIndexPath = [self indexPathForItemAtPoint:location];
-            if (swapFromIndexPath && swapToIndexPath && swapToIndexPath.row != [[SinceDataManager sharedManager] numEntries]) {
+            NSIndexPath *swapFromIndexPath = [self.collectionView indexPathForCell:draggingCell];
+            NSIndexPath *swapToIndexPath = [self.collectionView indexPathForItemAtPoint:location];
+            if (swapFromIndexPath && swapToIndexPath && swapToIndexPath.row != [self.dataManager numEntries]) {
                 // If both cells are in place and we are not swapping to the add cell
-                [self performBatchUpdates:^{
-                    [self moveItemAtIndexPath:swapFromIndexPath toIndexPath:swapToIndexPath];
+                [self.collectionView performBatchUpdates:^{
+                    [self.collectionView moveItemAtIndexPath:swapFromIndexPath toIndexPath:swapToIndexPath];
                 }completion:^(BOOL finished){
                     // Update data manager
-                    [[SinceDataManager sharedManager] swapEntryFromIndex:swapFromIndexPath.row toIndex:swapToIndexPath.row];
+                    [self.dataManager swapEntryFromIndex:swapFromIndexPath.row toIndex:swapToIndexPath.row];
                     
                     if (gesture.state == UIGestureRecognizerStatePossible) {
                         // The update finished after the gesture ended
@@ -165,27 +169,26 @@
                 }];
             }
             
-            if (self.contentSize.width > self.bounds.size.width) {
+            if (self.collectionView.contentSize.width > self.collectionView.bounds.size.width) {
                 // Scroll if there is need to (cells don't fill screen)
-                if ([gesture locationInView:self].x < [self contentOffset].x + 50) {
+                if ([gesture locationInView:self.collectionView].x < [self.collectionView contentOffset].x + 50) {
                     
                     // Scroll left 100
-                    CGFloat newXOffset = [self contentOffset].x - 100 < 0 ? 0 :[self contentOffset].x - 100;
-                    [self setContentOffset:CGPointMake(newXOffset, 0) animated:YES];
+                    CGFloat newXOffset = [self.collectionView contentOffset].x - 100 < 0 ? 0 :[self.collectionView contentOffset].x - 100;
+                    [self.collectionView setContentOffset:CGPointMake(newXOffset, 0) animated:YES];
                     
-                } else if ([gesture locationInView:self].x > [self contentOffset].x + self.bounds.size.width - 50) {
+                } else if ([gesture locationInView:self.collectionView].x > [self.collectionView contentOffset].x + self.collectionView.bounds.size.width - 50) {
                     
                     // Scroll right 100
-                    CGFloat newXOffset = [self contentOffset].x + 100 > [self contentSize].width - self.bounds.size.width ? [self contentSize].width - self.bounds.size.width : [self contentOffset].x + 100;
-                    [self setContentOffset:CGPointMake(newXOffset, 0) animated:YES];
-                    
+                    CGFloat newXOffset = [self.collectionView contentOffset].x + 100 > [self.collectionView contentSize].width - self.collectionView.bounds.size.width ? [self.collectionView contentSize].width - self.collectionView.bounds.size.width : [self.collectionView contentOffset].x + 100;
+                    [self.collectionView setContentOffset:CGPointMake(newXOffset, 0) animated:YES];
                 }
-
+                
             }
-    
+            
             break;
         }
-        
+            
         case UIGestureRecognizerStateEnded: {
             // Animate back to normal appearance
             [UIView animateWithDuration:0.5 animations:^{
@@ -209,7 +212,7 @@
 
 - (void)setEditing:(BOOL)editing {
     // Set the ivar
-    if ([[SinceDataManager sharedManager] numEntries] == 1) {
+    if ([self.dataManager numEntries] == 1) {
         // Don't allow editing if there is only one entry
         isEditing = NO;
     } else {
@@ -217,19 +220,23 @@
     }
     
     // Set all tableviewcells to the editing status
-    for (SinceEntryPickerCollectionViewCell *cell in [self visibleCells]) {
-        if ([cell isKindOfClass:[SinceEntryPickerCollectionViewCell class]]) {
-            cell.editing = isEditing;
+    for (UICollectionViewCell *cell in [self.collectionView visibleCells]) {
+        if ([cell.reuseIdentifier isEqualToString:@"entryCell"]) {
+            [(SinceEntryPickerCollectionViewCell *)cell setEditing:isEditing];
         }
     }
 }
 
 - (void)deleteButtonPressedForCell:(UIButton *)button {
-    // Tell the data manager to delete the entry
-    CGPoint buttonPosition = [button convertPoint:CGPointZero toView:self];
-    NSIndexPath *deleteIndex = [self indexPathForItemAtPoint:buttonPosition];
-    [[SinceDataManager sharedManager] removeEntryAtIndex:deleteIndex.row];
-    [self deleteItemsAtIndexPaths:@[deleteIndex]];
+    // Tell the data manager to delete the entry and remove from collectionview
+    CGPoint buttonPosition = [button convertPoint:CGPointZero toView:self.collectionView];
+    NSIndexPath *deleteIndex = [self.collectionView indexPathForItemAtPoint:buttonPosition];
+    
+    // Delete entry
+    [self.dataManager removeEntryAtIndex:deleteIndex.row];
+    
+    // Remove from collectionview
+    [self.collectionView deleteItemsAtIndexPaths:@[deleteIndex]];
     
     // Keep editing
     self.editing = YES;
@@ -240,12 +247,11 @@
         // User has purchased the in app purchase
         
         // Create a new entry
-        [[SinceDataManager sharedManager] newEntry];
+        [self.dataManager newEntry];
         
         // Animated insertion
-        [self insertItemsAtIndexPaths:@[indexPath]];
-        [self reloadItemsAtIndexPaths:@[indexPath]];
-        [self scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionLeft animated:YES];
+        [self.collectionView insertItemsAtIndexPaths:@[indexPath]];
+        [self.collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionLeft animated:YES];
     } else {
         // User has not purchased the in app purchase
         [self showMultipleDatesPurchaseAlert];
@@ -266,7 +272,7 @@
             // User will purchase item
             [[SincePurchasesManager sharedManager] purchaseItemForKey:kMultipleDatesPurchaseIdentifier];
             break;
-        
+            
         case 2:
             // User will restore purchases
             [[SincePurchasesManager sharedManager] restorePurchases];

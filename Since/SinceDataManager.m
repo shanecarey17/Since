@@ -17,25 +17,25 @@
 
 @end
 
-
 @implementation SinceDataManager
 
-+ (id)sharedManager {
-    // Singleton initialization
-    static SinceDataManager *manager;
-    static dispatch_once_t token;
-    dispatch_once(&token, ^{
-        manager = [[self alloc] init];
-        manager.dataArray = [[NSMutableArray alloc] init];
-    });
-    return manager;
+- (id)init {
+    self = [super init];
+    if (self) {
+        self.dataArray = [[NSMutableArray alloc] init];
+        [self retrieveData];
+    }
+    return self;
+}
+
+- (void)forceDelegateCall {
+    [self.delegate activeEntryWasChangedToEntry:_activeEntry];
 }
 
 - (void)setActiveEntry:(NSMutableDictionary *)activeEntry {
     _activeEntry = activeEntry;
-    
-    // Notify delegate that active entry has changed
-    [_controller setEntry:_activeEntry];
+    [self.delegate activeEntryWasChangedToEntry:_activeEntry];
+    [self saveData];
 }
 
 #pragma mark - file system access
@@ -88,12 +88,12 @@
     return [_dataArray count];
 }
 
-- (NSMutableDictionary *)entryAtIndex:(NSInteger)index {
+- (NSDictionary *)entryAtIndex:(NSInteger)index {
     // Return entry at given index
-    return [_dataArray objectAtIndex:index];
+    return [NSDictionary dictionaryWithDictionary:[_dataArray objectAtIndex:index]];
 }
 
-- (void)setActiveEntryAtIndex:(NSInteger)index {
+- (void)setEntryActiveAtIndex:(NSInteger)index {
     // Return the entry at that index
     self.activeEntry = [_dataArray objectAtIndexedSubscript:index];
 }
@@ -120,7 +120,7 @@
     // If we are deleting the active entry
     if (index == [_dataArray indexOfObject:_activeEntry]) {
         if ([_dataArray count] == 1) {
-            return;
+            self.activeEntry = nil;
         } else if (index > 0) {
             self.activeEntry = [_dataArray objectAtIndex:index - 1];
         } else if (index == 0) {

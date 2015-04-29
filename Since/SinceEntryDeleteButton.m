@@ -30,5 +30,4 @@
     CGContextStrokePath(context);
 }
 
-
 @end

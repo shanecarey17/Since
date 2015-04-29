@@ -11,8 +11,7 @@
 #import "SinceTutorialView.h"
 #import "SinceTutorialActionButton.h"
 
-@interface SinceTutorialView () <UITextViewDelegate>
-{
+@interface SinceTutorialView () <UITextViewDelegate> {
     SinceTutorialLabelSpeechDirection _direction;
 }
 
@@ -208,9 +207,8 @@
             break;
     }
     
-    // Redraw
+    // Redraw and layout
     [self setNeedsDisplay];
-    [self updateConstraintsIfNeeded];
     [self layoutIfNeeded];
 }
 

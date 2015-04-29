@@ -31,25 +31,6 @@
     return self;
 }
 
-- (NSArray *)createConstraints {
-    NSLayoutConstraint *centerXCountLabel = [NSLayoutConstraint constraintWithItem:_dayCountLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
-    NSLayoutConstraint *topCountLabel = [NSLayoutConstraint constraintWithItem:_dayCountLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:10];
-    NSLayoutConstraint *widthCountLabel = [NSLayoutConstraint constraintWithItem:_dayCountLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:0.5 constant:0];
-    NSLayoutConstraint *heightCountLabel = [NSLayoutConstraint constraintWithItem:_dayCountLabel attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:0.5 constant:0];
-    
-    NSLayoutConstraint *topTitleLabel = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_dayCountLabel attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
-    NSLayoutConstraint *heightTitleLabel = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:16];
-    NSLayoutConstraint *leftTitleLabel = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
-    NSLayoutConstraint *rightTitleLabel = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeRight multiplier:1 constant:0];
-    
-    NSLayoutConstraint *topButton = [NSLayoutConstraint constraintWithItem:_deleteButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTopMargin multiplier:1 constant:0];
-    NSLayoutConstraint *rightButton = [NSLayoutConstraint constraintWithItem:_deleteButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeRightMargin multiplier:1 constant:0];
-    NSLayoutConstraint *widthButton = [NSLayoutConstraint constraintWithItem:_deleteButton attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:0.25 constant:0];
-    NSLayoutConstraint *heightButton = [NSLayoutConstraint constraintWithItem:_deleteButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:0.25 constant:0];
-    
-    return @[centerXCountLabel, topCountLabel, widthCountLabel, heightCountLabel, topTitleLabel, heightTitleLabel, leftTitleLabel, rightTitleLabel, topButton, rightButton, widthButton, heightButton];
-}
-
 - (UILabel *)createDayCountLabel {
     UILabel *dayCountLabel = [[UILabel alloc] init];
     dayCountLabel.textColor = [UIColor whiteColor];
@@ -78,9 +59,30 @@
     return deleteButton;
 }
 
+- (NSArray *)createConstraints {
+    NSLayoutConstraint *centerXCountLabel = [NSLayoutConstraint constraintWithItem:_dayCountLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
+    NSLayoutConstraint *topCountLabel = [NSLayoutConstraint constraintWithItem:_dayCountLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1 constant:10];
+    NSLayoutConstraint *widthCountLabel = [NSLayoutConstraint constraintWithItem:_dayCountLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:0.5 constant:0];
+    NSLayoutConstraint *heightCountLabel = [NSLayoutConstraint constraintWithItem:_dayCountLabel attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:0.5 constant:0];
+    
+    NSLayoutConstraint *topTitleLabel = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_dayCountLabel attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+    NSLayoutConstraint *heightTitleLabel = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:0 constant:16];
+    NSLayoutConstraint *leftTitleLabel = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+    NSLayoutConstraint *rightTitleLabel = [NSLayoutConstraint constraintWithItem:_titleLabel attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+    
+    NSLayoutConstraint *topButton = [NSLayoutConstraint constraintWithItem:_deleteButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTopMargin multiplier:1 constant:0];
+    NSLayoutConstraint *rightButton = [NSLayoutConstraint constraintWithItem:_deleteButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeRightMargin multiplier:1 constant:0];
+    NSLayoutConstraint *widthButton = [NSLayoutConstraint constraintWithItem:_deleteButton attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:0.25 constant:0];
+    NSLayoutConstraint *heightButton = [NSLayoutConstraint constraintWithItem:_deleteButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:0.25 constant:0];
+    
+    return @[centerXCountLabel, topCountLabel, widthCountLabel, heightCountLabel, topTitleLabel, heightTitleLabel, leftTitleLabel, rightTitleLabel, topButton, rightButton, widthButton, heightButton];
+}
+
 - (void)layoutSubviews {
     _deleteButton.layer.cornerRadius = _deleteButton.bounds.size.width / 2;
 }
+
+#pragma mark - editing
 
 - (void)setEditing:(BOOL)editing {
     if (editing) {

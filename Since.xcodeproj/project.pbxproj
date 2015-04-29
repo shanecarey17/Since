@@ -17,6 +17,8 @@
 		7B6F00631AC713C1003B6E90 /* SinceColorSchemePickerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B6F00621AC713C1003B6E90 /* SinceColorSchemePickerCell.m */; };
 		7B8B4B331AE96D80001DE319 /* SincePurchasesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B8B4B321AE96D80001DE319 /* SincePurchasesManager.m */; };
 		7B8B4B341AE986DB001DE319 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B8B4B2F1AE96C1D001DE319 /* StoreKit.framework */; };
+		7BB5714F1AF14C2F0029A5F1 /* SinceColorPickerTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BB5714E1AF14C2F0029A5F1 /* SinceColorPickerTableViewController.m */; };
+		7BB571521AF14EA50029A5F1 /* SinceEntryPickerCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BB571511AF14EA50029A5F1 /* SinceEntryPickerCollectionViewController.m */; };
 		7BCA2B351ACB855900AE6659 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BCA2B341ACB855900AE6659 /* UIColor+Hex.m */; };
 		7BD4496D1AC1AB8E008A450E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BD4496C1AC1AB8E008A450E /* main.m */; };
 		7BD449701AC1AB8E008A450E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BD4496F1AC1AB8E008A450E /* AppDelegate.m */; };
@@ -27,11 +29,9 @@
 		7BE4790B1AE48CCB009CEA13 /* SinceTutorialView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BE4790A1AE48CCB009CEA13 /* SinceTutorialView.m */; };
 		7BE4790E1AE4BA45009CEA13 /* SinceTutorialActionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BE4790D1AE4BA45009CEA13 /* SinceTutorialActionButton.m */; };
 		7BF46F9F1AE03FDF00DC8AF0 /* SinceDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF46F9E1AE03FDF00DC8AF0 /* SinceDataManager.m */; };
-		7BF46FA21AE0468F00DC8AF0 /* SinceEntryPickerCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF46FA11AE0468F00DC8AF0 /* SinceEntryPickerCollectionView.m */; };
 		7BF46FA51AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF46FA41AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.m */; };
 		7BF46FA81AE169E000DC8AF0 /* SinceEntryDeleteButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF46FA71AE169E000DC8AF0 /* SinceEntryDeleteButton.m */; };
 		7BF46FAE1AE2EAEA00DC8AF0 /* SinceTitleTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BF46FAD1AE2EAEA00DC8AF0 /* SinceTitleTextField.m */; };
-		7BFC224F1ADF3C5900B6938C /* SinceColorSchemePickerTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7BFC224E1ADF3C5900B6938C /* SinceColorSchemePickerTableView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +77,10 @@
 		7B8B4B2F1AE96C1D001DE319 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		7B8B4B311AE96D80001DE319 /* SincePurchasesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SincePurchasesManager.h; sourceTree = "<group>"; };
 		7B8B4B321AE96D80001DE319 /* SincePurchasesManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SincePurchasesManager.m; sourceTree = "<group>"; };
+		7BB5714D1AF14C2F0029A5F1 /* SinceColorPickerTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceColorPickerTableViewController.h; sourceTree = "<group>"; };
+		7BB5714E1AF14C2F0029A5F1 /* SinceColorPickerTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceColorPickerTableViewController.m; sourceTree = "<group>"; };
+		7BB571501AF14EA50029A5F1 /* SinceEntryPickerCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceEntryPickerCollectionViewController.h; sourceTree = "<group>"; };
+		7BB571511AF14EA50029A5F1 /* SinceEntryPickerCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceEntryPickerCollectionViewController.m; sourceTree = "<group>"; };
 		7BCA2B331ACB855900AE6659 /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		7BCA2B341ACB855900AE6659 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		7BD449671AC1AB8E008A450E /* Since.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Since.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -97,16 +101,12 @@
 		7BE4790D1AE4BA45009CEA13 /* SinceTutorialActionButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceTutorialActionButton.m; sourceTree = "<group>"; };
 		7BF46F9D1AE03FDF00DC8AF0 /* SinceDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceDataManager.h; sourceTree = "<group>"; };
 		7BF46F9E1AE03FDF00DC8AF0 /* SinceDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceDataManager.m; sourceTree = "<group>"; };
-		7BF46FA01AE0468F00DC8AF0 /* SinceEntryPickerCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceEntryPickerCollectionView.h; sourceTree = "<group>"; };
-		7BF46FA11AE0468F00DC8AF0 /* SinceEntryPickerCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceEntryPickerCollectionView.m; sourceTree = "<group>"; };
 		7BF46FA31AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceEntryPickerCollectionViewCell.h; sourceTree = "<group>"; };
 		7BF46FA41AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceEntryPickerCollectionViewCell.m; sourceTree = "<group>"; };
 		7BF46FA61AE169E000DC8AF0 /* SinceEntryDeleteButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceEntryDeleteButton.h; sourceTree = "<group>"; };
 		7BF46FA71AE169E000DC8AF0 /* SinceEntryDeleteButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceEntryDeleteButton.m; sourceTree = "<group>"; };
 		7BF46FAC1AE2EAEA00DC8AF0 /* SinceTitleTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceTitleTextField.h; sourceTree = "<group>"; };
 		7BF46FAD1AE2EAEA00DC8AF0 /* SinceTitleTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceTitleTextField.m; sourceTree = "<group>"; };
-		7BFC224D1ADF3C5900B6938C /* SinceColorSchemePickerTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinceColorSchemePickerTableView.h; sourceTree = "<group>"; };
-		7BFC224E1ADF3C5900B6938C /* SinceColorSchemePickerTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinceColorSchemePickerTableView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +128,72 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7B871F211AF010E500501E5C /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				7BD449711AC1AB8E008A450E /* SinceViewController.h */,
+				7BD449721AC1AB8E008A450E /* SinceViewController.m */,
+				7BB5714D1AF14C2F0029A5F1 /* SinceColorPickerTableViewController.h */,
+				7BB5714E1AF14C2F0029A5F1 /* SinceColorPickerTableViewController.m */,
+				7BB571501AF14EA50029A5F1 /* SinceEntryPickerCollectionViewController.h */,
+				7BB571511AF14EA50029A5F1 /* SinceEntryPickerCollectionViewController.m */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		7B871F221AF010F700501E5C /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				7B528CED1ACA6598000931F0 /* UIView+SinceUtilities.h */,
+				7B528CEE1ACA6598000931F0 /* UIView+ SinceUtilities.m */,
+				7BCA2B331ACB855900AE6659 /* UIColor+Hex.h */,
+				7BCA2B341ACB855900AE6659 /* UIColor+Hex.m */,
+			);
+			name = Utility;
+			sourceTree = "<group>";
+		};
+		7B871F231AF0110500501E5C /* View */ = {
+			isa = PBXGroup;
+			children = (
+				7BF46FA31AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.h */,
+				7BF46FA41AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.m */,
+				7B6F00611AC713C1003B6E90 /* SinceColorSchemePickerCell.h */,
+				7B6F00621AC713C1003B6E90 /* SinceColorSchemePickerCell.m */,
+				7B1802061AC3757B00BFC526 /* SinceDatePicker.h */,
+				7B1802071AC3757B00BFC526 /* SinceDatePicker.m */,
+				7B1802091AC39C6900BFC526 /* SinceDatePickerCell.h */,
+				7B18020A1AC39C6900BFC526 /* SinceDatePickerCell.m */,
+				7B53BF6E1AE9EC00006AC965 /* SinceLoadingView.h */,
+				7B53BF6F1AE9EC00006AC965 /* SinceLoadingView.m */,
+				7BE479091AE48CCB009CEA13 /* SinceTutorialView.h */,
+				7BE4790A1AE48CCB009CEA13 /* SinceTutorialView.m */,
+				7BE4790C1AE4BA45009CEA13 /* SinceTutorialActionButton.h */,
+				7BE4790D1AE4BA45009CEA13 /* SinceTutorialActionButton.m */,
+				7B1802001AC3446000BFC526 /* SinceDateCounterGraphicView.h */,
+				7B1802011AC3446000BFC526 /* SinceDateCounterGraphicView.m */,
+				7B1802031AC34A5900BFC526 /* CountingLabel.h */,
+				7B1802041AC34A5900BFC526 /* CountingLabel.m */,
+				7BF46FAC1AE2EAEA00DC8AF0 /* SinceTitleTextField.h */,
+				7BF46FAD1AE2EAEA00DC8AF0 /* SinceTitleTextField.m */,
+				7BF46FA61AE169E000DC8AF0 /* SinceEntryDeleteButton.h */,
+				7BF46FA71AE169E000DC8AF0 /* SinceEntryDeleteButton.m */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		7B871F241AF0110F00501E5C /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				7BF46F9D1AE03FDF00DC8AF0 /* SinceDataManager.h */,
+				7BF46F9E1AE03FDF00DC8AF0 /* SinceDataManager.m */,
+				7B8B4B311AE96D80001DE319 /* SincePurchasesManager.h */,
+				7B8B4B321AE96D80001DE319 /* SincePurchasesManager.m */,
+				7B18020C1AC4F30500BFC526 /* SinceColorSchemes.h */,
+				7B18020D1AC4F30500BFC526 /* SinceColorSchemes.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		7BD4495E1AC1AB8E008A450E = {
 			isa = PBXGroup;
 			children = (
@@ -152,44 +218,10 @@
 			children = (
 				7BD4496E1AC1AB8E008A450E /* AppDelegate.h */,
 				7BD4496F1AC1AB8E008A450E /* AppDelegate.m */,
-				7BF46F9D1AE03FDF00DC8AF0 /* SinceDataManager.h */,
-				7BF46F9E1AE03FDF00DC8AF0 /* SinceDataManager.m */,
-				7B8B4B311AE96D80001DE319 /* SincePurchasesManager.h */,
-				7B8B4B321AE96D80001DE319 /* SincePurchasesManager.m */,
-				7B53BF6E1AE9EC00006AC965 /* SinceLoadingView.h */,
-				7B53BF6F1AE9EC00006AC965 /* SinceLoadingView.m */,
-				7B18020C1AC4F30500BFC526 /* SinceColorSchemes.h */,
-				7B18020D1AC4F30500BFC526 /* SinceColorSchemes.m */,
-				7BD449711AC1AB8E008A450E /* SinceViewController.h */,
-				7BD449721AC1AB8E008A450E /* SinceViewController.m */,
-				7BE479091AE48CCB009CEA13 /* SinceTutorialView.h */,
-				7BE4790A1AE48CCB009CEA13 /* SinceTutorialView.m */,
-				7BE4790C1AE4BA45009CEA13 /* SinceTutorialActionButton.h */,
-				7BE4790D1AE4BA45009CEA13 /* SinceTutorialActionButton.m */,
-				7B1802001AC3446000BFC526 /* SinceDateCounterGraphicView.h */,
-				7B1802011AC3446000BFC526 /* SinceDateCounterGraphicView.m */,
-				7B1802031AC34A5900BFC526 /* CountingLabel.h */,
-				7B1802041AC34A5900BFC526 /* CountingLabel.m */,
-				7BF46FAC1AE2EAEA00DC8AF0 /* SinceTitleTextField.h */,
-				7BF46FAD1AE2EAEA00DC8AF0 /* SinceTitleTextField.m */,
-				7BFC224D1ADF3C5900B6938C /* SinceColorSchemePickerTableView.h */,
-				7BFC224E1ADF3C5900B6938C /* SinceColorSchemePickerTableView.m */,
-				7B6F00611AC713C1003B6E90 /* SinceColorSchemePickerCell.h */,
-				7B6F00621AC713C1003B6E90 /* SinceColorSchemePickerCell.m */,
-				7B1802061AC3757B00BFC526 /* SinceDatePicker.h */,
-				7B1802071AC3757B00BFC526 /* SinceDatePicker.m */,
-				7B1802091AC39C6900BFC526 /* SinceDatePickerCell.h */,
-				7B18020A1AC39C6900BFC526 /* SinceDatePickerCell.m */,
-				7BF46FA01AE0468F00DC8AF0 /* SinceEntryPickerCollectionView.h */,
-				7BF46FA11AE0468F00DC8AF0 /* SinceEntryPickerCollectionView.m */,
-				7BF46FA31AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.h */,
-				7BF46FA41AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.m */,
-				7BF46FA61AE169E000DC8AF0 /* SinceEntryDeleteButton.h */,
-				7BF46FA71AE169E000DC8AF0 /* SinceEntryDeleteButton.m */,
-				7B528CED1ACA6598000931F0 /* UIView+SinceUtilities.h */,
-				7B528CEE1ACA6598000931F0 /* UIView+ SinceUtilities.m */,
-				7BCA2B331ACB855900AE6659 /* UIColor+Hex.h */,
-				7BCA2B341ACB855900AE6659 /* UIColor+Hex.m */,
+				7B871F241AF0110F00501E5C /* Model */,
+				7B871F211AF010E500501E5C /* Controller */,
+				7B871F231AF0110500501E5C /* View */,
+				7B871F221AF010F700501E5C /* Utility */,
 				7BD449771AC1AB8E008A450E /* Images.xcassets */,
 				7BD449791AC1AB8E008A450E /* LaunchScreen.xib */,
 				7BD4496A1AC1AB8E008A450E /* Supporting Files */,
@@ -338,15 +370,15 @@
 				7BF46FA51AE04B4E00DC8AF0 /* SinceEntryPickerCollectionViewCell.m in Sources */,
 				7BE4790B1AE48CCB009CEA13 /* SinceTutorialView.m in Sources */,
 				7BF46FAE1AE2EAEA00DC8AF0 /* SinceTitleTextField.m in Sources */,
+				7BB571521AF14EA50029A5F1 /* SinceEntryPickerCollectionViewController.m in Sources */,
 				7B6F00631AC713C1003B6E90 /* SinceColorSchemePickerCell.m in Sources */,
 				7BF46FA81AE169E000DC8AF0 /* SinceEntryDeleteButton.m in Sources */,
 				7B1802081AC3757B00BFC526 /* SinceDatePicker.m in Sources */,
 				7BF46F9F1AE03FDF00DC8AF0 /* SinceDataManager.m in Sources */,
 				7B528CEF1ACA6598000931F0 /* UIView+ SinceUtilities.m in Sources */,
-				7BF46FA21AE0468F00DC8AF0 /* SinceEntryPickerCollectionView.m in Sources */,
 				7BD449701AC1AB8E008A450E /* AppDelegate.m in Sources */,
-				7BFC224F1ADF3C5900B6938C /* SinceColorSchemePickerTableView.m in Sources */,
 				7BCA2B351ACB855900AE6659 /* UIColor+Hex.m in Sources */,
+				7BB5714F1AF14C2F0029A5F1 /* SinceColorPickerTableViewController.m in Sources */,
 				7BE4790E1AE4BA45009CEA13 /* SinceTutorialActionButton.m in Sources */,
 				7B1802051AC34A5900BFC526 /* CountingLabel.m in Sources */,
 				7BD4496D1AC1AB8E008A450E /* main.m in Sources */,

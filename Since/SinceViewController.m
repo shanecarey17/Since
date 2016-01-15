@@ -15,6 +15,7 @@
 #import "SinceDateCounterGraphicView.h"
 #import "SinceTitleTextField.h"
 #import "SinceDatePicker.h"
+#import "SinceColorSchemes.h"
 #import "UIView+SinceUtilities.h"
 
 @interface SinceViewController () <UITableViewDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate> {
@@ -28,6 +29,7 @@
     SinceDatePicker *datePicker;
     SinceTitleTextField *entryTitleField;
     SinceTutorialView *tutorialView;
+    UIButton *tutorialButton;
     
     // Gestures
     UITapGestureRecognizer *tapToReset;
@@ -63,6 +65,19 @@
     [self initGraphicView];
     [self initEntryPicker];
     [self initEntryTitleField];
+    
+    // Tutorial Button
+    tutorialButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    tutorialButton.frame = CGRectMake(self.view.bounds.size.width - 30, self.view.bounds.size.height - 30, 20, 20);
+    tutorialButton.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:12];
+    [tutorialButton setTitle:@"?" forState:UIControlStateNormal];
+    tutorialButton.titleLabel.textColor = [UIColor whiteColor];
+    tutorialButton.backgroundColor = [UIColor clearColor];
+    tutorialButton.layer.cornerRadius = 10;
+    [tutorialButton addTarget:self action:@selector(showTutorial) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:tutorialButton];
+    
+    [self.view bringSubviewToFront:entryPickerController.view];
     
     // Register for notifications to reset graphic view on open and hide stuff on close
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetCurrentDisplay) name:UIApplicationWillEnterForegroundNotification object:nil];
@@ -170,6 +185,11 @@
     [entryTitleField setText:[self.entry objectForKey:@"title"] colorScheme:[self.entry objectForKey:@"colorScheme"]];
     [datePicker setColorScheme:[self.entry objectForKey:@"colorScheme"]];
     [datePicker setDate:[self.entry objectForKey:@"sinceDate"]];
+    
+    [UIView animateWithDuration:1.0 animations:^{
+        tutorialButton.backgroundColor = [[SinceColorSchemes colorSchemeWithName:self.entry[@"colorScheme"]] objectForKey:@"centerColor"];
+    }];
+    
 }
 
 #pragma mark - Date picker
@@ -471,22 +491,16 @@
 
 #pragma mark - Tutorial
 
-- (BOOL)canBecomeFirstResponder {
-    return YES;
-}
-
-- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
-    if (motion == UIEventSubtypeMotionShake) {
-        if (!tutorialIsInProgress) {
-            
-            // Hide views
-            [self hideColorPicker];
-            [self hideEntryPicker];
-            [self hideDatePicker];
-            
-            // Begin tutorial
-            [self tutorial:nil];
-        }
+- (void)showTutorial {
+    if (!tutorialIsInProgress) {
+        
+        // Hide views
+        [self hideColorPicker];
+        [self hideEntryPicker];
+        [self hideDatePicker];
+        
+        // Begin tutorial
+        [self tutorial:nil];
     }
 }
 
@@ -595,7 +609,7 @@
         [self hideEntryPicker];
         
         // Text
-        NSString *text = @"Thank you for downloading Since! Report a bug or leave a review here. Shake iPhone anytime to replay this tutorial. Good luck and happy counting";
+        NSString *text = @"Thank you for downloading Since! Report a bug here or leave a review here. Shake iPhone anytime to replay this tutorial. Good luck and happy counting";
         
         // Generic font type
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
@@ -608,8 +622,12 @@
         // Hyperlink
         UIFont *bold = [UIFont fontWithName:@"Helvetica-Bold" size:14];
         NSURL *appStoreURL = [NSURL URLWithString:@"https://itunes.apple.com/us/app/since-a-colorful-day-counter/id981958143?ls=1&mt=8"];
+        NSURL *emailURL = [NSURL URLWithString:@"mailto:shanecarey17@gmail.com?subject=Since"];
         NSDictionary *urlAttributes = [NSDictionary dictionaryWithObjectsAndKeys:bold, NSFontAttributeName, appStoreURL, NSLinkAttributeName, nil];
-        NSRange linkRange = [text rangeOfString:@"here"];
+        NSRange linkRange = [text rangeOfString:@"review here"];
+        [attrStr addAttributes:urlAttributes range:linkRange];
+        urlAttributes = [NSDictionary dictionaryWithObjectsAndKeys:bold, NSFontAttributeName, emailURL, NSLinkAttributeName, nil];
+        linkRange = [text rangeOfString:@"bug here"];
         [attrStr addAttributes:urlAttributes range:linkRange];
         
         // Transition

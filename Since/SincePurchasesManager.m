@@ -9,6 +9,8 @@
 #import "SincePurchasesManager.h"
 #import "SinceLoadingView.h"
 
+NSString *const kMultipleDatesPurchaseIdentifier = @"com.shanecarey.since.multipledates";
+
 @interface SincePurchasesManager () <SKProductsRequestDelegate, SKPaymentTransactionObserver>
 
 @property (strong, nonatomic) SinceLoadingView *loadingView;

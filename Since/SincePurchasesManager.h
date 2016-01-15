@@ -6,10 +6,10 @@
 //  Copyright (c) 2015 Shane Carey. All rights reserved.
 //
 
-#define kMultipleDatesPurchaseIdentifier @"com.shanecarey.since.multipledates"
-
 #import <Foundation/Foundation.h>
 #import <StoreKit/StoreKit.h>
+
+extern NSString *const kMultipleDatesPurchaseIdentifier;
 
 @interface SincePurchasesManager : NSObject
 

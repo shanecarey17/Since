@@ -278,8 +278,8 @@
     CALayer *currentProgressShapesLayer = progressShapesLayer.presentationLayer;
     [progressShapesLayer removeAllAnimations];
     for (NSUInteger i = 0; i < progressShapesLayer.sublayers.count; i++) {
-        CAShapeLayer *arcLayer = [progressShapesLayer.sublayers objectAtIndex:i];
-        CAShapeLayer *presentingArcLayer = [currentProgressShapesLayer.sublayers objectAtIndex:i];
+        CAShapeLayer *arcLayer = (CAShapeLayer *)[progressShapesLayer.sublayers objectAtIndex:i];
+        CAShapeLayer *presentingArcLayer = (CAShapeLayer *)[currentProgressShapesLayer.sublayers objectAtIndex:i];
         arcLayer.strokeEnd = presentingArcLayer.strokeEnd;
     }
 }
